@@ -40,6 +40,8 @@ export class AppComponent implements OnInit {
       result => {
         //alert("Factura electronica firmada(?");
         console.log("This is the answer: ",<any>result)
+
+
     },
       error => {
         //alert(<any>error);
