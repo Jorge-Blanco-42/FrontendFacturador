@@ -1,22 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { SignXMLService } from './services/signxml';
-import { CreateXMLService} from './services/createXML'
+import { CreateXMLService} from './services/createXML';
+import { SendXMLService } from './services/sendXML';
 import { SignXML } from './models/signxml';
 import { CreateXML} from './models/createXML'
+import { SendXML } from './models/sendXML';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [SignXMLService, CreateXMLService]
+  providers: [SignXMLService, CreateXMLService, SendXMLService]
 })
 export class AppComponent implements OnInit {
   title = 'Facturador';
 
   public signXML: SignXML;
   public createXML: CreateXML;
-  
-  constructor(private _signXMLService: SignXMLService, private _createXMLService : CreateXMLService){
+  public sendXML: SendXML;
+
+
+  constructor(private _signXMLService: SignXMLService, private _createXMLService : CreateXMLService, private _sendXMLService : SendXMLService){
      
     this.signXML = new SignXML("signXML", "signFE", 
       "b337c43a00ec8b0ed9882375d56b270f", "pendiente",
@@ -30,8 +34,9 @@ export class AppComponent implements OnInit {
     "6", "02", "03", "01", "En la jungla", "506", "64206205", "506", "00000000", "walner1borbon@gmail.com", "Walner Borbon",
     "01", "702320717", "6", "02", "03", "01", "506", "84922891", "506", "00000000", "walner.borbon@hotmail.com", 
     "01", "0", "01", "CRC", "569.48", "0", "10000", "10000", "0", "10000", "10000", "20000", "100", "19900", "1170", "21070",
-    "Jiji", "Bichota", lineaStr, 'False')
+    "Jiji", "Bichota", lineaStr, 'False');
 
+    this.sendXML = new SendXML("send", "json", "dfhsdf52h1sd3f2h1s6dfg4hj63sfg1hs65df1h6s1dfh56sdf1h", "161321634613131465132165132103164651630", "2020-03-24T13:00:00-06:00", 1, 702320717, 1, 702320717, "PSAJFKLASFAf3161f63a165f1613as1dfasf1a6sf16as1f6as1ffa6s");
   }
 
   ngOnInit(){
@@ -42,12 +47,21 @@ export class AppComponent implements OnInit {
         console.log("This is the answer: ",<any>result)
     },
       error => {
-        //alert(<any>error);
+    //    //alert(<any>error);
         console.log(<any>error) 
     }
   );
-  
+
+    this._sendXMLService.sendFEXML(this.sendXML).subscribe(
+      result => {
+        console.log("This is the answer: ",<any>result)
+      },
+      error =>{
+        console.log(<any>error)
+      }
+    )
   }
+
 
 }
 
