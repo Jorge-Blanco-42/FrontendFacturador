@@ -3,20 +3,24 @@ import { SignXMLService } from './services/signxml';
 import { CreateXMLService} from './services/createXML'
 import { SignXML } from './models/signxml';
 import { CreateXML} from './models/createXML'
+import { UserService } from './services/user';
+import { User } from './models/user';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [SignXMLService, CreateXMLService]
+  providers: [SignXMLService, CreateXMLService, UserService]
 })
 export class AppComponent implements OnInit {
   title = 'Facturador';
 
   public signXML: SignXML;
   public createXML: CreateXML;
+  public user : User;
   
-  constructor(private _signXMLService: SignXMLService, private _createXMLService : CreateXMLService){
+  constructor(private _signXMLService: SignXMLService, private _createXMLService : CreateXMLService,
+    private _userService : UserService){
      
     this.signXML = new SignXML("signXML", "signFE", 
       "b337c43a00ec8b0ed9882375d56b270f", "pendiente",
@@ -32,10 +36,11 @@ export class AppComponent implements OnInit {
     "01", "0", "01", "CRC", "569.48", "0", "10000", "10000", "0", "10000", "10000", "20000", "100", "19900", "1170", "21070",
     "Jiji", "Bichota", lineaStr, 'False')
 
+    this.user = new User("users", "users_log_me_in", "jorgeBlanco", "426819357");
   }
 
   ngOnInit(){
-    this._createXMLService.createXML(this.createXML).subscribe(
+    this._userService.login(this.user).subscribe(
     //this._signXMLService.signFEXML(this.signXML).subscribe(
       result => {
         //alert("Factura electronica firmada(?");
