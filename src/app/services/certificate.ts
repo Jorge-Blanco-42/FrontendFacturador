@@ -23,7 +23,6 @@ export class CertificateService {
     }
 
     getToken(certificate: Certificate): Observable<any> {
-        let headers = new HttpHeaders().set('Content-Type', 'multipart/form-data');
         let form = new FormData();
         form.append("w","token");
         form.append("r","gettoken");
@@ -31,6 +30,16 @@ export class CertificateService {
         form.append("client_id","api-stag");
         form.append("username",certificate.usuario);
         form.append("password", certificate.contraseña);
+        return this._http.post(this.url,form);
+    }
+
+    refreshToken(refresh : string): Observable<any>{
+        let form = new FormData();
+        form.append("w","token");
+        form.append("r","refresh");
+        form.append("grant_type","refresh_token");
+        form.append("client_id","api-stag");
+        form.append("refresh_token",refresh);
         return this._http.post(this.url,form);
     }
 

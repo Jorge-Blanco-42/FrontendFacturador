@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   public createXML: CreateXML;
   public user: User;
   public certificate: Certificate;
+  public refresh_token: string;
 
   constructor(private _signXMLService: SignXMLService, private _createXMLService: CreateXMLService,
     private _userService: UserService, private _certificateService: CertificateService) {
@@ -41,15 +42,16 @@ export class AppComponent implements OnInit {
 
     this.user = new User("users", "users_log_me_in", "jorgeBlanco", "426819357");
     this.certificate = new Certificate("", "", "", "", "");
+    this.refresh_token = "";
   }
 
 
   ngOnInit() {
     this._certificateService.getCertificate("4").subscribe(
       result => {
-        console.log("This is the answer: ", <any>result)
+        console.log("This is the certificate: ", <any>result)
         this.certificate = result;
-        console.log(this.certificate);
+        console. log(this.certificate);
         this.getToken(this.certificate);
       },
       error => {
@@ -63,7 +65,21 @@ export class AppComponent implements OnInit {
   getToken(certificate: Certificate) {
     this._certificateService.getToken(certificate).subscribe(
       result => {
-        console.log("This is the answer: ", <any>result);
+        console.log("This is the token: ", result);
+        this.refresh_token = result.resp.refresh_token;
+        this.refreshToken(this.refresh_token);
+      },
+      error => {
+        console.log(<any>error)
+      }
+    );
+  }
+
+  refreshToken(refresh: string){
+    console.log("refreshing with",refresh);
+    this._certificateService.refreshToken(refresh).subscribe(
+      result => {
+        console.log("This is the refresh: ", <any>result);
       },
       error => {
         console.log(<any>error)
