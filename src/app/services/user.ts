@@ -19,4 +19,9 @@ export class UserService {
         var params = "w=" + user.w + "&r=" + user.r + "&userName=" + user.userName + "&pwd=" + user.pwd;
         return this._http.post(this.url, params, { headers: headers });
     }
+
+    getCertificate(id: string): Observable<any>{
+        let headers = new HttpHeaders().set('Content-Type', 'application/json');
+        return this._http.get(this.url+'get-certificate/'+id,{headers:headers});
+    }
 }
