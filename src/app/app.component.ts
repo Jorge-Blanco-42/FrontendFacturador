@@ -7,6 +7,7 @@ import { UserService } from './services/user';
 import { User } from './models/user';
 import { CertificateService } from './services/certificate';
 import { Certificate } from './models/certificate';
+import { Token } from './models/token';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
   public createXML: CreateXML;
   public user: User;
   public certificate: Certificate;
+  public token: Token;
   public refresh_token: string;
 
   constructor(private _signXMLService: SignXMLService, private _createXMLService: CreateXMLService,
@@ -43,6 +45,7 @@ export class AppComponent implements OnInit {
     this.user = new User("users", "users_log_me_in", "jorgeBlanco", "426819357");
     this.certificate = new Certificate("", "", "", "", "");
     this.refresh_token = "";
+    this.token = new Token("","","","","","","","");
   }
 
 
@@ -66,8 +69,11 @@ export class AppComponent implements OnInit {
     this._certificateService.getToken(certificate).subscribe(
       result => {
         console.log("This is the token: ", result);
-        this.refresh_token = result.resp.refresh_token;
-        this.refreshToken(this.refresh_token);
+        this.token = result.resp;
+        this.refreshToken(this.token.refresh_token);
+        setInterval(()=>{
+          this.refreshToken(this.token.refresh_token);
+     }, 3000);
       },
       error => {
         console.log(<any>error)
@@ -80,6 +86,7 @@ export class AppComponent implements OnInit {
     this._certificateService.refreshToken(refresh).subscribe(
       result => {
         console.log("This is the refresh: ", <any>result);
+        this.token = result.resp;
       },
       error => {
         console.log(<any>error)
