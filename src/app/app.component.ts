@@ -73,7 +73,7 @@ export class AppComponent implements OnInit {
         this.refreshToken(this.token.refresh_token);
         setInterval(()=>{
           this.refreshToken(this.token.refresh_token);
-     }, 3000);
+     }, 290000);
       },
       error => {
         console.log(<any>error)
