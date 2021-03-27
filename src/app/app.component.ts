@@ -50,6 +50,8 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit() {
+    localStorage.removeItem("roken");
+    localStorage.removeItem("refresh");
     this._certificateService.getCertificate("4").subscribe(
       result => {
         console.log("This is the certificate: ", <any>result)
@@ -70,9 +72,14 @@ export class AppComponent implements OnInit {
       result => {
         console.log("This is the token: ", result);
         this.token = result.resp;
-        this.refreshToken(this.token.refresh_token);
+        localStorage.setItem("token", this.token.refresh_token);
+        localStorage.setItem("refresh", this.token.access_token);
         setInterval(()=>{
-          this.refreshToken(this.token.refresh_token);
+          let refresh = localStorage.getItem("refresh");
+          if(refresh){
+            this.refreshToken(refresh);
+          }
+          
      }, 290000);
       },
       error => {
@@ -87,6 +94,8 @@ export class AppComponent implements OnInit {
       result => {
         console.log("This is the refresh: ", <any>result);
         this.token = result.resp;
+        localStorage.setItem("token", this.token.refresh_token);
+        localStorage.setItem("refresh", this.token.access_token);
       },
       error => {
         console.log(<any>error)
