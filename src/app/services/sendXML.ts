@@ -15,22 +15,20 @@ export class SendXMLService{
         this.url = Global.url;
     }
 
-
     sendFEXML(xml: SendXML) : Observable<any>{
-        let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-        var params = 
-            "w=" + xml.w + 
-            "&r=" + xml.r + 
-            "&token=" + xml.token +
-            "&clave=" + xml.clave + 
-            "&fecha=" + xml.fecha + 
-            "&emi_tipoIdentificacion=" + xml.emi_tipoIdentificacion +
-            "&emi_numeroIdentificacion=" + xml.emi_numeroIdentificacion +
-            "&recp_tipoIdentificacion=" + xml.recp_tipoIdentificacion +
-            "&recp_numeroIdentificacion=" + xml.recp_numeroIdentificacion +
-            "&comprobanteXml=" + xml.comprobanteXml +
-            "&client_id=" + xml.client_id;
-        return this._http.post(this.url,params,{headers:headers});
+        let form = new FormData();
+        form.append('w', xml.w); 
+        form.append('r', xml.r);
+        form.append('token', xml.token);
+        form.append('clave', xml.clave);
+        form.append('fecha', xml.fecha);
+        form.append('emi_tipoIdentificacion', xml.emi_tipoIdentificacion);
+        form.append('emi_numeroIdentificacion', xml.emi_numeroIdentificacion);
+        form.append('recp_tipoIdentificacion', xml.recp_tipoIdentificacion);
+        form.append('recp_numeroIdentificacion', xml.recp_numeroIdentificacion);
+        form.append('comprobanteXml', xml.comprobanteXml);
+        form.append('client_id', xml.client_id);
+        return this._http.post(this.url,form);
     }
 
 
