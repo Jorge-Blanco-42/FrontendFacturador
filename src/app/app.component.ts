@@ -74,7 +74,7 @@ export class AppComponent implements OnInit {
       result => {
         console.log("This is the token: ", result);
         this.token = result.resp;
-        this.refreshToken(this.token.refresh_token);
+        this.sendXML.token = this.token.access_token;
         this._sendXMLService.sendFEXML(this.sendXML).subscribe(
           result => {
             console.log("This is the answer: ",<any>result)
