@@ -28,7 +28,8 @@ export class SendXMLService{
             "&emi_numeroIdentificacion=" + xml.emi_numeroIdentificacion +
             "&recp_tipoIdentificacion=" + xml.recp_tipoIdentificacion +
             "&recp_numeroIdentificacion=" + xml.recp_numeroIdentificacion +
-            "&comprobanteXml=" + xml.comprobanteXml;
+            "&comprobanteXml=" + xml.comprobanteXml +
+            "&client_id=" + xml.client_id;
         return this._http.post(this.url,params,{headers:headers});
     }
 
