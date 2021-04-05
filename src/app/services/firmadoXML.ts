@@ -1,11 +1,11 @@
 import { Injectable} from '@angular/core';
-import { SignXML } from '../models/signxml';
+import { FirmadoXML } from '../models/firmadoXML';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
 
 @Injectable()
-export class SignXMLService{
+export class ServicioFirmadoXML{
 
     public url: string;
 
@@ -16,7 +16,7 @@ export class SignXMLService{
     }
 
 
-    signFEXML(sign: SignXML) : Observable<any>{
+    firmarFEXML(sign: FirmadoXML) : Observable<any>{
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         var params = "w=" + sign.w + "&r=" + sign.r + "&p12Url=" + sign.p12Url + "&inXml=" 
             + sign.inXml + "&pinP12=" + sign.pinP12 + "&tipodoc=" + sign.tipodoc;
