@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
   title = 'Facturador';
 
   public signXML: SignXML;
+  public isMenuCollapsed = true;
   
   constructor(private _signXMLService: SignXMLService){
      

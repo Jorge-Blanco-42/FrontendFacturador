@@ -1,0 +1,28 @@
+
+  .navbar-brand{
+    color: white;
+  }
+
+  .nav-item .nav-link{
+    color: white;
+  }
+
+  .footer_area{
+    background-color: #000410;
+    margin-top: 2%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+  }
+
+  .footer_area h2{
+    color: white;
+    font-weight: bolder;
+    padding-top: 2%;
+  }
+
+  .footer_area p{
+    padding-top: 2%;
+    color: gray;
+  }
+
+  

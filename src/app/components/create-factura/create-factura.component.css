@@ -1,0 +1,25 @@
+.main_btn  {
+    display: inline-block;
+    background-image: -moz-linear-gradient(0deg, #4dabff 0%, #62ddff 100%);
+    background-image: -webkit-linear-gradient(0deg, #4dabff 0%, #62ddff 100%);
+    background-image: -ms-linear-gradient(0deg, #4dabff 0%, #62ddff 100%); 
+    background-size: 200% auto;
+    padding: 0px 35px;
+    color: rgb(44, 8, 8);
+    font-family: "Heebo", sans-serif;
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 50px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+
+  }
+
+  .main_btn:hover {
+      background-position: right center;
+      background-image: -moz-linear-gradient(0deg, #ffffff 0%, #ffffff 100%);
+      background-image: -webkit-linear-gradient(0deg, #ffffff 0%, #ffffff 100%);
+      background-image: -ms-linear-gradient(0deg, #ffffff 0%, #ffffff 100%); 
+      color: rgb(74, 80, 158); 
+    }
