@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Certificate } from '../models/certificate';
+import { Certificado } from '../models/certificado';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
 import { FormBuilder} from "@angular/forms";
 
 @Injectable()
-export class CertificateService {
+export class ServicioCertificado {
     public url: string;
     public backendUrl: string;
 
@@ -17,12 +17,12 @@ export class CertificateService {
         this.url = Global.url;
     }
 
-    getCertificate(id: string): Observable<any> {
+    getCertificado(id: string): Observable<any> {
         let headers = new HttpHeaders().set('Content-Type', 'application/json');
         return this._http.get(this.backendUrl + 'get-certificate/' + id, { headers: headers });
     }
 
-    getToken(certificate: Certificate): Observable<any> {
+    getToken(certificate: Certificado): Observable<any> {
         let form = new FormData();
         form.append("w","token");
         form.append("r","gettoken");
@@ -33,7 +33,7 @@ export class CertificateService {
         return this._http.post(this.url,form);
     }
 
-    refreshToken(refresh : string): Observable<any>{
+    refrescarToken(refresh : string): Observable<any>{
         let form = new FormData();
         form.append("w","token");
         form.append("r","refresh");

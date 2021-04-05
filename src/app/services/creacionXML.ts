@@ -1,11 +1,11 @@
 import { Injectable} from '@angular/core';
-import { CreateXML } from '../models/createXML';
+import { CreacionXML } from '../models/creacionXML';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
 
 @Injectable()
-export class CreateXMLService{
+export class ServicioCreacionXML{
 
     public url: string;
 
@@ -16,7 +16,7 @@ export class CreateXMLService{
     }
 
 
-    createXML(xmlData: CreateXML) : Observable<any>{
+    crearXML(xmlData: CreacionXML) : Observable<any>{
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         var params = 'w='+xmlData.w + '&r=' + xmlData.r + '&clave=' + xmlData.clave 
         + '&consecutivo=' + xmlData.consecutivo + '&fecha_emision=' + xmlData.fecha_emision 

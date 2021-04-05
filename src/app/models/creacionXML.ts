@@ -1,5 +1,5 @@
 
-export class CreateXML{
+export class CreacionXML{
 
     constructor(public w: string, public r: string,
         public clave: string, public consecutivo: string, 

@@ -1,11 +1,11 @@
 import { Injectable} from '@angular/core';
-import { SendXML } from '../models/sendXML';
+import { EnvioXML } from '../models/envioXML';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
 
 @Injectable()
-export class SendXMLService{
+export class ServicioEnvioXML{
 
     public url: string;
 
@@ -15,7 +15,7 @@ export class SendXMLService{
         this.url = Global.url;
     }
 
-    sendFEXML(xml: SendXML) : Observable<any>{
+    enviarFEXML(xml: EnvioXML) : Observable<any>{
         let form = new FormData();
         form.append('w', xml.w); 
         form.append('r', xml.r);
