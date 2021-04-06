@@ -1,59 +1,45 @@
-
 <!--Chanchada que hay que quitar pero no se como porque no me hace caso >:v-->
-<style>
 
-.navbar {
-    position: sticky;
-    background-image: -moz-linear-gradient(0deg, #18227C 0%, #514aac 100%);
-    background-image: -webkit-linear-gradient(0deg, #18227C 0%, #514aac 100%);
-    background-image: -ms-linear-gradient(0deg, #18227C 0%, #514aac 100%); 
-    font-weight: 600;
-  }
-
-</style>
 <!--Fin de la chanchada-->
 
 <header>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-    <a class="navbar-brand" [routerLink]="'.'">ImgLogo</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+        <a class="navbar-brand" [routerLink]="'.'">ImgLogo</a>
 
-    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       &#9776;
     </button>
 
-    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
-      <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" [routerLink]="['/crearFactura']" (click)="isMenuCollapsed = true">CrearFactura</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="'.'" (click)="isMenuCollapsed = true">Route2</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="'.'" (click)="isMenuCollapsed = true">Route3</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+        <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" [routerLink]="['/crearFactura']" (click)="isMenuCollapsed = true">CrearFactura</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="'.'" (click)="isMenuCollapsed = true">Route2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="'.'" (click)="isMenuCollapsed = true">Route3</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </header>
 
 
-<section id="content"> 
+<section id="content">
 
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
 
 </section>
 
 
 <footer class="navbar-fixed-bottom footer_area">
-  <div class="container">
-          <div class="col-lg-10 col-sm-10">
-              <aside>
-                  <p>Copyright &copy; | All rights reserved </p>
-              </aside>
-          </div>
-  </div>
+    <div class="container">
+        <div class="col-lg-10 col-sm-10">
+            <aside>
+                <p>Copyright &copy; | All rights reserved </p>
+            </aside>
+        </div>
+    </div>
 </footer>
-
-
-

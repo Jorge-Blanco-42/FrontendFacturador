@@ -1,28 +1,32 @@
-
-  .navbar-brand{
+.navbar-brand {
     color: white;
-  }
+}
 
-  .nav-item .nav-link{
+.navbar {
+    position: sticky;
+    background-image: -moz-linear-gradient(0deg, #18227C 0%, #514aac 100%);
+    background-image: -webkit-linear-gradient(0deg, #18227C 0%, #514aac 100%);
+    font-weight: 600;
+}
+
+.nav-item .nav-link {
     color: white;
-  }
+}
 
-  .footer_area{
+.footer_area {
     background-color: #000410;
     margin-top: 2%;
     padding-top: 1%;
     padding-bottom: 1%;
-  }
+}
 
-  .footer_area h2{
+.footer_area h2 {
     color: white;
     font-weight: bolder;
     padding-top: 2%;
-  }
+}
 
-  .footer_area p{
+.footer_area p {
     padding-top: 2%;
     color: gray;
-  }
-
-  
+}
