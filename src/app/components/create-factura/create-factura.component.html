@@ -1,32 +1,34 @@
-<div class="container">
+
 
 <form>
     <br>
-    <h5>Datos del emisor</h5>
-    
-    <div class="form-group">
-        <label for="lblNombreRazonSocial">Nombre o Razon Social</label>
-        <input type="text" class="form-control" id="txtNombreRazonSocialId" placeholder="Mostrar Nombre o Razon Social" readonly>
+    <div class="header-title">
+        <h5>Datos del emisor</h5>
     </div>
-    <div>
-        
-        <p>
-            <button type="button" class="btn btn-outline-info" (click)="collapse.toggle()">
-            Ver información del emisor
-            </button>
-        </p>
-        <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedEmisorData">
-            <div class="card">
-                <div class="card-body">
-                    Aqui la info
+
+    <div class="container">
+    
+        <div class="form-group">
+            <label for="lblNombreRazonSocial">Nombre o Razon Social</label>
+            <input type="text" class="form-control" id="txtNombreRazonSocialId" placeholder="Mostrar Nombre o Razon Social" readonly>
+        </div>
+        <div>
+            
+            <p>
+                <button type="button" class="btn btn-outline-secondary" (click)="collapse.toggle()">
+                Ver información del emisor
+                </button>
+            </p>
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedEmisorData">
+                <div class="card">
+                    <div class="card-body">
+                        Aqui la info
+                    </div>
                 </div>
             </div>
+
         </div>
-
     </div>
-
   
-
 </form>
 
-</div>
