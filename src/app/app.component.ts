@@ -11,13 +11,15 @@ import { ServicioCertificado } from './services/certificado';
 import { Certificado } from './models/certificado';
 import { Token } from './models/token';
 import { EnvioXML } from './models/envioXML';
-import { ClaveXML } from './models/claveXML'
+import { ClaveXML } from './models/claveXML';
+import {TipoCambio} from './models/tipoCambio';
+import {ServicioTipoCambio} from './services/tipoCambioXML';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ServicioFirmadoXML, ServicioCreacionXML, ServicioUsuario, ServicioCertificado, ServicioEnvioXML, ServicioClaveXML]
+  providers: [ServicioFirmadoXML, ServicioCreacionXML, ServicioUsuario, ServicioCertificado, ServicioEnvioXML, ServicioClaveXML, ServicioTipoCambio]
 })
 export class AppComponent implements OnInit {
   title = 'Facturador';
@@ -30,10 +32,12 @@ export class AppComponent implements OnInit {
   public refresh_token: string;
   public claveXML: ClaveXML;
   public isMenuCollapsed = true;
+  public tipoCambio: TipoCambio;
   //public sendXML: EnvioXML; 
 
   constructor(private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
-    private _userService: ServicioUsuario, private _certificateService: ServicioCertificado, private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML) {
+    private _userService: ServicioUsuario, private _certificateService: ServicioCertificado, private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,
+    private _exchangeRateService: ServicioTipoCambio) {
 
     this.signXML = new FirmadoXML("signXML", "signFE",
       "b337c43a00ec8b0ed9882375d56b270f", "pendiente",
@@ -54,7 +58,7 @@ export class AppComponent implements OnInit {
     this.refresh_token = "";
     this.token = new Token("","","","","","","","");
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "1234567890", "81726354", "FE");
-    
+    this.tipoCambio = new TipoCambio();
   }
 
 
@@ -74,6 +78,7 @@ export class AppComponent implements OnInit {
       }
     );
     this.crearClave();
+    //this.getTipoCambio('11', '02', '2007');
 
   }
 
@@ -131,6 +136,22 @@ export class AppComponent implements OnInit {
         console.log(<any>error)
       }
     );
+  }
+
+  getTipoCambio(dia: string = "", mes: string = "", año: string = ""){
+    
+    this.tipoCambio.dia = dia;
+    this.tipoCambio.mes = mes;
+    this.tipoCambio.año = año;
+    this._exchangeRateService.getTipoCambio(this.tipoCambio).subscribe(
+      result => {
+        console.log("Tipo de cambio: ", <any> result);
+      },
+      error => {
+        console.log(<any> error);
+      }
+    )
+
   }
 
 }
