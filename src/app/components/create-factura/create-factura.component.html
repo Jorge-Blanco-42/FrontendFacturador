@@ -12,7 +12,7 @@
                 <label for="lblNombreRazonSocialEmisor">Nombre o Razon Social</label>
 
                 <div class="input-group">
-                    <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" placeholder="Mostrar Nombre o Razon Social" readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente" />
+                    <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" name="nombreRazonSocialEmisor" [(ngModel)]="datosXML.emisor_nombre"  readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente" />
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary" (click)="collapse.toggle()">
                             VER DATOS
@@ -28,43 +28,43 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblNombreComercialEmisor">Nombre Comercial</label>
-                                    <input type="text" class="form-control" id="txtNombreComercialEmisorId" placeholder="Mostrar Nombre Comercial" readonly aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtNombreComercialEmisorId" name="nombreComercialEmisor" [(ngModel)]="datosXML.nombre_comercial"  readonly aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblIdentificacionEmisor">Identificación</label>
-                                    <input type="text" class="form-control" id="txtIdentificacionEmisorId" placeholder="Mostrar Identificación" readonly aria-label="Identificación del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtIdentificacionEmisorId" name="identificacionEmisor" [(ngModel)]="datosXML.emisor_num_identif" readonly aria-label="Identificación del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblCorreoEmisor">Correo electrónico</label>
-                                    <input type="text" class="form-control" id="txtCorreoEmisorId" placeholder="Mostrar Correo" readonly aria-label="Correo electrónico del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtCorreoEmisorId" name="correoEmisor" [(ngModel)]="datosXML.emisor_email" readonly aria-label="Correo electrónico del emisor" aria-describedby="pendiente" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblTelefonoEmisor">Teléfono</label>
-                                    <input type="text" class="form-control" id="txtTelefonoEmisorId" placeholder="Mostrar Teléfono" readonly aria-label="Teléfono del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtTelefonoEmisorId" name="telefonoEmisor" [(ngModel)]="datosXML.emisor_tel" readonly aria-label="Teléfono del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-4">
-                                    <label for="lblIdentificacionEmisor">Fax</label>
-                                    <input type="text" class="form-control" id="txtFaxEmisorId" placeholder="Mostrar Fax" readonly aria-label="Fax del emisor" aria-describedby="pendiente" />
+                                    <label for="lblFaxEmisor">Fax</label>
+                                    <input type="text" class="form-control" id="txtFaxEmisorId" name="faxEmisor" [(ngModel)]="datosXML.emisor_fax" readonly aria-label="Fax del emisor" aria-describedby="pendiente" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblProvinciaEmisor">Provincia</label>
-                                    <select class="form-control" id="cmbProvinciaEmisorId" readonly>
+                                    <select class="form-control" id="cmbProvinciaEmisorId" name="provinciaEmisor" [(ngModel)]="datosXML.emisor_provincia" readonly>
                                         <option>San José</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblCantonEmisor">Cantón</label>
-                                    <select class="form-control" id="cmbCantonEmisorId" readonly>
+                                    <select class="form-control" id="cmbCantonEmisorId" name="cantonEmisor" [(ngModel)]="datosXML.emisor_canton" readonly>
                                         <option>Alajuelita</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblDistritoEmisor">Distrito</label>
-                                    <select class="form-control" id="cmbDistritoEmisorId" readonly>
+                                    <select class="form-control" id="cmbDistritoEmisorId" name="distritoEmisor" [(ngModel)]="datosXML.emisor_distrito" readonly>
                                         <option>Concepción</option>
                                     </select>
                                 </div>
@@ -72,11 +72,11 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblBarrioEmisor">Barrio</label>
-                                    <input type="text" class="form-control" id="txtBarrioEmisorId" placeholder="Mostrar Barrio" readonly aria-label="Barrio del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtBarrioEmisorId" name="barrioEmisor" [(ngModel)]="datosXML.emisor_barrio" readonly aria-label="Barrio del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-8">
                                     <label for="lblIdentificacionEmisor">Otras señas</label>
-                                    <input type="text" class="form-control" id="txtOtrasSenasEmisorId" placeholder="Mostrar otras señas" readonly aria-label="Otras señas del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtOtrasSenasEmisorId" name="otrasSenasEmisor" [(ngModel)]="datosXML.emisor_otras_senas" readonly aria-label="Otras señas del emisor" aria-describedby="pendiente" />
                                 </div>
                             </div>
                             <div class="row justify-content-end">
@@ -93,8 +93,12 @@
             </div>
         </div>
     </div>
+
+    <br>
     <div class="header-title">
-        <h5>Datos del receptor</h5>
+        <div class="divider">
+            <h5>Datos del receptor</h5>
+        </div>
     </div>
 
     <div class="container card p-3">
