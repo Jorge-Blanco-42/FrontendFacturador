@@ -12,7 +12,8 @@
                 <label for="lblNombreRazonSocialEmisor">Nombre o Razon Social</label>
 
                 <div class="input-group">
-                    <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" name="nombreRazonSocialEmisor" [(ngModel)]="datosXML.emisor_nombre"  readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente" />
+                    <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" name="nombreRazonSocialEmisor" [(ngModel)]="datosXML.emisor_nombre" readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente"
+                    />
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary" (click)="collapse.toggle()">
                             VER DATOS
@@ -28,7 +29,7 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblNombreComercialEmisor">Nombre Comercial</label>
-                                    <input type="text" class="form-control" id="txtNombreComercialEmisorId" name="nombreComercialEmisor" [(ngModel)]="datosXML.nombre_comercial"  readonly aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtNombreComercialEmisorId" name="nombreComercialEmisor" [(ngModel)]="datosXML.nombre_comercial" readonly aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblIdentificacionEmisor">Identificación</label>
@@ -155,22 +156,31 @@
         <div class="row">
             <div class="col-md-4 py-3 mt-4 form-item">
                 <p class="d-inline pr-3">Tipo de moneda: </p>
-                <div class="custom-control custom-radio d-inline px-4">
-                    <input type="radio" id="colones" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="CRC">
+                <div class="custom-control custom-radio d-inline-block px-4">
+                    <input class="pl-3" type="radio" id="colones" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="CRC">
                     <label class="custom-control-label" for="colones">Colones</label>
                 </div>
-                <div class="custom-control custom-radio d-inline px-4">
-                    <input type="radio" id="dolares" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="USD">
+                <div class="custom-control custom-radio d-inline-block px-4">
+                    <input class="pl-3" type="radio" id="dolares" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="USD">
                     <label class="custom-control-label" for="dolares">Dólares</label>
                 </div>
             </div>
-            <div class="col-md-4 form-item" *ngIf="datosXML.cod_moneda === 'USD'">
+            <div class="col-md-4  form-item" *ngIf="datosXML.cod_moneda === 'USD'">
                 <div class="form-group mb-0">
                     <label for="plazo">Tipo de cambio:</label>
                     <input type="text" class="form-control" id="cambio" placeholder="" name="cambio" [(ngModel)]="datosXML.tipo_cambio">
                 </div>
             </div>
+            <div class="col-md-4  form-item" *ngIf="datosXML.cod_moneda === 'USD'">
+                <label for="picker">Fecha:</label><br>
+                <mat-form-field class="" color="#7E57C2" appearance="fill">
+                    <mat-label></mat-label>
+                    <input matInput [matDatepicker]="picker" (dateChange)="cambioFecha($event)" [max]="maxDate" disabled>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker disabled="false"></mat-datepicker>
+                </mat-form-field>
+            </div>
         </div>
     </div>
-    <button type="submit">a</button>
+    <button type="submit ">a</button>
 </form>

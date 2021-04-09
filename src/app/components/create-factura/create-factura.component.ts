@@ -10,6 +10,8 @@ import { ClaveXML } from '../../models/claveXML';
 import { TipoCambio } from '../../models/tipoCambio';
 import { ServicioTipoCambio } from '../../services/tipoCambioXML';
 import { DatePipe } from '@angular/common'
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+
 
 @Component({
   selector: 'app-create-factura',
@@ -24,6 +26,7 @@ export class CreateFacturaComponent implements OnInit {
   public datosXML: CreacionXML;
   public cambio: TipoCambio;
   public tipo_cambio: Number;
+  public maxDate = new Date();
 
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio) {
@@ -38,7 +41,20 @@ export class CreateFacturaComponent implements OnInit {
   ngOnInit(): void {
     this.datosXML.condicion_venta = "Contado";
     this.datosXML.medio_pago = "Efectivo";
-    var fecha = new Date();
+    this.actualizarTipoCambio(this.maxDate);
+  }
+
+  enviar(form: any): void {
+    console.log(form);
+  }
+
+  cambioFecha(event: MatDatepickerInputEvent<Date>) {
+    if (event.value) {
+      this.actualizarTipoCambio(event.value);
+    }
+  }
+
+  actualizarTipoCambio(fecha: Date) {
     let latest_date = this.datepipe.transform(fecha, 'yyyy-MM-dd');
     console.log(latest_date);
     let arrayfecha = [];
@@ -58,12 +74,6 @@ export class CreateFacturaComponent implements OnInit {
         console.log(<any>error)
       }
     );
-
-
-  }
-
-  enviar(form: any): void {
-    console.log(form);
   }
 
 }

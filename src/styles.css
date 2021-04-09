@@ -1,16 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
-
-html,
-body {
-    height: 100%;
-    background-color: #FDFDFD;
-}
-
-
-/* body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
-
-
-/* 
+    /* You can add global styles to this file, and also import other style files */
+    
+    html,
+    body {
+        height: 100%;
+        background-color: #FDFDFD;
+    }
+    /* body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+    /* 
 .main-button {
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
@@ -37,82 +33,122 @@ body {
     border-radius: 20px;
     text-decoration: none;
  } */
-
-.btn-outline-secondary {
-    color: #18227C;
-    border-color: #18227C;
-}
-
-.btn-outline-secondary:hover {
-    background: #18227C;
-    border-color: #18227C;
-}
-
-.header-title {
-    text-align: center;
-    /* background: #dbdbdb; */
-    /* background: #ffffff; */
-    padding: 1%;
-    margin-bottom: 1.5%;
-}
-
-
-/* This is the checked state */
-
-.custom-radio .custom-control-input:checked~.custom-control-label::before,
-.custom-radio .custom-control-input:checked~.custom-control-label::after {
-    background-color: #B085F5;
-    background-image: url(data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E);
-    border-radius: 50%;
-}
-
-
-/* active state i.e. displayed while the mouse is being pressed down */
-
-.custom-radio .custom-control-input:active~.custom-control-label::before {
-    color: #fff;
-    background-color: #B085F5;
-    /* red */
-}
-
-
-/* the shadow; displayed while the element is in focus */
-
-.custom-radio .custom-control-input:focus~.custom-control-label::before {
-    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem #7E57C2;
-    /* pink, 25% opacity */
-}
-
-.form-item {
-    padding-top: 5px;
-    padding-bottom: 15px;
-}
-
-.divider {
-    color: #18227C;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.divider::before,
-.divider::after {
-    content: '';
-    display: block;
-    height: 0.09em;
-    min-width: 20vw;
-}
-
-.divider::before {
-    background: linear-gradient(to right, rgba(240, 240, 240, 0), #18227C);
-    margin-right: 4vh;
-}
-
-.divider::after {
-    background: linear-gradient(to left, rgba(240, 240, 240, 0), #18227C);
-    margin-left: 4vh;
-}
-
-.card{
-    background-color: #FDFDFD;
-}
+    
+    .btn-outline-secondary {
+        color: #18227C;
+        border-color: #18227C;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: #18227C;
+        border-color: #18227C;
+    }
+    
+    .header-title {
+        text-align: center;
+        /* background: #dbdbdb; */
+        /* background: #ffffff; */
+        padding: 1%;
+        margin-bottom: 1.5%;
+    }
+    
+    .form-item {
+        padding-top: 5px;
+        padding-bottom: 15px;
+    }
+    
+    .divider {
+        color: #18227C;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .divider::before,
+    .divider::after {
+        content: '';
+        display: block;
+        height: 0.09em;
+        min-width: 20vw;
+    }
+    
+    .divider::before {
+        background: linear-gradient(to right, rgba(240, 240, 240, 0), #18227C);
+        margin-right: 4vh;
+    }
+    
+    .divider::after {
+        background: linear-gradient(to left, rgba(240, 240, 240, 0), #18227C);
+        margin-left: 4vh;
+    }
+    
+    .card {
+        background-color: #FDFDFD;
+    }
+    
+    .mat-button,
+    .mat-icon-button,
+    .mat-stroked-button {
+        color: #7E57C2;
+    }
+    
+    .mat-form-field-appearance-fill .mat-form-field-flex {
+        background-color: #FDFDFD !important;
+    }
+    
+    .mat-input-element:disabled,
+    .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+        color: #495057;
+    }
+    
+    mat-label {
+        color: black;
+    }
+    
+    .mat-form-field-appearance-fill.mat-form-field-disabled .mat-form-field-flex {
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+    }
+    
+    .mat-form-field-appearance-fill .mat-form-field-flex {
+        padding: 0px !important;
+    }
+    
+    .mat-form-field-flex {
+        width: 60% !important;
+    }
+    
+    .mat-input-element {
+        font-size: 12pt !important;
+        padding-bottom: 6% !important;
+        text-align: center !important;
+    }
+    
+    .mat-form-field-infix {
+        font-size: 10pt !important;
+    }
+    
+    .mat-form-field-appearance-fill .mat-form-field-infix {
+        padding: 0 !important;
+    }
+    
+    .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon-button,
+    .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button {
+        height: 1.4em !important;
+    }
+    
+    .custom-radio .custom-control-input:checked~.custom-control-label::before,
+    .custom-radio .custom-control-input:checked~.custom-control-label::after {
+        background-color: #B085F5;
+        background-image: url(data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E);
+        border-radius: 50%;
+    }
+    
+    .custom-radio .custom-control-input:active~.custom-control-label::before {
+        color: #fff;
+        background-color: #B085F5;
+    }
+    
+    .custom-radio .custom-control-input:focus~.custom-control-label::before {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem #7E57C2;
+    }
