@@ -99,7 +99,7 @@
 
     <div class="container card p-3">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 form-item">
                 <label for="metodos">Método de pago</label>
                 <select class="form-control custom-select" name="metodos" id="metodos" [(ngModel)]="datosXML.medio_pago">
                     <option value="Efectivo" selected>Efectivo</option>
@@ -110,7 +110,7 @@
                     <option value="Otros">Otros</option>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 form-item">
                 <label for="condiciones">Condición de venta</label>
                 <select class="form-control custom-select mb-3" name="condiciones" id="condiciones" [(ngModel)]="datosXML.condicion_venta">
                     <option value="Contado" selected>Contado</option>
@@ -127,7 +127,7 @@
                     <option value="Otros">Otros</option>
                 </select>
             </div>
-            <div class="col-md-4 ">
+            <div class="col-md-4 form-item">
                 <div class="form-group mb-0" *ngIf="datosXML.condicion_venta === 'Crédito'">
                     <label for="plazo">Plazo del crédito:</label>
                     <input type="text" class="form-control" id="plazo" placeholder="" name="plazo">
@@ -135,13 +135,13 @@
             </div>
         </div>
         <div class="row" *ngIf="datosXML.condicion_venta === 'Otros' || datosXML.medio_pago === 'Otros'">
-            <div class="col-md-4 ">
+            <div class="col-md-4 form-item">
                 <div class="form-group mb-0" *ngIf="datosXML.medio_pago === 'Otros'">
                     <label for="detalleCondicion">Detalle método pago:</label>
                     <input type="text" class="form-control" id="detalleCondicion" placeholder="" name="detalleCondicion">
                 </div>
             </div>
-            <div class="col-md-4 ">
+            <div class="col-md-4 form-item">
                 <div class="form-group " *ngIf="datosXML.condicion_venta === 'Otros'">
                     <label for="detalleVenta">Detalle condición de venta:</label>
                     <input type="text" class="form-control" id="detalleVenta" placeholder="" name="detalleVenta">
@@ -149,7 +149,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4 py-3 mt-4">
+            <div class="col-md-4 py-3 mt-4 form-item">
                 <p class="d-inline pr-3">Tipo de moneda: </p>
                 <div class="custom-control custom-radio d-inline px-4">
                     <input type="radio" id="colones" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="CRC">
@@ -160,7 +160,7 @@
                     <label class="custom-control-label" for="dolares">Dólares</label>
                 </div>
             </div>
-            <div class="col-md-4" *ngIf="datosXML.cod_moneda === 'USD'">
+            <div class="col-md-4 form-item" *ngIf="datosXML.cod_moneda === 'USD'">
                 <div class="form-group mb-0">
                     <label for="plazo">Tipo de cambio:</label>
                     <input type="text" class="form-control" id="cambio" placeholder="" name="cambio" [(ngModel)]="datosXML.tipo_cambio">

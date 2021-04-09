@@ -16,7 +16,7 @@ export class ServicioTipoCambio {
         this.url = Global.tipoCambioAPI;
     }
 
-    getTipoCambio(tipoCambio: TipoCambio){  
+    getTipoCambio(tipoCambio: TipoCambio) : Observable<any>{  
         var address = this.url+tipoCambio.dia+'/'+tipoCambio.mes+'/'+tipoCambio.año;
         return this._http.get(address);
 
