@@ -50,9 +50,10 @@ body {
 
 .header-title {
     text-align: center;
-    background: #dbdbdb;
+    /* background: #dbdbdb; */
+    /* background: #ffffff; */
     padding: 1%;
-    margin-bottom: 2%;
+    margin-bottom: 1.5%;
 }
 
 
@@ -80,4 +81,34 @@ body {
 .custom-radio .custom-control-input:focus~.custom-control-label::before {
     box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem #7E57C2;
     /* pink, 25% opacity */
+}
+
+.form-item {
+    padding-top: 5px;
+    padding-bottom: 15px;
+}
+
+.divider {
+    color: #18227C;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    display: block;
+    height: 0.09em;
+    min-width: 20vw;
+}
+
+.divider::before {
+    background: linear-gradient(to right, rgba(240, 240, 240, 0), #18227C);
+    margin-right: 4vh;
+}
+
+.divider::after {
+    background: linear-gradient(to left, rgba(240, 240, 240, 0), #18227C);
+    margin-left: 4vh;
 }
