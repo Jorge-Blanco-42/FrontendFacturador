@@ -1,10 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { 
+html,
+body {
     height: 100%;
     background-color: #FDFDFD;
- }
+}
+
+
 /* body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+
+
 /* 
 .main-button {
     -webkit-border-radius: 20px;
@@ -33,7 +38,7 @@ html, body {
     text-decoration: none;
  } */
 
- .btn-outline-secondary {
+.btn-outline-secondary {
     color: #18227C;
     border-color: #18227C;
 }
@@ -43,9 +48,36 @@ html, body {
     border-color: #18227C;
 }
 
-.header-title{
+.header-title {
     text-align: center;
     background: #dbdbdb;
     padding: 1%;
     margin-bottom: 2%;
+}
+
+
+/* This is the checked state */
+
+.custom-radio .custom-control-input:checked~.custom-control-label::before,
+.custom-radio .custom-control-input:checked~.custom-control-label::after {
+    background-color: #B085F5;
+    background-image: url(data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E);
+    border-radius: 50%;
+}
+
+
+/* active state i.e. displayed while the mouse is being pressed down */
+
+.custom-radio .custom-control-input:active~.custom-control-label::before {
+    color: #fff;
+    background-color: #B085F5;
+    /* red */
+}
+
+
+/* the shadow; displayed while the element is in focus */
+
+.custom-radio .custom-control-input:focus~.custom-control-label::before {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem #7E57C2;
+    /* pink, 25% opacity */
 }
