@@ -1,4 +1,4 @@
-<form #myForm="ngForm" (submit)="enviar(datosXML)">
+<form #myForm="ngForm" (submit)="enviar(datosXML)" >
     <div class="header-title">
         <!-- <h5>Datos del emisor</h5> -->
         <div class="divider">
@@ -12,7 +12,7 @@
                 <label for="lblNombreRazonSocialEmisor">Nombre o Razon Social</label>
 
                 <div class="input-group">
-                    <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" name="nombreRazonSocialEmisor" [(ngModel)]="datosXML.emisor_nombre"  readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente" />
+                    <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" name="nombreRazonSocialEmisor" [(ngModel)]="datosXML.emisor_nombre" readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente" />
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary" (click)="collapse.toggle()">
                             VER DATOS
@@ -28,43 +28,43 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblNombreComercialEmisor">Nombre Comercial</label>
-                                    <input type="text" class="form-control" id="txtNombreComercialEmisorId" name="nombreComercialEmisor" [(ngModel)]="datosXML.nombre_comercial"  readonly aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtNombreComercialEmisorId" name="nombreComercialEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.nombre_comercial" aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblIdentificacionEmisor">Identificación</label>
-                                    <input type="text" class="form-control" id="txtIdentificacionEmisorId" name="identificacionEmisor" [(ngModel)]="datosXML.emisor_num_identif" readonly aria-label="Identificación del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtIdentificacionEmisorId" name="identificacionEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_num_identif" aria-label="Identificación del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblCorreoEmisor">Correo electrónico</label>
-                                    <input type="text" class="form-control" id="txtCorreoEmisorId" name="correoEmisor" [(ngModel)]="datosXML.emisor_email" readonly aria-label="Correo electrónico del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtCorreoEmisorId" name="correoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_email" aria-label="Correo electrónico del emisor" aria-describedby="pendiente" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblTelefonoEmisor">Teléfono</label>
-                                    <input type="text" class="form-control" id="txtTelefonoEmisorId" name="telefonoEmisor" [(ngModel)]="datosXML.emisor_tel" readonly aria-label="Teléfono del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtTelefonoEmisorId" name="telefonoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_tel" aria-label="Teléfono del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblFaxEmisor">Fax</label>
-                                    <input type="text" class="form-control" id="txtFaxEmisorId" name="faxEmisor" [(ngModel)]="datosXML.emisor_fax" readonly aria-label="Fax del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtFaxEmisorId" name="faxEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_fax" aria-label="Fax del emisor" aria-describedby="pendiente" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblProvinciaEmisor">Provincia</label>
-                                    <select class="form-control" id="cmbProvinciaEmisorId" name="provinciaEmisor" [(ngModel)]="datosXML.emisor_provincia" readonly>
+                                    <select class="form-control" id="cmbProvinciaEmisorId" name="provinciaEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia" >
                                         <option>San José</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblCantonEmisor">Cantón</label>
-                                    <select class="form-control" id="cmbCantonEmisorId" name="cantonEmisor" [(ngModel)]="datosXML.emisor_canton" readonly>
+                                    <select class="form-control" id="cmbCantonEmisorId" name="cantonEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton" >
                                         <option>Alajuelita</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="lblDistritoEmisor">Distrito</label>
-                                    <select class="form-control" id="cmbDistritoEmisorId" name="distritoEmisor" [(ngModel)]="datosXML.emisor_distrito" readonly>
+                                    <select class="form-control" id="cmbDistritoEmisorId" name="distritoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito" >
                                         <option>Concepción</option>
                                     </select>
                                 </div>
@@ -72,20 +72,29 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="lblBarrioEmisor">Barrio</label>
-                                    <input type="text" class="form-control" id="txtBarrioEmisorId" name="barrioEmisor" [(ngModel)]="datosXML.emisor_barrio" readonly aria-label="Barrio del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtBarrioEmisorId" name="barrioEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio" aria-label="Barrio del emisor" aria-describedby="pendiente" />
                                 </div>
                                 <div class="form-item col-md-8">
                                     <label for="lblIdentificacionEmisor">Otras señas</label>
-                                    <input type="text" class="form-control" id="txtOtrasSenasEmisorId" name="otrasSenasEmisor" [(ngModel)]="datosXML.emisor_otras_senas" readonly aria-label="Otras señas del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="txtOtrasSenasEmisorId" name="otrasSenasEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_otras_senas" aria-label="Otras señas del emisor" aria-describedby="pendiente" />
                                 </div>
                             </div>
-                            <div class="row justify-content-end">
+                            <div class="row justify-content-end" *ngIf="emisorDeshabilitado">
                                 <div class="form-item col-auto">
-                                    <button type="button" class="btn btn-outline-secondary">
+                                    <button type="button" (click)="modificar()" class="btn btn-outline-secondary"> 
                                         MODIFICAR
                                     </button>
                                 </div>
-
+                            </div>
+                            <div class="row justify-content-end" *ngIf="!emisorDeshabilitado">
+                                <div class="form-item col-auto">
+                                    <button type="button" (click)="guardar()" class="btn btn-outline-secondary"> 
+                                        GUARDAR
+                                    </button>
+                                    <button type="button" (click)="cancelar()" class="btn btn-outline-secondary"> 
+                                        CANCELAR
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

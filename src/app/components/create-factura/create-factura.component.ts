@@ -11,6 +11,7 @@ import { TipoCambio } from '../../models/tipoCambio';
 import { ServicioTipoCambio } from '../../services/tipoCambioXML';
 import { DatePipe } from '@angular/common'
 
+
 @Component({
   selector: 'app-create-factura',
   templateUrl: './create-factura.component.html',
@@ -19,7 +20,9 @@ import { DatePipe } from '@angular/common'
 })
 export class CreateFacturaComponent implements OnInit {
 
+
   public isCollapsedEmisorData = true;
+  public emisorDeshabilitado = true;
   public moneda = "dólares";
   public datosXML: CreacionXML;
   public cambio: TipoCambio;
@@ -34,6 +37,7 @@ export class CreateFacturaComponent implements OnInit {
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
   }
+
 
   ngOnInit(): void {
     this.datosXML.condicion_venta = "Contado";
@@ -64,6 +68,18 @@ export class CreateFacturaComponent implements OnInit {
 
   enviar(form: any): void {
     console.log(form);
+  }
+
+  modificar(){
+    this.emisorDeshabilitado = false;
+  }
+
+  cancelar(){
+    this.emisorDeshabilitado = true;
+  }
+
+  guardar(){
+    console.log("PENDIENTE")
   }
 
 }
