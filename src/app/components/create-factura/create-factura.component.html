@@ -213,7 +213,7 @@
                     <tr *ngFor="let linea of lineas; let i = index">
                         <th scope="row">
                             <input type="text" [(ngModel)]="linea.producto" class="form-control has-search" placeholder="Buscar" [formControl]="this.control" [matAutocomplete]="auto">
-                            <mat-autocomplete #auto="matAutocomplete">
+                            <mat-autocomplete [panelWidth]="600" #auto="matAutocomplete">
                                 <mat-option *ngFor="let street of filteredStreets | async" [value]="street">
                                     {{street}}
                                 </mat-option>
