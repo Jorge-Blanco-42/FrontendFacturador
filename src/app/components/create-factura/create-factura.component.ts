@@ -11,7 +11,11 @@ import { TipoCambio } from '../../models/tipoCambio';
 import { ServicioTipoCambio } from '../../services/tipoCambioXML';
 import { DatePipe } from '@angular/common'
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-
+import { FormBuilder, FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
+import { Linea } from 'src/app/models/linea';
+import { OtroCargo } from 'src/app/models/otroCargo';
 
 @Component({
   selector: 'app-create-factura',
@@ -27,7 +31,11 @@ export class CreateFacturaComponent implements OnInit {
   public cambio: TipoCambio;
   public tipo_cambio: Number;
   public maxDate = new Date();
-
+  public lineas: Linea[] = [];
+  public otrosCargos: OtroCargo[] = [];
+  control = new FormControl();
+  streets: string[] = ['Champs-Élysées', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue'];
+  filteredStreets: Observable<string[]>;
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio) {
     this.datosXML = new CreacionXML("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
@@ -36,12 +44,25 @@ export class CreateFacturaComponent implements OnInit {
       "", "", "");
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
+    this.filteredStreets = this.control.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
   }
 
   ngOnInit(): void {
     this.datosXML.condicion_venta = "Contado";
     this.datosXML.medio_pago = "Efectivo";
     this.actualizarTipoCambio(this.maxDate);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = this._normalizeValue(value);
+    return this.streets.filter(street => this._normalizeValue(street).includes(filterValue));
+  }
+
+  private _normalizeValue(value: string): string {
+    return value.toLowerCase().replace(/\s/g, '');
   }
 
   enviar(form: any): void {
@@ -76,4 +97,19 @@ export class CreateFacturaComponent implements OnInit {
     );
   }
 
+  nuevoCargo() {
+    this.otrosCargos.push(new OtroCargo("", "", "", "", "", "", ""));
+  }
+
+  borrarCargo(index: number) {
+    this.otrosCargos.splice(index, 1);
+  }
+
+  nuevaLinea() {
+    this.lineas.push(new Linea("", "", "", "", "", "", "", "", "", "",""));
+  }
+
+  borrarLinea(index: number) {
+    this.lineas.splice(index, 1)
+  }
 }

@@ -152,3 +152,41 @@
     .custom-radio .custom-control-input:focus~.custom-control-label::before {
         box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem #7E57C2;
     }
+    
+    .fa .fa-trash {
+        color: #18227C;
+        font-size: 20pt;
+    }
+    
+    .header {
+        background: #18227C;
+        color: white;
+    }
+    
+    .w-95 {
+        width: 95%;
+    }
+    
+    .grande {
+        width: 250px;
+    }
+    
+    .mediano {
+        width: 125px;
+    }
+    
+    .invisible {
+        background: transparent;
+        border: 0px transparent;
+        display: none;
+    }
+    
+    th,
+    td {
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+    }
+    
+    td .btn {
+        margin-left: 30%;
+    }
