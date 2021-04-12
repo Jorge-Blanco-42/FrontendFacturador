@@ -128,4 +128,9 @@ export class CreateFacturaComponent implements OnInit {
   borrarLinea(index: number) {
     this.lineas.splice(index, 1)
   }
+
+  toggle(){
+      this.isCollapsedEmisorData = !this.isCollapsedEmisorData;
+      this.emisorDeshabilitado = true;
+  }
 }
