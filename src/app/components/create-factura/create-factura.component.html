@@ -164,22 +164,148 @@
         <div class="row">
             <div class="col-md-4 py-3 mt-4 form-item">
                 <p class="d-inline pr-3">Tipo de moneda: </p>
-                <div class="custom-control custom-radio d-inline px-4">
-                    <input type="radio" id="colones" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="CRC">
+                <div class="custom-control custom-radio d-inline-block px-4">
+                    <input class="pl-3" type="radio" id="colones" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="CRC">
                     <label class="custom-control-label" for="colones">Colones</label>
                 </div>
-                <div class="custom-control custom-radio d-inline px-4">
-                    <input type="radio" id="dolares" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="USD">
+                <div class="custom-control custom-radio d-inline-block px-4">
+                    <input class="pl-3" type="radio" id="dolares" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="USD">
                     <label class="custom-control-label" for="dolares">Dólares</label>
                 </div>
             </div>
-            <div class="col-md-4 form-item" *ngIf="datosXML.cod_moneda === 'USD'">
+            <div class="col-md-4  form-item" *ngIf="datosXML.cod_moneda === 'USD'">
                 <div class="form-group mb-0">
                     <label for="plazo">Tipo de cambio:</label>
                     <input type="text" class="form-control" id="cambio" placeholder="" name="cambio" [(ngModel)]="datosXML.tipo_cambio">
                 </div>
             </div>
+            <div class="col-md-4  form-item" *ngIf="datosXML.cod_moneda === 'USD'">
+                <label for="picker">Fecha:</label><br>
+                <mat-form-field class="" color="#7E57C2" appearance="fill">
+                    <mat-label></mat-label>
+                    <input matInput [matDatepicker]="picker" (dateChange)="cambioFecha($event)" [max]="maxDate" disabled>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker disabled="false"></mat-datepicker>
+                </mat-form-field>
+            </div>
         </div>
     </div>
-    <button type="submit">a</button>
+
+    <br>
+    <div class="header-title">
+        <div class="divider">
+            <h5>Lineas de detalle</h5>
+        </div>
+    </div>
+
+    <div class="card p-3 w-95 m-auto">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="header">
+                    <tr class="text-center">
+                        <th scope="col" class="">Producto</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col" class="mediano">Tipo</th>
+                        <th scope="col">Precio Unitario</th>
+                        <th scope="col">Descuento</th>
+                        <th scope="col" class="">Razón</th>
+                        <th scope="col" class="">Impuestos</th>
+                        <th scope="col" class="px-2">Base</th>
+                        <th scope="col" class="px-2">Tarifa</th>
+                        <th scope="col" class="px-3">Subtotal</th>
+                        <th scope="col" class="px-3">Total</th>
+                        <th scope="col" class="px-3">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let linea of lineas; let i = index">
+                        <th scope="row">
+                            <input type="text" [(ngModel)]="linea.producto" class="form-control has-search" placeholder="Buscar" [formControl]="this.control" [matAutocomplete]="auto">
+                            <mat-autocomplete #auto="matAutocomplete">
+                                <mat-option *ngFor="let street of filteredStreets | async" [value]="street">
+                                    {{street}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </th>
+                        <td><input type="number" class="form-control" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}"></select></td>
+                        <td><input type="number" class="form-control" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input type="number" class="form-control" placeholder="1" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input *ngIf="linea.descuento != ''" type="text" class="form-control" placeholder="1" [(ngModel)]="linea.razon" [ngModelOptions]="{standalone: true}"></td>
+                        <td><select class="form-control custom-select" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}">
+                            <option value="01-01">IVA exento</option>
+                            <option value="01-02">IVA reducido 1%</option>
+                            <option value="01-03">IVA reducido 2%</option>
+                            <option value="01-04">IVA reducido 4%</option>
+                            <option value="01-05">IVA transitorio 0%</option>
+                            <option value="01-06">IVA transitorio 2%</option>
+                            <option value="01-07">IVA transitorio 4%</option>
+                            <option value="01-08" selected>IVA 13%</option>
+                            <option value="07">IVA (cálculo especial)</option>
+                            <option value="08">IVA Régimen de Bienes Usados (Factor)</option>
+                        </select></td>
+                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}"></td>
+                        <td class="pt-3">₡{{linea.subtotal}}</td>
+                        <td class="pt-3">₡{{linea.total}}</td>
+                        <td><button type="button" class="btn" (click)="borrarLinea(i);"><i class="fa fa-trash"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevaLinea();">
+            AGREGAR
+        </button>
+    </div>
+    <br>
+    <div class="header-title">
+        <div class="divider">
+            <h5>Otros cargos</h5>
+        </div>
+    </div>
+
+    <div class="card p-3 w-95 m-auto">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="header">
+                    <tr class="text-center">
+                        <th scope="col" class="grande">Tipo de documento</th>
+                        <th scope="col">Detalle</th>
+                        <th scope="col" class="mediano">Porcentaje</th>
+                        <th scope="col">Tipo de identificación</th>
+                        <th scope="col">Identificación</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col" class="mediano">Monto</th>
+                        <th scope="col" class="px-3">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let cargo of otrosCargos; let i = index">
+                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}">
+                            <option value="Cobro de un tercero">Cobro de un tercero</option>
+                            <option value="Impuesto de servicio 10%">Impuesto de servicio 10%</option>
+                            <option value="Otros cargos">Otros cargos</option>
+                        </select></th>
+                        <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input type="text" class="form-control" [(ngModel)]="cargo.porcentaje" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}"></select></td>
+                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
+                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
+                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
+                        <td><input type="text" class="form-control" [(ngModel)]="cargo.monto" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td><button type="button" (click)="borrarCargo(i);" class="btn"><i class="fa fa-trash"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevoCargo();">
+            AGREGAR
+        </button>
+    </div>
+
+
+    <button type="submit ">a</button>
 </form>
