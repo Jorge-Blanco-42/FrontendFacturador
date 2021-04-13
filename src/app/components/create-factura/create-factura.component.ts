@@ -147,7 +147,7 @@ export class CreateFacturaComponent implements OnInit {
   }
 
   nuevaLinea() {
-    this.lineas.push(new Linea("", 0, "", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
+    this.lineas.push(new Linea("", 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
   }
 
   borrarLinea(index: number) {

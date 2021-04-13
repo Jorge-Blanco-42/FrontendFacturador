@@ -220,7 +220,26 @@
                             </mat-autocomplete>
                         </th>
                         <td><input type="number" class="form-control" (change)="calcularTotales(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
-                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}"></select></td>
+                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}">
+                            <option value="Al">Alquiler de uso habitacional</option>
+                            <option value="Alc">Alquiler de uso comercial</option>
+                            <option value="Cm">Comisiones</option>
+                            <option value="g">Gramo</option>
+                            <option value="I">Intereses</option>
+                            <option value="L">Litro</option>
+                            <option value="m">Metro</option>
+                            <option value="m2">Metro cuadrado</option>
+                            <option value="mL">Mililitro</option>
+                            <option value="mm">Milímetro</option>
+                            <option value="Oz">Onzas</option>                            
+                            <option value="ln">Pulgada</option>
+                            <option value="Sp" selected>Servicios Profesionales</option>
+                            <option value="St">Servicios técnicos</option>  
+                            <option value="t">Tonelada</option>
+                            <option value="W">Watt</option>
+                            <option value="Os">Otro tipo de servicio</option>
+                            <option value="Otros">Otros</option>
+                        </select></td>
                         <td><input type="number" class="form-control" (change)="calcularTotales(linea)" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}"></td>
                         <td>
                             <div class="input-group">
