@@ -16,6 +16,29 @@ import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
+import {MatTableDataSource} from '@angular/material/table';
+
+//inicio mary
+export interface PeriodicElement {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+}
+
+const ELEMENT_DATA: PeriodicElement[] = [
+  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
+  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
+  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
+  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
+  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
+  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
+  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
+  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
+  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+];
+//fin mary
 
 @Component({
   selector: 'app-create-factura',
@@ -25,8 +48,13 @@ import { OtroCargo } from 'src/app/models/otroCargo';
 })
 export class CreateFacturaComponent implements OnInit {
 
-  impuestoTarifa: Map<string, number>;
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  dataSource = new MatTableDataSource(ELEMENT_DATA);
+
   public isCollapsedEmisorData = true;
+  public emisorDeshabilitado = true;
+  public tipoReceptor: String;
+  impuestoTarifa: Map<string, number>;
   public datosXML: CreacionXML;
   public cambio: TipoCambio;
   public tipo_cambio: Number;
@@ -44,6 +72,7 @@ export class CreateFacturaComponent implements OnInit {
       "", "", "");
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
+    this.tipoReceptor = "";
     this.filteredStreets = this.control.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
@@ -60,6 +89,7 @@ export class CreateFacturaComponent implements OnInit {
     this.impuestoTarifa.set("07", 0);
     this.impuestoTarifa.set("08", 0);
   }
+
 
   ngOnInit(): void {
     this.datosXML.condicion_venta = "Contado";
@@ -78,6 +108,7 @@ export class CreateFacturaComponent implements OnInit {
 
   enviar(form: any): void {
     console.log(form);
+  
   }
 
   cambioFecha(event: MatDatepickerInputEvent<Date>) {
@@ -150,7 +181,29 @@ export class CreateFacturaComponent implements OnInit {
     this.lineas.push(new Linea("", 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
   }
 
+  modificar(){
+    this.emisorDeshabilitado = false;
+  }
+
+  cancelar(){
+    this.emisorDeshabilitado = true;
+  }
+
+  guardar(){
+    console.log("PENDIENTE")
+  }
+
   borrarLinea(index: number) {
     this.lineas.splice(index, 1)
+  }
+
+  toggle(){
+      this.isCollapsedEmisorData = !this.isCollapsedEmisorData;
+      this.emisorDeshabilitado = true;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
