@@ -30,7 +30,7 @@ export class CreateFacturaComponent implements OnInit {
   public isCollapsedEmisorData = true;
   public emisorDeshabilitado = true;
   public tipoReceptor: String;
-  public moneda = "dólares";
+  impuestoTarifa: Map<string, number>;
   public datosXML: CreacionXML;
   public cambio: TipoCambio;
   public tipo_cambio: Number;
@@ -53,6 +53,17 @@ export class CreateFacturaComponent implements OnInit {
       startWith(''),
       map(value => this._filter(value))
     );
+    this.impuestoTarifa = new Map();
+    this.impuestoTarifa.set("01-01", 0);
+    this.impuestoTarifa.set("01-02", 1.01);
+    this.impuestoTarifa.set("01-03", 1.02);
+    this.impuestoTarifa.set("01-04", 1.04);
+    this.impuestoTarifa.set("01-05", 0);
+    this.impuestoTarifa.set("01-06", 1.02);
+    this.impuestoTarifa.set("01-07", 1.04);
+    this.impuestoTarifa.set("01-08", 1.13);
+    this.impuestoTarifa.set("07", 0);
+    this.impuestoTarifa.set("08", 0);
   }
 
 
@@ -73,7 +84,7 @@ export class CreateFacturaComponent implements OnInit {
 
   enviar(form: any): void {
     console.log(form);
-    console.log(this.moneda);
+  
   }
 
   cambioFecha(event: MatDatepickerInputEvent<Date>) {
@@ -103,6 +114,36 @@ export class CreateFacturaComponent implements OnInit {
       }
     );
   }
+  actualizarTarifa(linea: Linea) {
+    let tarifa = this.impuestoTarifa.get(linea.impuesto);
+    console.log(tarifa);
+    if (tarifa != undefined){
+      linea.tarifa = tarifa;
+    }    
+    console.log(linea);
+  }
+
+  calcularTotales(linea: Linea) {
+    let subtotal = linea.cantidad * linea.precioUnitario
+    linea.subtotal = (subtotal).toString();
+    console.log(linea.porcentaje);
+    if (linea.porcentaje) {  
+      if(linea.tarifa != 0){
+        linea.total = (subtotal * linea.tarifa - (subtotal * (linea.descuento/100))).toString();
+      }   else{
+        linea.total = (subtotal - (subtotal * (linea.descuento/100))).toString();
+      }
+      
+    }else{
+      if(linea.tarifa != 0){
+        linea.total = (subtotal * linea.tarifa - linea.descuento).toString();
+      }else{
+        linea.total = (subtotal - linea.descuento).toString();
+      }
+      
+    }
+
+  }
 
   nuevoCargo() {
     this.otrosCargos.push(new OtroCargo("", "", "", "", "", "", ""));
@@ -113,7 +154,7 @@ export class CreateFacturaComponent implements OnInit {
   }
 
   nuevaLinea() {
-    this.lineas.push(new Linea("", "", "", "", "", "", "", "", "", "",""));
+    this.lineas.push(new Linea("", 0, "", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
   }
 
   modificar(){

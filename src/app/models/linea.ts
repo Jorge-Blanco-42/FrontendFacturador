@@ -2,14 +2,15 @@ export class Linea{
 
     constructor(
         public producto: string,
-        public cantidad: string,
+        public cantidad: number,
         public tipo: string,
-        public precioUnitario: string,
-        public descuento: string,
+        public precioUnitario: number,
+        public descuento: number,
         public razon: string,
         public impuesto: string,
-        public base: string,
-        public tarifa: string,
+        public porcentaje: boolean,
+        public base: number,
+        public tarifa: number,
         public subtotal: string,
         public total: string
         ){
