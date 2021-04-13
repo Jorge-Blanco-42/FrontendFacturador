@@ -106,7 +106,7 @@
         <div class="row">
             <div class="col-md-4 form-item">
                 <label for="metodos">Método de pago</label>
-                <select class="form-control custom-select" name="metodos" id="metodos" [(ngModel)]="datosXML.medio_pago">
+                <select class="form-control" name="metodos" id="metodos" [(ngModel)]="datosXML.medio_pago">
                     <option value="Efectivo" selected>Efectivo</option>
                     <option value="Tarjeta">Tarjeta</option>
                     <option value="Cheque">Cheque</option>
@@ -117,7 +117,7 @@
             </div>
             <div class="col-md-4 form-item">
                 <label for="condiciones">Condición de venta</label>
-                <select class="form-control custom-select mb-3" name="condiciones" id="condiciones" [(ngModel)]="datosXML.condicion_venta">
+                <select class="form-control mb-3" name="condiciones" id="condiciones" [(ngModel)]="datosXML.condicion_venta">
                     <option value="Contado" selected>Contado</option>
                     <option value="Crédito">Crédito</option>
                     <option value="Consignación">Consignación</option>
@@ -219,12 +219,26 @@
                                 </mat-option>
                             </mat-autocomplete>
                         </th>
-                        <td><input type="number" class="form-control" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input type="number" class="form-control" (change)="calcularTotales(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
                         <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}"></select></td>
-                        <td><input type="number" class="form-control" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}"></td>
-                        <td><input type="number" class="form-control" placeholder="1" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}"></td>
-                        <td><input *ngIf="linea.descuento != ''" type="text" class="form-control" placeholder="1" [(ngModel)]="linea.razon" [ngModelOptions]="{standalone: true}"></td>
-                        <td><select class="form-control custom-select" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}">
+                        <td><input type="number" class="form-control" (change)="calcularTotales(linea)" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}"></td>
+                        <td>
+                            <div class="input-group">
+                                <input type="number" class="form-control w-50" placeholder="1" (change)="calcularTotales(linea)" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)="linea.porcentaje = !linea.porcentaje; calcularTotales(linea);" checked="">
+                                            <label class="custom-control-label" for="porcentaje">%</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+
+                        <td><input *ngIf="linea.descuento > 0" type="text" class="form-control" [(ngModel)]="linea.razon" [ngModelOptions]="{standalone: true}"></td>
+                        <td><select class="form-control custom-select" (change)="actualizarTarifa(linea); calcularTotales(linea);" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}">
                             <option value="01-01">IVA exento</option>
                             <option value="01-02">IVA reducido 1%</option>
                             <option value="01-03">IVA reducido 2%</option>
@@ -236,10 +250,10 @@
                             <option value="07">IVA (cálculo especial)</option>
                             <option value="08">IVA Régimen de Bienes Usados (Factor)</option>
                         </select></td>
-                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}"></td>
-                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}"></td>
-                        <td class="pt-3">₡{{linea.subtotal}}</td>
-                        <td class="pt-3">₡{{linea.total}}</td>
+                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" (change)="calcularTotales(linea)" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" (ngModelChange)="calcularTotales(linea)" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}"></td>
+                        <td class="pt-3">₡{{linea.subtotal | number : '1.2-2' }}</td>
+                        <td class="pt-3">₡{{linea.total | number : '1.2-2' }}</td>
                         <td><button type="button" class="btn" (click)="borrarLinea(i);"><i class="fa fa-trash"></i></button></td>
                     </tr>
                 </tbody>

@@ -190,3 +190,19 @@
     td .btn {
         margin-left: 30%;
     }
+    
+    .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+        background-color: #B085F5!important;
+    }
+    
+    .custom-checkbox .custom-control-input:checked:focus~.custom-control-label::before {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem #7E57C2;
+    }
+    
+    .custom-checkbox .custom-control-input:focus~.custom-control-label::before {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem #7E57C2;
+    }
+    
+    .custom-checkbox .custom-control-input:active~.custom-control-label::before {
+        background-color: #B085F5;
+    }
