@@ -206,3 +206,10 @@
     .custom-checkbox .custom-control-input:active~.custom-control-label::before {
         background-color: #B085F5;
     }
+
+    #pruebaTabla {
+    width: 90%;
+    margin: auto;
+    }
+    
+    
