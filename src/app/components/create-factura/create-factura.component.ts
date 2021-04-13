@@ -29,6 +29,7 @@ export class CreateFacturaComponent implements OnInit {
 
   public isCollapsedEmisorData = true;
   public emisorDeshabilitado = true;
+  public tipoReceptor: String;
   public moneda = "dólares";
   public datosXML: CreacionXML;
   public cambio: TipoCambio;
@@ -47,6 +48,7 @@ export class CreateFacturaComponent implements OnInit {
       "", "", "");
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
+    this.tipoReceptor = "";
     this.filteredStreets = this.control.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
@@ -71,6 +73,7 @@ export class CreateFacturaComponent implements OnInit {
 
   enviar(form: any): void {
     console.log(form);
+    console.log(this.moneda);
   }
 
   cambioFecha(event: MatDatepickerInputEvent<Date>) {
