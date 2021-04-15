@@ -569,7 +569,7 @@
 
     <div class="container" id="tablaResumenFactura">
         <div class="card p-5 mt-3">
-            <div class="row">
+            <div class="row pb-2">
                 <div class="col-md-6 text-left">
                     <h4>Subtotal</h4>
                 </div>
@@ -577,7 +577,7 @@
                     <h5>₡ {{datosXML.total_ventas}}</h5>
                 </div>
             </div>
-            <div class="row">
+            <div class="row pb-2">
                 <div class="col-md-6 text-left">
                     <h4>Impuestos</h4>
                 </div>
@@ -585,7 +585,7 @@
                     <h5>₡ {{datosXML.total_impuestos}}</h5>
                 </div>
             </div>
-            <div class="row">
+            <div class="row pb-2">
                 <div class="col-md-6 text-left">
                     <h4>Otros cargos</h4>
                 </div>
@@ -594,7 +594,7 @@
                 </div>
             </div>
 
-            <div class="input-group-append">
+            <div class="pb-3">
                 <button type="button" class="btn btn-outline-secondary" (click)="toggleResumen()">
                     VER DETALLES
                 </button>
@@ -713,9 +713,22 @@
                 </div>
             </div>
 
+            <div class="row pt-4">
+                <div class="col-md-6 text-left">
+                    <h2>Total</h2>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h2>₡ {{datosXML.total_comprobante}}</h2>
+                </div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-outline-secondary"><h5>ENVIAR</h5></button>
+                </div>
+            </div>
 
         </div>
     </div>
 
-    <button type="submit ">a</button>
+    
 </form>
