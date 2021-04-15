@@ -6,7 +6,7 @@ export class Linea{
     constructor(
         public producto: string,
         public control: FormControl,
-        public filtro: Observable<string[]>,
+        public filtro: Observable<{descripcion: string, impuesto: string}[]>,
         public cantidad: number,
         public tipo: string,
         public precioUnitario: number,
