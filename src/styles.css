@@ -226,3 +226,15 @@
         margin: auto;
     }
 
+    #resumenTabla {
+        width: 100%;
+        margin: auto;
+    }
+
+    #tablaResumenFactura h4 {
+        color: #514AAC;
+    }
+
+    #tablaResumenFactura h6 {
+        color: #7357C2;
+    }

@@ -173,7 +173,7 @@
                     </tr>
 
                 </table>
-                <mat-paginator class="searchBar" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                <mat-paginator #clientesPaginator class="searchBar" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
             </div>
         </div>
         <div class="row" *ngIf="tipoReceptor === 'NUEVO' || clienteSeleccionado">
@@ -524,6 +524,204 @@
         </button>
     </div>
 
+    <br>
+    <div class="header-title">
+        <div class="divider">
+            <h5>Resumen</h5>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card p-3">
+            <table  id="resumenTabla" mat-table [dataSource]="dataSourceResumen" class="mat-elevation-z8">
+              
+                <!-- Position Column -->
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="productoLinea">
+                  <th class="header" mat-header-cell *matHeaderCellDef> Producto </th>
+                  <td mat-cell *matCellDef="let element"> {{element.producto}} </td>
+                </ng-container>
+
+                <!-- Weight Column -->
+                <ng-container matColumnDef="cantidadProductoLinea">
+                  <th class="header" mat-header-cell *matHeaderCellDef> Cantidad </th>
+                  <td mat-cell *matCellDef="let element"> {{element.cantidad}} </td>
+                </ng-container>
+
+                <!-- Symbol Column -->
+                <ng-container matColumnDef="totalLinea">
+                  <th class="header" mat-header-cell *matHeaderCellDef> Total </th>
+                  <td mat-cell *matCellDef="let element"> {{element.total}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsResumen"></tr>
+                
+                <!-- <mat-row  *matRowDef="let row; columns: displayedColumns;" (click)="getRecord(row)"></mat-row> -->
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsResumen;" (click)="getRecord(row)"></tr>
+
+                <!-- Row shown when there is no matching data. -->
+                
+              </table>
+              <mat-paginator #resumenPaginator class="searchBar" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+
+    <div class="container" id="tablaResumenFactura">
+        <div class="card p-5 mt-3">
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <h4>Subtotal</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h5>₡ 123456789</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <h4>Impuestos</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h5>₡ 123456789</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <h4>Otros cargos</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h5>₡ 123456789</h5>
+                </div>
+            </div>
+
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" (click)="toggleResumen()">
+                    VER DETALLES
+                </button>
+            </div>
+
+            <div>
+                <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedResumenData">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 text-left">
+                                    <h6>Descripción</h6>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <h6>Monto</h6>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Mercadería gravada</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row ">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Mercadería exenta</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row ">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Mercadería exonerada</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row ">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Servicios gravados</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row ">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Servicios exentos</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row ">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Servicios exonerados</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row ">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Total gravado</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row ">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Total exento</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row ">
+                                <div class="col-md-6 text-left">
+                                    <p class="mb-1">Total exonerado</p>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                            <hr class="m-0 p-1">
+                            <div class="row pt-3">
+                                <div class="col-md-2 text-right">
+                                    <h6 class="mb-1">Venta: </h6>
+                                </div>
+                                <div class="col-md-2 text-left">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <h6 class="mb-1">Descuento: </h6>
+                                </div>
+                                <div class="col-md-2 text-left">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <h6 class="mb-1">I.V.A. devuelto: </h6>
+                                </div>
+                                <div class="col-md-2 text-left">
+                                    <p class="mb-1">₡ 123456789</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
 
     <button type="submit ">a</button>
 </form>
