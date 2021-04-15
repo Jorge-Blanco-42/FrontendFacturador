@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
-import {MatTableDataSource} from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ViewChild } from '@angular/core';
 
@@ -76,14 +76,24 @@ export class CreateFacturaComponent implements OnInit {
   
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS) {
-    this.datosXML = new CreacionXML("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+      "", "", "CRC", "", "", "", "", "", "", "", "", "", "", "", "", "",
       "", "", "");
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
-    this.tipoReceptor = "";
+    this.tipoReceptor = "REGISTRADO";
     this.impuestoTarifa = new Map();
+
+  }
+
+
+  ngOnInit(): void {
+    this.datosXML.condicion_venta = "Contado";
+    this.datosXML.medio_pago = "Efectivo";
+    this.tipoReceptor = "REGISTRADO";
+    this.actualizarTipoCambio(this.maxDate);
+    this.getCabys();
     this.impuestoTarifa.set("01-01", 0);
     this.impuestoTarifa.set("01-02", 1.01);
     this.impuestoTarifa.set("01-03", 1.02);
@@ -94,17 +104,6 @@ export class CreateFacturaComponent implements OnInit {
     this.impuestoTarifa.set("01-08", 1.13);
     this.impuestoTarifa.set("07", 0);
     this.impuestoTarifa.set("08", 0);
-  }
-
-
-  ngOnInit(): void {
-    this.datosXML.condicion_venta = "Contado";
-    this.datosXML.medio_pago = "Efectivo";
-    this.tipoReceptor = "REGISTRADO";
-    this.actualizarTipoCambio(this.maxDate);
-    this.getCabys();
-    
-
   }
 
   @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
@@ -119,15 +118,15 @@ export class CreateFacturaComponent implements OnInit {
     
   }
 
-  private _filter(value: string): string[] {
+  private _filter(value: string): { descripcion: string, impuesto: string }[] {
     if(value){
       const filterValue = this._normalizeValue(value);
-      if(filterValue.length > 3){
-        return this.descripciones.filter(street => this._normalizeValue(street).includes(filterValue));
+      if (filterValue.length > 3) {
+        return this.cabys.filter(cabys => this._normalizeValue(cabys.descripcion).includes(filterValue));
       }
-      return this.descripciones.slice(0,50);
-    }else{
-      return this.descripciones.slice(0,50);
+      return this.cabys.slice(0, 50);
+    } else {
+      return this.cabys.slice(0, 50);
     }
     //return this.descripciones.filter(descripcion => this._normalizeValue(descripcion).includes(filterValue));
   }
@@ -204,26 +203,13 @@ export class CreateFacturaComponent implements OnInit {
     let cabysS = localStorage.getItem("cabys");
     if (cabysS) {
       this.cabys = JSON.parse(cabysS);
-      let descripcionesS = localStorage.getItem("descripciones");
-      if(descripcionesS){
-        this.descripciones = JSON.parse(descripcionesS);
-        console.log("cargado1", this.descripciones[0]);
-      }else{
-        this.cabys.forEach(element =>{
-          this.descripciones.push(element.descripcion);
-        });
-        console.log("cargado2", this.descripciones[0]);
-      }
+      let descripcionesS = localStorage.getItem("cabys");
     } else {
       this._servicioCaByS.getCaByS().subscribe(
         result => {
           this.cabys = result;
-          result.forEach((element: { impuesto: string, descripcion: string; }) => {
-            this.descripciones.push(element.descripcion);
-            //console.log(this.descripciones.length)
-          });
           localStorage.setItem("cabys", JSON.stringify(result))
-          localStorage.setItem("descripciones", JSON.stringify(this.descripciones))
+          localStorage.setItem("descripciones", JSON.stringify(this.cabys))
           console.log("traido", this.descripciones[0]);
         },
         error => {
@@ -252,19 +238,40 @@ export class CreateFacturaComponent implements OnInit {
     this.lineas.push(new Linea("", control, filtro, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
   }
 
-  modificarEmisor(){
+  setImpuesto(linea:Linea, cabys: { descripcion: string, impuesto: string }) {
+    let impuesto = cabys.impuesto;
+    switch (impuesto) {
+      case "1%":
+        linea.impuesto = "01-02"
+        break;
+      case "2%":
+        linea.impuesto = "01-03"
+        break;
+      case "4%":
+        linea.impuesto = "01-04"
+        break;
+      case "13%":
+        linea.impuesto = "01-08"
+        break;
+      default:
+        linea.impuesto = "01-01"
+        break;
+    }
+  }
+
+  modificarEmisor() {
     this.emisorDeshabilitado = false;
   }
 
-  cancelarEmisor(){
+  cancelarEmisor() {
     this.emisorDeshabilitado = true;
   }
 
-  guardarEmisor(){
+  guardarEmisor() {
     console.log("PENDIENTE")
   }
 
-  guardarReceptor(){
+  guardarReceptor() {
     console.log("PENDIENTE")
   }
 
@@ -288,37 +295,37 @@ export class CreateFacturaComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  getRecord(row: any){
+  getRecord(row: any) {
     this.clienteSeleccionado = true;
     this.datosXML.receptor_nombre = row.nombre;
     console.log(row);
   }
 
   // aqui hay algo raro.. TIPORECEPTOR AL REVES
-  seleccionarTipoCliente(){
+  seleccionarTipoCliente() {
     this.clienteSeleccionado = false;
     console.log(this.tipoReceptor);
-    if(this.tipoReceptor === "REGISTRADO"){
+    if (this.tipoReceptor === "REGISTRADO") {
       this.receptorDatosImportantes = false;
       this.receptorDeshabilitado = false;
       this.isCollapsedReceptorData = false;
       this.datosXML.receptor_nombre = "";
-    }else{
+    } else {
       this.receptorDatosImportantes = true;
       this.receptorDeshabilitado = true;
       this.isCollapsedReceptorData = true;
     }
   }
 
-  modificarReceptor(){
+  modificarReceptor() {
     this.receptorDeshabilitado = false;
   }
 
-  actualizarReceptor(){
+  actualizarReceptor() {
     this.receptorDeshabilitado = true;
   }
 
-  cancelarReceptor(){
+  cancelarReceptor() {
     this.receptorDeshabilitado = true;
   }
 }
