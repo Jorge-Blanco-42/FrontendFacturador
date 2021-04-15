@@ -17,6 +17,8 @@ import { startWith, map } from 'rxjs/operators';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
 import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {AfterViewInit, ViewChild} from '@angular/core';
 
 //inicio mary
 export interface PeriodicElement {
@@ -46,14 +48,22 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./create-factura.component.css'],
   providers: [DatePipe, ServicioTipoCambio]
 })
-export class CreateFacturaComponent implements OnInit {
+export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
+  
+
+  @ViewChild(MatPaginator)
+  paginator!: MatPaginator;
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
 
   public isCollapsedEmisorData = true;
   public emisorDeshabilitado = true;
-  public tipoReceptor: String;
+  public tipoReceptor: string;
   impuestoTarifa: Map<string, number>;
   public datosXML: CreacionXML;
   public cambio: TipoCambio;
@@ -94,6 +104,7 @@ export class CreateFacturaComponent implements OnInit {
   ngOnInit(): void {
     this.datosXML.condicion_venta = "Contado";
     this.datosXML.medio_pago = "Efectivo";
+    this.tipoReceptor = "REGISTRADO";
     this.actualizarTipoCambio(this.maxDate);
   }
 
@@ -181,15 +192,19 @@ export class CreateFacturaComponent implements OnInit {
     this.lineas.push(new Linea("", 0, "", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
   }
 
-  modificar(){
+  modificarEmisor(){
     this.emisorDeshabilitado = false;
   }
 
-  cancelar(){
+  cancelarEmisor(){
     this.emisorDeshabilitado = true;
   }
 
-  guardar(){
+  guardarEmisor(){
+    console.log("PENDIENTE")
+  }
+
+  guardarReceptor(){
     console.log("PENDIENTE")
   }
 

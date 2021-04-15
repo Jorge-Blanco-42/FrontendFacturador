@@ -212,4 +212,12 @@
     margin: auto;
     }
     
-    
+    .mat-elevation-z8{
+        box-shadow: none;
+    }
+
+    .searchBar{
+        width: 90%;
+        margin: auto;
+    }
+
