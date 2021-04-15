@@ -19,7 +19,7 @@ import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { ViewChild } from '@angular/core';
+import { ViewChild, AfterViewInit } from '@angular/core';
 
 //inicio mary
 export interface Clientes {
@@ -40,6 +40,22 @@ const ELEMENT_DATA: Clientes[] = [
   { nombre: 'Alejandra Rivera Alvarado', identificacion: 123456789, correo: 'example@example.com' },
   { nombre: 'Daniel Vargas Camacho', identificacion: 123456789, correo: 'example@example.com' },
 ];
+
+const ELEMENT_DATA_LINEA: Linea[] = [
+  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
+  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
+  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
+  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
+  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
+  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
+  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
+  new Linea("wawacte", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
+
+];
+
+
+
+
 //fin mary
 
 @Component({
@@ -48,14 +64,16 @@ const ELEMENT_DATA: Clientes[] = [
   styleUrls: ['./create-factura.component.css'],
   providers: [DatePipe, ServicioTipoCambio, ServicioCaByS]
 })
-export class CreateFacturaComponent implements OnInit {
+export class CreateFacturaComponent implements OnInit, AfterViewInit{
 
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
 
   private paginator: MatPaginator | undefined;
+  // private paginatorResumen: MatPaginator | undefined;
   public isCollapsedEmisorData = true;
   public isCollapsedReceptorData = true;
+  public isCollapsedResumenData = true;
   public emisorDeshabilitado = true;
   public receptorDeshabilitado = true;
   public tipoReceptor: string;
@@ -72,7 +90,7 @@ export class CreateFacturaComponent implements OnInit {
   receptorDatosImportantes = true;
 
   dataSource = new MatTableDataSource(ELEMENT_DATA);
-  dataSourceResumen = new MatTableDataSource(this.lineas);
+  dataSourceResumen : MatTableDataSource<Linea>= new MatTableDataSource(this.lineas);
   
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS) {
@@ -106,7 +124,7 @@ export class CreateFacturaComponent implements OnInit {
     this.impuestoTarifa.set("08", 0);
   }
 
-  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+  @ViewChild('clientesPaginator') set matPaginator(mp: MatPaginator) {
     this.paginator = mp;
     this.setDataSourceAttributes();
   }
@@ -115,7 +133,26 @@ export class CreateFacturaComponent implements OnInit {
     if(this.paginator){
       this.dataSource.paginator = this.paginator;
     }
-    
+  }
+
+  @ViewChild('resumenPaginator')
+  paginatorResumen!: MatPaginator;
+
+  ngAfterViewInit() {
+    if(this.paginatorResumen){
+      this.dataSourceResumen.paginator = this.paginatorResumen;
+    }
+  }
+
+  // @ViewChild(MatPaginator) set matPaginatorResumen(mp: MatPaginator) {
+  //   this.paginatorResumen = mp;
+  //   this.setDataSourceResumenAttributes();
+  // }
+  
+  setDataSourceResumenAttributes() {
+    if(this.paginatorResumen){
+      this.dataSourceResumen.paginator = this.paginatorResumen;
+    }
   }
 
   private _filter(value: string): { descripcion: string, impuesto: string }[] {
@@ -236,6 +273,14 @@ export class CreateFacturaComponent implements OnInit {
       map(value => this._filter(value))
     );
     this.lineas.push(new Linea("", control, filtro, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
+    this.dataSourceResumen.data = this.lineas;
+    this.dataSourceResumen.connect().next(this.lineas);
+    if(this.paginatorResumen){
+      this.paginatorResumen._changePageSize(this.paginatorResumen.pageSize);
+      console.log("caca")
+    }
+    this.setDataSourceResumenAttributes()
+    console.log(this.dataSourceResumen);
   }
 
   setImpuesto(linea:Linea, cabys: { descripcion: string, impuesto: string }) {
@@ -277,6 +322,8 @@ export class CreateFacturaComponent implements OnInit {
 
   borrarLinea(index: number) {
     this.lineas.splice(index, 1)
+    this.dataSourceResumen.data = this.dataSourceResumen.data;
+    this.setDataSourceResumenAttributes()
   }
 
   toggle() {
@@ -288,6 +335,12 @@ export class CreateFacturaComponent implements OnInit {
     this.isCollapsedReceptorData = !this.isCollapsedReceptorData;
     // this.emisorDeshabilitado = true;
   }
+
+  toggleResumen() {
+    this.isCollapsedResumenData = !this.isCollapsedResumenData;
+    // this.emisorDeshabilitado = true;
+  }
+
 
 
   applyFilter(event: Event) {
