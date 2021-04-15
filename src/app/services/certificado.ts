@@ -19,7 +19,7 @@ export class ServicioCertificado {
 
     getCertificado(id: string): Observable<any> {
         let headers = new HttpHeaders().set('Content-Type', 'application/json');
-        return this._http.get(this.backendUrl + 'get-certificate/' + id, { headers: headers });
+        return this._http.get(this.backendUrl + 'get-certificado/' + id, { headers: headers });
     }
 
     getToken(certificate: Certificado): Observable<any> {

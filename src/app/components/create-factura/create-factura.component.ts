@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ServicioFirmadoXML } from '../../services/firmadoXML';
 import { ServicioClaveXML } from '../../services/claveXML'
 import { ServicioCreacionXML } from '../../services/creacionXML';
+import { ServicioCaByS } from '../../services/cabys'
 import { FirmadoXML } from '../../models/firmadoXML';
 import { CreacionXML } from '../../models/creacionXML';
 import { ServicioEnvioXML } from '../../services/envioXML';
@@ -16,7 +17,7 @@ import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
-import {MatTableDataSource} from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 
 //inicio mary
 export interface PeriodicElement {
@@ -27,16 +28,16 @@ export interface PeriodicElement {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
+  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
+  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
+  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
+  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
+  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
 ];
 //fin mary
 
@@ -44,7 +45,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   selector: 'app-create-factura',
   templateUrl: './create-factura.component.html',
   styleUrls: ['./create-factura.component.css'],
-  providers: [DatePipe, ServicioTipoCambio]
+  providers: [DatePipe, ServicioTipoCambio, ServicioCaByS]
 })
 export class CreateFacturaComponent implements OnInit {
 
@@ -61,11 +62,11 @@ export class CreateFacturaComponent implements OnInit {
   public maxDate = new Date();
   public lineas: Linea[] = [];
   public otrosCargos: OtroCargo[] = [];
-  control = new FormControl();
+  cabys: {impuesto: string, descripcion: string}[] = [];
   streets: string[] = ['Champs-Élysées', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue'];
-  filteredStreets: Observable<string[]>;
+  descripciones: string[] = [];
 
-  constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio) {
+  constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS) {
     this.datosXML = new CreacionXML("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
@@ -73,10 +74,6 @@ export class CreateFacturaComponent implements OnInit {
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
     this.tipoReceptor = "";
-    this.filteredStreets = this.control.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
     this.impuestoTarifa = new Map();
     this.impuestoTarifa.set("01-01", 0);
     this.impuestoTarifa.set("01-02", 1.01);
@@ -95,20 +92,32 @@ export class CreateFacturaComponent implements OnInit {
     this.datosXML.condicion_venta = "Contado";
     this.datosXML.medio_pago = "Efectivo";
     this.actualizarTipoCambio(this.maxDate);
+    this.getCabys();
+    
+
   }
 
   private _filter(value: string): string[] {
-    const filterValue = this._normalizeValue(value);
-    return this.streets.filter(street => this._normalizeValue(street).includes(filterValue));
+    if(value){
+      const filterValue = this._normalizeValue(value);
+      if(filterValue.length > 3){
+        return this.descripciones.filter(street => this._normalizeValue(street).includes(filterValue));
+      }
+      return this.descripciones.slice(0,50);
+    }else{
+      return this.descripciones.slice(0,50);
+    }
+    //return this.descripciones.filter(descripcion => this._normalizeValue(descripcion).includes(filterValue));
   }
 
   private _normalizeValue(value: string): string {
+    //console.log("normalize value ",value);
     return value.toLowerCase().replace(/\s/g, '');
   }
 
   enviar(form: any): void {
     console.log(form);
-  
+
   }
 
   cambioFecha(event: MatDatepickerInputEvent<Date>) {
@@ -141,9 +150,9 @@ export class CreateFacturaComponent implements OnInit {
   actualizarTarifa(linea: Linea) {
     let tarifa = this.impuestoTarifa.get(linea.impuesto);
     console.log(tarifa);
-    if (tarifa != undefined){
+    if (tarifa != undefined) {
       linea.tarifa = tarifa;
-    }    
+    }
     console.log(linea);
   }
 
@@ -151,22 +160,57 @@ export class CreateFacturaComponent implements OnInit {
     let subtotal = linea.cantidad * linea.precioUnitario
     linea.subtotal = (subtotal).toString();
     console.log(linea.porcentaje);
-    if (linea.porcentaje) {  
-      if(linea.tarifa != 0){
-        linea.total = (subtotal * linea.tarifa - (subtotal * (linea.descuento/100))).toString();
-      }   else{
-        linea.total = (subtotal - (subtotal * (linea.descuento/100))).toString();
+    if (linea.porcentaje) {
+      if (linea.tarifa != 0) {
+        linea.total = (subtotal * linea.tarifa - (subtotal * (linea.descuento / 100))).toString();
+      } else {
+        linea.total = (subtotal - (subtotal * (linea.descuento / 100))).toString();
       }
-      
-    }else{
-      if(linea.tarifa != 0){
+
+    } else {
+      if (linea.tarifa != 0) {
         linea.total = (subtotal * linea.tarifa - linea.descuento).toString();
-      }else{
+      } else {
         linea.total = (subtotal - linea.descuento).toString();
       }
-      
+
     }
 
+  }
+
+  getCabys() {
+    let cabysS = localStorage.getItem("cabys");
+    if (cabysS) {
+      this.cabys = JSON.parse(cabysS);
+      let descripcionesS = localStorage.getItem("descripciones");
+      if(descripcionesS){
+        this.descripciones = JSON.parse(descripcionesS);
+        console.log("cargado1", this.descripciones[0]);
+      }else{
+        this.cabys.forEach(element =>{
+          this.descripciones.push(element.descripcion);
+        });
+        console.log("cargado2", this.descripciones[0]);
+      }
+    } else {
+      this._servicioCaByS.getCaByS().subscribe(
+        result => {
+          this.cabys = result;
+          result.forEach((element: { impuesto: string, descripcion: string; }) => {
+            this.descripciones.push(element.descripcion);
+            //console.log(this.descripciones.length)
+          });
+          localStorage.setItem("cabys", JSON.stringify(result))
+          localStorage.setItem("descripciones", JSON.stringify(this.descripciones))
+          console.log("traido", this.descripciones[0]);
+        },
+        error => {
+          console.log(<any>error)
+        }
+      );
+    }
+    //this.streets.concat(this.descripciones);
+    //console.log(this.streets);
   }
 
   nuevoCargo() {
@@ -178,18 +222,23 @@ export class CreateFacturaComponent implements OnInit {
   }
 
   nuevaLinea() {
-    this.lineas.push(new Linea("", 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
+    var control = new FormControl();
+    var filtro = control.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
+    this.lineas.push(new Linea("", control, filtro, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
   }
 
-  modificar(){
+  modificar() {
     this.emisorDeshabilitado = false;
   }
 
-  cancelar(){
+  cancelar() {
     this.emisorDeshabilitado = true;
   }
 
-  guardar(){
+  guardar() {
     console.log("PENDIENTE")
   }
 
@@ -197,9 +246,9 @@ export class CreateFacturaComponent implements OnInit {
     this.lineas.splice(index, 1)
   }
 
-  toggle(){
-      this.isCollapsedEmisorData = !this.isCollapsedEmisorData;
-      this.emisorDeshabilitado = true;
+  toggle() {
+    this.isCollapsedEmisorData = !this.isCollapsedEmisorData;
+    this.emisorDeshabilitado = true;
   }
 
   applyFilter(event: Event) {
