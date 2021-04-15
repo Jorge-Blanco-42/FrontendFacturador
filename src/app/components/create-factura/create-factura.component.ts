@@ -18,28 +18,27 @@ import { startWith, map } from 'rxjs/operators';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
 import {MatTableDataSource} from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
-import {AfterViewInit, ViewChild} from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { ViewChild } from '@angular/core';
 
 //inicio mary
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
+export interface Clientes {
+  nombre: string;
+  identificacion: number;
+  correo: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
+const ELEMENT_DATA: Clientes[] = [
+  { nombre: 'Daniel Riquelme Argüello', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'Josué Siles Durán ', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'Pedro Melendez Melendez', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'Sebastían Rojas Lora', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'Andres Gómez Sanchez', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'Dennis Angulo Fuentes', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'José Martinez Garay', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'Esteban Gonzalez Matamoros', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'Alejandra Rivera Alvarado', identificacion: 123456789, correo: 'example@example.com' },
+  { nombre: 'Daniel Vargas Camacho', identificacion: 123456789, correo: 'example@example.com' },
 ];
 //fin mary
 
@@ -49,21 +48,29 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./create-factura.component.css'],
   providers: [DatePipe, ServicioTipoCambio, ServicioCaByS]
 })
-export class CreateFacturaComponent implements OnInit, AfterViewInit {
+export class CreateFacturaComponent implements OnInit {
 
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
+  private paginator: MatPaginator | undefined;
+
+  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+    this.paginator = mp;
+    this.setDataSourceAttributes();
+  }
   
-
-  @ViewChild(MatPaginator)
-  paginator!: MatPaginator;
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+  setDataSourceAttributes() {
+    if(this.paginator){
+      this.dataSource.paginator = this.paginator;
+    }
+    
   }
 
+
   public isCollapsedEmisorData = true;
+  public isCollapsedReceptorData = true;
   public emisorDeshabilitado = true;
+  public receptorDeshabilitado = true;
   public tipoReceptor: string;
   impuestoTarifa: Map<string, number>;
   public datosXML: CreacionXML;
@@ -75,6 +82,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   cabys: {impuesto: string, descripcion: string}[] = [];
   streets: string[] = ['Champs-Élysées', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue'];
   descripciones: string[] = [];
+  clienteSeleccionado = false;
+  receptorDatosImportantes = true;
+  
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS) {
     this.datosXML = new CreacionXML("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
@@ -266,8 +276,48 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.emisorDeshabilitado = true;
   }
 
+  toggleReceptor() {
+    this.isCollapsedReceptorData = !this.isCollapsedReceptorData;
+    // this.emisorDeshabilitado = true;
+  }
+
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  getRecord(row: any){
+    this.clienteSeleccionado = true;
+    this.datosXML.receptor_nombre = row.nombre;
+    console.log(row);
+  }
+
+  // aqui hay algo raro.. TIPORECEPTOR AL REVES
+  seleccionarTipoCliente(){
+    this.clienteSeleccionado = false;
+    console.log(this.tipoReceptor);
+    if(this.tipoReceptor === "REGISTRADO"){
+      this.receptorDatosImportantes = false;
+      this.receptorDeshabilitado = false;
+      this.isCollapsedReceptorData = false;
+      this.datosXML.receptor_nombre = "";
+    }else{
+      this.receptorDatosImportantes = true;
+      this.receptorDeshabilitado = true;
+      this.isCollapsedReceptorData = true;
+    }
+  }
+
+  modificarReceptor(){
+    this.receptorDeshabilitado = false;
+  }
+
+  actualizarReceptor(){
+    this.receptorDeshabilitado = true;
+  }
+
+  cancelarReceptor(){
+    this.receptorDeshabilitado = true;
   }
 }

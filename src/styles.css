@@ -208,8 +208,13 @@
     }
 
     #pruebaTabla {
-    width: 90%;
-    margin: auto;
+        width: 90%;
+        margin: auto;
+    }
+
+    #pruebaTabla tr:hover{
+        cursor: pointer;
+        background-color: #f8f8f8;
     }
     
     .mat-elevation-z8{
