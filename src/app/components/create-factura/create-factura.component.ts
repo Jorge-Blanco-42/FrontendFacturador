@@ -87,7 +87,7 @@ export class CreateFacturaComponent implements OnInit {
 
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS) {
-    this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", "", "Jorge Blanco Cordero", "01", "117510169", "Jorge Blanco Cordero", "", "", "", "", "", "", "",
       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
       "", "", "CRC", "", "", "", "", "", "", "", "", "", "", "", "", "",
       "", "", "");
