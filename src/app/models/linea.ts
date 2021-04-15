@@ -1,7 +1,12 @@
+import { FormControl } from "@angular/forms";
+import { Observable } from "rxjs";
+
 export class Linea{
 
     constructor(
         public producto: string,
+        public control: FormControl,
+        public filtro: Observable<string[]>,
         public cantidad: number,
         public tipo: string,
         public precioUnitario: number,
