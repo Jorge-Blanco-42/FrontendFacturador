@@ -51,22 +51,9 @@ const ELEMENT_DATA: Clientes[] = [
 export class CreateFacturaComponent implements OnInit {
 
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
+
   private paginator: MatPaginator | undefined;
-
-  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
-    this.paginator = mp;
-    this.setDataSourceAttributes();
-  }
-  
-  setDataSourceAttributes() {
-    if(this.paginator){
-      this.dataSource.paginator = this.paginator;
-    }
-    
-  }
-
-
   public isCollapsedEmisorData = true;
   public isCollapsedReceptorData = true;
   public emisorDeshabilitado = true;
@@ -80,10 +67,12 @@ export class CreateFacturaComponent implements OnInit {
   public lineas: Linea[] = [];
   public otrosCargos: OtroCargo[] = [];
   cabys: {impuesto: string, descripcion: string}[] = [];
-  streets: string[] = ['Champs-Élysées', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue', 'Lombard Street', 'Abbey Road', 'Fifth Avenue'];
   descripciones: string[] = [];
   clienteSeleccionado = false;
   receptorDatosImportantes = true;
+
+  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  dataSourceResumen = new MatTableDataSource(this.lineas);
   
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS) {
@@ -116,6 +105,18 @@ export class CreateFacturaComponent implements OnInit {
     this.getCabys();
     
 
+  }
+
+  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+    this.paginator = mp;
+    this.setDataSourceAttributes();
+  }
+  
+  setDataSourceAttributes() {
+    if(this.paginator){
+      this.dataSource.paginator = this.paginator;
+    }
+    
   }
 
   private _filter(value: string): string[] {
