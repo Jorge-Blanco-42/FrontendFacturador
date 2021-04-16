@@ -339,21 +339,21 @@
                 </select>
             </div>
             <div class="col-md-4 form-item">
-                <div class="form-group mb-0" *ngIf="datosXML.condicion_venta === 'Crédito'">
+                <div class="form-group mb-0" *ngIf="datosXML.condicion_venta === '02'">
                     <label for="plazo">Plazo del crédito:</label>
                     <input type="text" class="form-control" id="plazo" placeholder="" name="plazo" [(ngModel)]="datosXML.plazo_credito">
                 </div>
             </div>
         </div>
-        <div class="row" *ngIf="datosXML.condicion_venta === 'Otros' || datosXML.medio_pago === 'Otros'">
+        <div class="row" *ngIf="datosXML.condicion_venta === '99' || datosXML.medio_pago === '99'">
             <div class="col-md-4 form-item">
-                <div class="form-group mb-0" *ngIf="datosXML.medio_pago === 'Otros'">
+                <div class="form-group mb-0" *ngIf="datosXML.medio_pago === '99'">
                     <label for="detalleCondicion">Detalle método pago:</label>
                     <input type="text" class="form-control" id="detalleCondicion" placeholder="" name="detalleCondicion">
                 </div>
             </div>
             <div class="col-md-4 form-item">
-                <div class="form-group " *ngIf="datosXML.condicion_venta === 'Otros'">
+                <div class="form-group " *ngIf="datosXML.condicion_venta === '99'">
                     <label for="detalleVenta">Detalle condición de venta:</label>
                     <input type="text" class="form-control" id="detalleVenta" placeholder="" name="detalleVenta">
                 </div>
