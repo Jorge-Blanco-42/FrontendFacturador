@@ -341,21 +341,21 @@
                 </select>
             </div>
             <div class="col-md-4 form-item">
-                <div class="form-group mb-0" *ngIf="datosXML.condicion_venta === 'Crédito'">
+                <div class="form-group mb-0" *ngIf="datosXML.condicion_venta === '02'">
                     <label for="plazo">Plazo del crédito:</label>
                     <input type="text" class="form-control" id="plazo" placeholder="" name="plazo" [(ngModel)]="datosXML.plazo_credito" required>
                 </div>
             </div>
         </div>
-        <div class="row" *ngIf="datosXML.condicion_venta === 'Otros' || datosXML.medio_pago === 'Otros'">
+        <div class="row" *ngIf="datosXML.condicion_venta === '99' || datosXML.medio_pago === '99'">
             <div class="col-md-4 form-item">
-                <div class="form-group mb-0" *ngIf="datosXML.medio_pago === 'Otros'">
+                <div class="form-group mb-0" *ngIf="datosXML.medio_pago === '99'">
                     <label for="detalleCondicion">Detalle método pago:</label>
                     <input type="text" class="form-control" id="detalleCondicion" placeholder="" name="detalleCondicion">
                 </div>
             </div>
             <div class="col-md-4 form-item">
-                <div class="form-group " *ngIf="datosXML.condicion_venta === 'Otros'">
+                <div class="form-group " *ngIf="datosXML.condicion_venta === '99'">
                     <label for="detalleVenta">Detalle condición de venta:</label>
                     <input type="text" class="form-control" id="detalleVenta" placeholder="" name="detalleVenta">
                 </div>
@@ -428,7 +428,7 @@
                             </mat-autocomplete>
                         </th>
                         <td><input type="number" min="1" class="form-control" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}" required></td>
-                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}">
+                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}" (change)="calcularTotalesLinea(linea)">
                                 <option value="Al">Alquiler de uso habitacional</option>
                                 <option value="Alc">Alquiler de uso comercial</option>
                                 <option value="Cm">Comisiones</option>
@@ -457,7 +457,7 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)="linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);" checked="">
+                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);">
                                             <label class="custom-control-label" for="porcentaje">%</label>
                                         </div>
                                     </div>
