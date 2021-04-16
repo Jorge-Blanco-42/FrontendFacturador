@@ -276,6 +276,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   calcularTotales() {
     console.log("suelte la harina, pa");
+    this.total_OtrosCargos = 0;
     let total_comprobante = 0;
     let total_serv_gravados = 0;
     let total_serv_exentos = 0;
@@ -314,9 +315,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       total_impuestos += linea.subtotal * (linea.tarifa-1);
     });
     total_ventas = total_gravados + total_exentos + total_exonerados;
+    this.datosXML.total_ventas = total_ventas.toString(); 
     this.otrosCargos.forEach(cargo => {
-      this.calcularOtroCargo(cargo);
-      this.total_OtrosCargos += cargo.monto;
+      console.log("cargo");
+      this.actualizarCargo(cargo);
     });
     total_ventas_neta = total_ventas - total_descuentos;    
     total_comprobante = total_ventas_neta + total_impuestos + this.total_OtrosCargos;
@@ -327,7 +329,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.datosXML.total_merc_exenta = total_merc_exenta.toString();
     this.datosXML.total_gravados = total_gravados.toString(); 
     this.datosXML.total_exentos = total_exentos.toString();
-    this.datosXML.total_ventas = total_ventas.toString(); 
+    
     this.datosXML.total_descuentos = total_descuentos.toString();
     this.datosXML.total_ventas_neta = total_ventas_neta.toString(); 
     this.datosXML.total_impuestos = total_impuestos.toString();
@@ -358,19 +360,32 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   nuevoCargo() {
-    this.otrosCargos.push(new OtroCargo("", "", 0,false, "", "", "", 0));
+    this.otrosCargos.push(new OtroCargo("", "", 1,false, "", "", "",0));
   }
 
   borrarCargo(index: number) {
     this.otrosCargos.splice(index, 1);
   }
 
-  calcularOtroCargo(cargo: OtroCargo){
+  setMontoCargo(cargo: OtroCargo){
+    if(cargo.tipoDocumento === "Impuesto de servicio 10%"){
+      cargo.porcentaje = true;
+      cargo.monto = 10;      
+    }
+    this.actualizarCargo(cargo);
+  }
+
+  actualizarCargo(cargo: OtroCargo){
+    console.log("UPDATE");
     if (cargo.porcentaje) {      
       cargo.total = Number(this.datosXML.total_ventas) * (cargo.monto/100);
     } else {
       cargo.total = cargo.monto;
     }
+    this.total_OtrosCargos = 0;
+    this.otrosCargos.forEach(cargo => {
+      this.total_OtrosCargos += cargo.total;
+    });
   }
 
   nuevaLinea() {
@@ -379,7 +394,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       startWith(''),
       map(value => this._filter(value))
     );
-    this.lineas.push(new Linea("", control, filtro, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, 0, 0));
+    this.lineas.push(new Linea("", control, filtro, 1, "Sp", 5, 0, "", "01-08", false, 0, 1.13, 0, 0));
     this.dataSourceResumen.data = this.lineas;
     this.dataSourceResumen.connect().next(this.lineas);
     if (this.paginatorResumen) {
