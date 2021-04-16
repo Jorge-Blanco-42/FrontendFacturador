@@ -16,8 +16,8 @@ export class Linea{
         public porcentaje: boolean,
         public base: number,
         public tarifa: number,
-        public subtotal: string,
-        public total: string
+        public subtotal: number,
+        public total: number
         ){
     }
 }

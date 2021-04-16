@@ -23,72 +23,72 @@ import { ViewChild, AfterViewInit } from '@angular/core';
 
 //inicio mary
 export interface Clientes {
-  
-   nombre: string,
-   receptor_tipo_identif: string,  identificacion: string,
-   receptor_provincia: string,  receptor_canton: string,
-   receptor_distrito: string,  receptor_barrio: string,
-   receptor_cod_pais_tel: string,  receptor_tel: string,
-   receptor_cod_pais_fax: string,  receptor_fax: string,
-   correo : string
-   
-   /*
-   nombre: string;
-   identificacion: number;
-   correo: string;*/
+
+  nombre: string,
+  receptor_tipo_identif: string, identificacion: string,
+  receptor_provincia: string, receptor_canton: string,
+  receptor_distrito: string, receptor_barrio: string,
+  receptor_cod_pais_tel: string, receptor_tel: string,
+  receptor_cod_pais_fax: string, receptor_fax: string,
+  correo: string
+
+  /*
+  nombre: string;
+  identificacion: number;
+  correo: string;*/
 
 }
 
 const ELEMENT_DATA: Clientes[] = [
-  {nombre: "David Gónzalez",receptor_tipo_identif: "01",  identificacion: "123456789",
-   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
-   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
-   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
-   {nombre: "Jorge Blanco Cordero",receptor_tipo_identif: "01",  identificacion: "123456789",
-   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
-   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
-   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
-   {nombre: "María Fernanda Niño Ramírez",receptor_tipo_identif: "01",  identificacion: "123456789",
-   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
-   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
-   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
-   {nombre: "José Martinez Garay",receptor_tipo_identif: "01",  identificacion: "123456789",
-   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
-   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
-   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
-   {nombre: "Daniel Vargas Camacho",receptor_tipo_identif: "01",  identificacion: "123456789",
-   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
-   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
-   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
-   {nombre: "Usuario de prueba 1",receptor_tipo_identif: "01",  identificacion: "123456789",
-   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
-   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
-   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
-   {nombre: "Usuario de prueba 2",receptor_tipo_identif: "01",  identificacion: "123456789",
-   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
-   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
-   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
-   {nombre: "Usuario de prueba 3",receptor_tipo_identif: "01",  identificacion: "123456789",
-   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
-   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
-   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
+  {
+    nombre: "David Gónzalez", receptor_tipo_identif: "01", identificacion: "123456789",
+    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
+    receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
+  },
+  {
+    nombre: "Jorge Blanco Cordero", receptor_tipo_identif: "01", identificacion: "123456789",
+    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
+    receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
+  },
+  {
+    nombre: "María Fernanda Niño Ramírez", receptor_tipo_identif: "01", identificacion: "123456789",
+    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
+    receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
+  },
+  {
+    nombre: "José Martinez Garay", receptor_tipo_identif: "01", identificacion: "123456789",
+    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
+    receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
+  },
+  {
+    nombre: "Daniel Vargas Camacho", receptor_tipo_identif: "01", identificacion: "123456789",
+    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
+    receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
+  },
+  {
+    nombre: "Usuario de prueba 1", receptor_tipo_identif: "01", identificacion: "123456789",
+    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
+    receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
+  },
+  {
+    nombre: "Usuario de prueba 2", receptor_tipo_identif: "01", identificacion: "123456789",
+    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
+    receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
+  },
+  {
+    nombre: "Usuario de prueba 3", receptor_tipo_identif: "01", identificacion: "123456789",
+    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
+    receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
+  },
 ];
-
-const ELEMENT_DATA_LINEA: Linea[] = [
-  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
-  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
-  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
-  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
-  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
-  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
-  new Linea("", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
-  new Linea("wawacte", new FormControl, new Observable, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""),
-
-];
-
-
-
-
 //fin mary
 
 @Component({
@@ -110,11 +110,12 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public emisorDeshabilitado = true;
   public receptorDeshabilitado = true;
   public clienteRegistrado: boolean = true;
-  public radioCliente:number= 0;
-  impuestoTarifa: Map<string, number>;
+  public radioCliente: number = 0;
+  public impuestoTarifa: Map<string, number>;
   public datosXML: CreacionXML;
   public cambio: TipoCambio;
   public tipo_cambio: Number;
+  public total_OtrosCargos: number;
   public maxDate = new Date();
   public lineas: Linea[] = [];
   public otrosCargos: OtroCargo[] = [];
@@ -136,7 +137,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
     this.impuestoTarifa = new Map();
-
+    this.total_OtrosCargos = 0;
   }
 
 
@@ -170,6 +171,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   @ViewChild('resumenPaginator')
   paginatorResumen!: MatPaginator;
+
+  inputEnter() {
+    console.log("puto el que submit");
+  }
 
   ngAfterViewInit() {
     if (this.paginatorResumen) {
@@ -238,35 +243,96 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       }
     );
   }
-  actualizarTarifa(linea: Linea) {
+  actualizarTarifaLinea(linea: Linea) {
     let tarifa = this.impuestoTarifa.get(linea.impuesto);
     console.log(tarifa);
     if (tarifa != undefined) {
       linea.tarifa = tarifa;
     }
     console.log(linea);
+    this.calcularTotalesLinea(linea);
   }
 
-  calcularTotales(linea: Linea) {
-    let subtotal = linea.cantidad * linea.precioUnitario
-    linea.subtotal = (subtotal).toString();
+  calcularTotalesLinea(linea: Linea) {
+    linea.subtotal = linea.cantidad * linea.precioUnitario
     console.log(linea.porcentaje);
     if (linea.porcentaje) {
       if (linea.tarifa != 0) {
-        linea.total = (subtotal * linea.tarifa - (subtotal * (linea.descuento / 100))).toString();
+        linea.total = linea.subtotal * linea.tarifa - (linea.subtotal * (linea.descuento / 100))
       } else {
-        linea.total = (subtotal - (subtotal * (linea.descuento / 100))).toString();
+        linea.total = linea.subtotal - (linea.subtotal * (linea.descuento / 100))
       }
 
     } else {
       if (linea.tarifa != 0) {
-        linea.total = (subtotal * linea.tarifa - linea.descuento).toString();
+        linea.total = linea.subtotal * linea.tarifa - linea.descuento
       } else {
-        linea.total = (subtotal - linea.descuento).toString();
+        linea.total = linea.subtotal - linea.descuento
       }
 
     }
+    this.calcularTotales();
+  }
 
+  calcularTotales() {
+    console.log("suelte la harina, pa");
+    let total_comprobante = 0;
+    let total_serv_gravados = 0;
+    let total_serv_exentos = 0;
+    let total_serv_exonerados = 0;
+    let total_merc_gravada = 0;
+    let total_merc_exenta = 0;
+    let total_merc_exonerados = 0;
+    let total_gravados = 0; 
+    let total_exentos = 0;
+    let total_exonerados = 0;
+    let total_ventas = 0; 
+    let total_descuentos = 0;
+    let total_ventas_neta = 0; 
+    let total_impuestos = 0;
+    this.lineas.forEach(linea => {
+      if (linea.impuesto === "01-01" || linea.impuesto === '01-05') {//Exento
+        if(linea.tipo === 'Sp' || linea.tipo === 'St' || linea.tipo === 'Os'){
+          total_serv_exentos += linea.subtotal;
+        }else{
+          total_merc_exenta += linea.subtotal;
+        }
+        total_exentos += linea.subtotal;
+      }else{//gravado
+        if(linea.tipo === 'Sp' || linea.tipo === 'St' || linea.tipo === 'Os'){
+          total_serv_gravados += linea.subtotal;
+        }else{
+          total_merc_gravada += linea.subtotal;
+        }
+        total_gravados += linea.subtotal;
+      }
+      if(linea.porcentaje){
+        total_descuentos += linea.subtotal*(linea.descuento/100);
+      }else{
+        total_descuentos += linea.descuento;
+      }
+      total_impuestos += linea.subtotal * (linea.tarifa-1);
+    });
+    total_ventas = total_gravados + total_exentos + total_exonerados;
+    this.otrosCargos.forEach(cargo => {
+      this.calcularOtroCargo(cargo);
+      this.total_OtrosCargos += cargo.monto;
+    });
+    total_ventas_neta = total_ventas - total_descuentos;    
+    total_comprobante = total_ventas_neta + total_impuestos + this.total_OtrosCargos;
+    this.datosXML.total_comprobante = total_comprobante.toString();
+    this.datosXML.total_serv_gravados = total_serv_gravados.toString();
+    this.datosXML.total_serv_exentos = total_serv_exentos.toString();
+    this.datosXML.total_merc_gravada = total_merc_gravada.toString();
+    this.datosXML.total_merc_exenta = total_merc_exenta.toString();
+    this.datosXML.total_gravados = total_gravados.toString(); 
+    this.datosXML.total_exentos = total_exentos.toString();
+    this.datosXML.total_ventas = total_ventas.toString(); 
+    this.datosXML.total_descuentos = total_descuentos.toString();
+    this.datosXML.total_ventas_neta = total_ventas_neta.toString(); 
+    this.datosXML.total_impuestos = total_impuestos.toString();
+    
+    
   }
 
   getCabys() {
@@ -292,11 +358,19 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   nuevoCargo() {
-    this.otrosCargos.push(new OtroCargo("", "", "", "", "", "", ""));
+    this.otrosCargos.push(new OtroCargo("", "", 0,false, "", "", "", 0));
   }
 
   borrarCargo(index: number) {
     this.otrosCargos.splice(index, 1);
+  }
+
+  calcularOtroCargo(cargo: OtroCargo){
+    if (cargo.porcentaje) {      
+      cargo.total = Number(this.datosXML.total_ventas) * (cargo.monto/100);
+    } else {
+      cargo.total = cargo.monto;
+    }
   }
 
   nuevaLinea() {
@@ -305,7 +379,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       startWith(''),
       map(value => this._filter(value))
     );
-    this.lineas.push(new Linea("", control, filtro, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
+    this.lineas.push(new Linea("", control, filtro, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, 0, 0));
     this.dataSourceResumen.data = this.lineas;
     this.dataSourceResumen.connect().next(this.lineas);
     if (this.paginatorResumen) {

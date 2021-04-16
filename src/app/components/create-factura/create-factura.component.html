@@ -1,4 +1,4 @@
-<form #myForm="ngForm" (submit)="enviar(datosXML)">
+<form #myForm="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="enviar(datosXML)">
     <!------------------------------->
     <!--------Datos del emisor------->
     <!------------------------------->
@@ -425,7 +425,7 @@
                                 </mat-option>
                             </mat-autocomplete>
                         </th>
-                        <td><input type="number" class="form-control" (change)="calcularTotales(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input type="number" class="form-control" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
                         <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}">
                                 <option value="Al">Alquiler de uso habitacional</option>
                                 <option value="Alc">Alquiler de uso comercial</option>
@@ -442,18 +442,19 @@
                                 <option value="Sp" selected>Servicios Profesionales</option>
                                 <option value="St">Servicios técnicos</option>
                                 <option value="t">Tonelada</option>
+                                <option value="Unid">Unidad</option>
                                 <option value="W">Watt</option>
                                 <option value="Os">Otro tipo de servicio</option>
                                 <option value="Otros">Otros</option>
                             </select></td>
-                        <td><input type="number" class="form-control" (change)="calcularTotales(linea)" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input type="number" class="form-control" (change)="calcularTotalesLinea(linea)" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}"></td>
                         <td>
                             <div class="input-group">
-                                <input type="number" class="form-control w-50" placeholder="1" (change)="calcularTotales(linea)" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}">
+                                <input type="number" class="form-control w-50" placeholder="1" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)="linea.porcentaje = !linea.porcentaje; calcularTotales(linea);" checked="">
+                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)="linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);" checked="">
                                             <label class="custom-control-label" for="porcentaje">%</label>
                                         </div>
                                     </div>
@@ -463,7 +464,7 @@
 
 
                         <td><input *ngIf="linea.descuento > 0" type="text" class="form-control" [(ngModel)]="linea.razon" [ngModelOptions]="{standalone: true}"></td>
-                        <td><select class="form-control custom-select" (change)="actualizarTarifa(linea); calcularTotales(linea);" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}">
+                        <td><select class="form-control custom-select" (change)="actualizarTarifaLinea(linea);" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}">
                                 <option value="01-01">IVA exento</option>
                                 <option value="01-02">IVA reducido 1%</option>
                                 <option value="01-03">IVA reducido 2%</option>
@@ -475,10 +476,10 @@
                                 <option value="07">IVA (cálculo especial)</option>
                                 <option value="08">IVA Régimen de Bienes Usados (Factor)</option>
                             </select></td>
-                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" (change)="calcularTotales(linea)" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}"></td>
-                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" (ngModelChange)="calcularTotales(linea)" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}"></td>
-                        <td class="pt-3">₡{{linea.subtotal | number : '1.2-2' }}</td>
-                        <td class="pt-3">₡{{linea.total | number : '1.2-2' }}</td>
+                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" (change)="calcularTotalesLinea(linea)" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" (ngModelChange)="calcularTotalesLinea(linea)" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}"></td>
+                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{linea.subtotal | number : '1.2-2' }}</td>
+                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{linea.total | number : '1.2-2' }}</td>
                         <td><button type="button" class="btn" (click)="borrarLinea(i);"><i
                                     class="fa fa-trash"></i></button></td>
                     </tr>
@@ -521,6 +522,17 @@
                             </select></th>
                         <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
                         <td><input type="text" class="form-control" [(ngModel)]="cargo.porcentaje" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <div class="input-group">
+                            <input type="number" class="form-control w-50" placeholder="1" (change)="calcularOtroCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="porcentajeCargo" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; calcularOtroCargo(cargo);" checked="">
+                                        <label class="custom-control-label" for="porcentajeCargo">%</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}"></select></td>
                         <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
                         <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
@@ -567,7 +579,7 @@
                 <!-- Symbol Column -->
                 <ng-container matColumnDef="totalLinea">
                     <th class="header" mat-header-cell *matHeaderCellDef> Total </th>
-                    <td mat-cell *matCellDef="let element"> {{element.total}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.total | number : '1.2-2' }} </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumnsResumen"></tr>
@@ -589,7 +601,7 @@
                     <h4>Subtotal</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h5>₡ {{datosXML.total_ventas}}</h5>
+                    <h5>₡ {{datosXML.total_ventas | number : '1.2-2' }}</h5>
                 </div>
             </div>
             <div class="row pb-2">
@@ -597,7 +609,7 @@
                     <h4>Impuestos</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h5>₡ {{datosXML.total_impuestos}}</h5>
+                    <h5>₡ {{datosXML.total_impuestos | number : '1.2-2' }}</h5>
                 </div>
             </div>
             <div class="row pb-2">
@@ -633,7 +645,7 @@
                                     <p class="mb-1">Mercadería gravada</p>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <p class="mb-1">₡{{datosXML.total_merc_gravada}}</p>
+                                    <p class="mb-1">₡{{datosXML.total_merc_gravada | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -642,7 +654,7 @@
                                     <p class="mb-1">Mercadería exenta</p>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <p class="mb-1">₡ {{datosXML.total_merc_exenta}}</p>
+                                    <p class="mb-1">₡ {{datosXML.total_merc_exenta | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -660,7 +672,7 @@
                                     <p class="mb-1">Servicios gravados</p>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <p class="mb-1">₡ {{datosXML.total_serv_gravados}}</p>
+                                    <p class="mb-1">₡ {{datosXML.total_serv_gravados | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -669,7 +681,7 @@
                                     <p class="mb-1">Servicios exentos</p>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <p class="mb-1">₡ {{datosXML.total_serv_exentos}}</p>
+                                    <p class="mb-1">₡ {{datosXML.total_serv_exentos | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -687,7 +699,7 @@
                                     <p class="mb-1">Total gravado</p>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <p class="mb-1">₡ {{datosXML.total_gravados}}</p>
+                                    <p class="mb-1">₡ {{datosXML.total_gravados | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -696,7 +708,7 @@
                                     <p class="mb-1">Total exento</p>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <p class="mb-1">₡ {{datosXML.total_exentos}}</p>
+                                    <p class="mb-1">₡ {{datosXML.total_exentos | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -714,13 +726,13 @@
                                     <h6 class="mb-1">Descuento: </h6>
                                 </div>
                                 <div class="col-md-3 text-left">
-                                    <p class="mb-1">₡ {{datosXML.total_descuentos}}</p>
+                                    <p class="mb-1">₡ {{datosXML.total_descuentos | number : '1.2-2' }}</p>
                                 </div>
                                 <div class="col-md-3 text-right">
                                     <h6 class="mb-1">Venta neta: </h6>
                                 </div>
                                 <div class="col-md-3 text-left">
-                                    <p class="mb-1">₡ {{datosXML.total_ventas_neta}}</p>
+                                    <p class="mb-1">₡ {{datosXML.total_ventas_neta | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -738,7 +750,7 @@
             </div>
             <div class="row pt-4">
                 <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-outline-secondary">
+                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)">
                         <h5>ENVIAR</h5>
                     </button>
                 </div>
