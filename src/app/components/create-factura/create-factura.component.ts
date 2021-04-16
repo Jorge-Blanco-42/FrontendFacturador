@@ -510,6 +510,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
         linea.impuesto = "01-01"
         break;
     }
+    this.calcularTotalesLinea(linea);
   }
 
   modificarEmisor() {

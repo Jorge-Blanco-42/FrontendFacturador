@@ -426,7 +426,7 @@
                             </mat-autocomplete>
                         </th>
                         <td><input type="number" min="1" class="form-control" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
-                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}">
+                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}" (change)="calcularTotalesLinea(linea)">
                                 <option value="Al">Alquiler de uso habitacional</option>
                                 <option value="Alc">Alquiler de uso comercial</option>
                                 <option value="Cm">Comisiones</option>
@@ -454,7 +454,7 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)="linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);" checked="">
+                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);">
                                             <label class="custom-control-label" for="porcentaje">%</label>
                                         </div>
                                     </div>
