@@ -273,28 +273,30 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                 this.sendXML.comprobanteXml = result3.xmlFirmado;
                 this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
                   result4 => {
-                    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                     console.log(<any>result4);
+                    alert("Factura creada y enviada correctamente :D");
                   },
                   error4 =>{
-                    console.log("PICHA");
+                    alert("Hubo un error al enviar la factura :c");
                     console.log(<any>error4);
                   }
                 )
                 
               },
               error3 =>{
+                alert("Hubo un error firmar el XML :c");
                 console.log(<any>error3);
               }
             )
           },
           error2 =>{
+            alert("Hubo un error al crear el XML :c");
             console.log(<any>error2);
           }
         )
       },
       error => {
-        //alert(<any>error);
+        alert("Hubo un error al crear la clave del XML :c");
         console.log(<any>error)
       }
     );

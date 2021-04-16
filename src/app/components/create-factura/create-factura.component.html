@@ -15,7 +15,7 @@
 
                 <div class="input-group">
                     <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" name="nombreRazonSocialEmisor" [(ngModel)]="datosXML.emisor_nombre" readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente"
-                    />
+                        required/>
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary" (click)="toggle()">
                             VER DATOS
@@ -31,43 +31,43 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="NombreComercialEmisor">Nombre Comercial</label>
-                                    <input type="text" class="form-control" id="NombreComercialEmisor" name="nombreComercialEmisor" [disabled]="true" [(ngModel)]="datosXML.nombre_comercial" aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="NombreComercialEmisor" name="nombreComercialEmisor" [disabled]="true" [(ngModel)]="datosXML.nombre_comercial" aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" required/>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="IdentificacionEmisor">Identificación</label>
-                                    <input type="text" class="form-control" id="IdentificacionEmisor" name="identificacionEmisor" [disabled]="true" [(ngModel)]="datosXML.emisor_num_identif" aria-label="Identificación del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="IdentificacionEmisor" name="identificacionEmisor" [disabled]="true" [(ngModel)]="datosXML.emisor_num_identif" aria-label="Identificación del emisor" aria-describedby="pendiente" required/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="CorreoEmisor">Correo electrónico</label>
-                                    <input type="text" class="form-control" id="CorreoEmisor" name="correoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_email" aria-label="Correo electrónico del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="CorreoEmisor" name="correoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_email" aria-label="Correo electrónico del emisor" aria-describedby="pendiente" required/>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="TelefonoEmisor">Teléfono</label>
-                                    <input type="text" class="form-control" id="TelefonoEmisor" name="telefonoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_tel" aria-label="Teléfono del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="TelefonoEmisor" name="telefonoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_tel" aria-label="Teléfono del emisor" aria-describedby="pendiente" required/>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="FaxEmisor">Fax</label>
-                                    <input type="text" class="form-control" id="FaxEmisor" name="faxEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_fax" aria-label="Fax del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="FaxEmisor" name="faxEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_fax" aria-label="Fax del emisor" aria-describedby="pendiente" required/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="ProvinciaEmisor">Provincia</label>
-                                    <select class="form-control" id="ProvinciaEmisor" name="provinciaEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia">
+                                    <select class="form-control" id="ProvinciaEmisor" name="provinciaEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia" required>
                                         <option value="1">San José</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="CantonEmisor">Cantón</label>
-                                    <select class="form-control" id="CantonEmisor" name="cantonEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton">
+                                    <select class="form-control" id="CantonEmisor" name="cantonEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton" required>
                                         <option value="10">Alajuelita</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="DistritoEmisor">Distrito</label>
-                                    <select class="form-control" id="DistritoEmisor" name="distritoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito">
+                                    <select class="form-control" id="DistritoEmisor" name="distritoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito" required>
                                         <option value="4">Concepción</option>
                                     </select>
                                 </div>
@@ -75,13 +75,13 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="BarrioEmisor">Barrio</label>
-                                    <select class="form-control" id="BarrioEmisor" name="BarrioEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio">
+                                    <select class="form-control" id="BarrioEmisor" name="BarrioEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio" required>
                                         <option value="4">Chirivico</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-8">
                                     <label for="OtrasSenasEmisor">Otras señas</label>
-                                    <input type="text" class="form-control" id="OtrasSenasEmisor" name="otrasSenasEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_otras_senas" aria-label="Otras señas del emisor" aria-describedby="pendiente" />
+                                    <input type="text" class="form-control" id="OtrasSenasEmisor" name="otrasSenasEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_otras_senas" aria-label="Otras señas del emisor" aria-describedby="pendiente" required/>
                                 </div>
                             </div>
                             <div class="row justify-content-end" *ngIf="emisorDeshabilitado">
@@ -193,7 +193,7 @@
                         <label for="NombreReceptor">Nombre o Razon Social del cliente</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="NombreReceptor" name="nombreReceptor" [(ngModel)]="datosXML.receptor_nombre" [disabled]="receptorDatosImportantes" aria-label="Nombre del receptor con boton para mostrar información" aria-describedby="pendiente"
-                            />
+                                required/>
                             <div class="input-group-append" *ngIf="clienteSeleccionado">
                                 <!--AQUI HAY ALGO RARISIMO x2 - TIPORECEPTOR AL REVES-->
                                 <button type="button" class="btn btn-outline-secondary" (click)="toggleReceptor()">
@@ -211,11 +211,12 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="NombreComercialReceptor">Nombre Comercial</label>
-                            <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor" aria-describedby="pendiente" />
+                            <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor" aria-describedby="pendiente" required
+                            />
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TipoIdentificacionReceptor">Tipo de Identificación</label>
-                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_tipo_identif">
+                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_tipo_identif" required>
                                 <option value="01">Cédula Física</option>
                                 <option value="02">Cédula Jurídica</option>
                                 <option value=03>Pasaporte</option>
@@ -226,40 +227,41 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="IdentificacionReceptor">Identificación</label>
-                            <input type="text" class="form-control" id="IdentificacionReceptor" name="identificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_num_identif" aria-label="Identificación del receptor" aria-describedby="pendiente" />
+                            <input type="text" class="form-control" id="IdentificacionReceptor" name="identificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_num_identif" aria-label="Identificación del receptor" aria-describedby="pendiente" required
+                            />
                         </div>
 
                     </div>
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="CorreoReceptor">Correo electrónico</label>
-                            <input type="text" class="form-control" id="CorreoReceptor" name="correoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_email" aria-label="Correo electrónico del receptor" aria-describedby="pendiente" />
+                            <input type="text" class="form-control" id="CorreoReceptor" name="correoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_email" aria-label="Correo electrónico del receptor" aria-describedby="pendiente" required />
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TelefonoReceptor">Teléfono</label>
-                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente" />
+                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente" required />
                         </div>
                         <div class="form-item col-md-4">
                             <label for="FaxReceptor">Fax</label>
-                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" />
+                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="ProvinciaReceptor">Provincia</label>
-                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_provincia">
+                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_provincia" required>
                                 <option value="1">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="CantonReceptor">Cantón</label>
-                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_canton">
+                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_canton" required>
                                 <option value="1">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="DistritoReceptor">Distrito</label>
-                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_distrito">
+                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_distrito" required>
                                 <option value="1">Carmen</option>
                             </select>
                         </div>
@@ -267,7 +269,7 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="BarrioReceptor">Barrio</label>
-                            <select class="form-control" id="BarrioReceptor" name="BarrioReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_barrio">
+                            <select class="form-control" id="BarrioReceptor" name="BarrioReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_barrio" required>
                                 <option value="1">San José (parte)</option>
                             </select>
                         </div>
@@ -314,7 +316,7 @@
         <div class="row">
             <div class="col-md-4 form-item">
                 <label for="metodos">Método de pago</label>
-                <select class="form-control" name="metodos" id="metodos" [(ngModel)]="datosXML.medio_pago">
+                <select class="form-control" name="metodos" id="metodos" [(ngModel)]="datosXML.medio_pago" required>
                     <option value="01" selected>Efectivo</option>
                     <option value="02">Tarjeta</option>
                     <option value="03">Cheque</option>
@@ -325,7 +327,7 @@
             </div>
             <div class="col-md-4 form-item">
                 <label for="condiciones">Condición de venta</label>
-                <select class="form-control mb-3" name="condiciones" id="condiciones" [(ngModel)]="datosXML.condicion_venta">
+                <select class="form-control mb-3" name="condiciones" id="condiciones" [(ngModel)]="datosXML.condicion_venta" required>
                     <option value="01" selected>Contado</option>
                     <option value="02">Crédito</option>
                     <option value="03">Consignación</option>
@@ -341,7 +343,7 @@
             <div class="col-md-4 form-item">
                 <div class="form-group mb-0" *ngIf="datosXML.condicion_venta === 'Crédito'">
                     <label for="plazo">Plazo del crédito:</label>
-                    <input type="text" class="form-control" id="plazo" placeholder="" name="plazo" [(ngModel)]="datosXML.plazo_credito">
+                    <input type="text" class="form-control" id="plazo" placeholder="" name="plazo" [(ngModel)]="datosXML.plazo_credito" required>
                 </div>
             </div>
         </div>
@@ -418,20 +420,21 @@
                 <tbody>
                     <tr *ngFor="let linea of lineas; let i = index">
                         <th scope="row">
-                            <input type="text" [(ngModel)]="linea.producto" class="form-control has-search" placeholder="Buscar" [formControl]="linea.control" [matAutocomplete]="auto">
+                            <input type="text" [(ngModel)]="linea.producto" class="form-control has-search" placeholder="Buscar" [formControl]="linea.control" [matAutocomplete]="auto" required>
                             <mat-autocomplete [panelWidth]="800" #auto="matAutocomplete">
                                 <mat-option *ngFor="let cabys of linea.filtro | async" [value]="cabys.descripcion" (click)="setImpuesto(linea, cabys);">
                                     {{cabys.descripcion}}
                                 </mat-option>
                             </mat-autocomplete>
                         </th>
-                        <td><input type="number" min="1" class="form-control" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input type="number" min="1" class="form-control" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}" required></td>
                         <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}">
                                 <option value="Al">Alquiler de uso habitacional</option>
                                 <option value="Alc">Alquiler de uso comercial</option>
                                 <option value="Cm">Comisiones</option>
                                 <option value="g">Gramo</option>
                                 <option value="I">Intereses</option>
+                                <option value="Kg">Kilogramo</option>
                                 <option value="L">Litro</option>
                                 <option value="m">Metro</option>
                                 <option value="m2">Metro cuadrado</option>
@@ -450,7 +453,7 @@
                         <td><input type="number" min="5" class="form-control" (change)="calcularTotalesLinea(linea)" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}"></td>
                         <td>
                             <div class="input-group">
-                                <input type="number" min="0" class="form-control w-50" placeholder="1" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}">
+                                <input type="number" min="0" class="form-control w-50" placeholder="1" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}" required>
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
@@ -464,7 +467,7 @@
 
 
                         <td><input *ngIf="linea.descuento > 0" type="text" class="form-control" [(ngModel)]="linea.razon" [ngModelOptions]="{standalone: true}"></td>
-                        <td><select class="form-control custom-select" (change)="actualizarTarifaLinea(linea);" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}">
+                        <td><select class="form-control custom-select" (change)="actualizarTarifaLinea(linea);" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}" required>
                                 <option value="01-01">IVA exento</option>
                                 <option value="01-02">IVA reducido 1%</option>
                                 <option value="01-03">IVA reducido 2%</option>
@@ -517,15 +520,15 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let cargo of otrosCargos; let i = index">
-                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)">
+                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)" required>
                                 <option value="Cobro de un tercero">Cobro de un tercero</option>
                                 <option value="Impuesto de servicio 10%">Impuesto de servicio 10%</option>
                                 <option value="Otros cargos">Otros cargos</option>
                             </select></th>
-                        <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="" [ngModelOptions]="{standalone: true}" required></td>
                         <td>
                             <div class="input-group">
-                                <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}">
+                                <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required>
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
