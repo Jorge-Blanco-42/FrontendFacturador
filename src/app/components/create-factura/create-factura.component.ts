@@ -32,11 +32,6 @@ export interface Clientes {
   receptor_cod_pais_fax: string, receptor_fax: string,
   correo: string
 
-  /*
-  nombre: string;
-  identificacion: number;
-  correo: string;*/
-
 }
 
 const ELEMENT_DATA: Clientes[] = [
@@ -53,7 +48,7 @@ const ELEMENT_DATA: Clientes[] = [
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
   {
-    nombre: "María Fernanda Niño Ramírez", receptor_tipo_identif: "01", identificacion: "123456789",
+    nombre: "María Fernanda Niño Ramírez", receptor_tipo_identif: "01", identificacion: "117170242",
     receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
@@ -123,21 +118,34 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   descripciones: string[] = [];
   clienteSeleccionado = false;
   receptorDatosImportantes = true;
+  public lineasJSON: {}[] = [];
 
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
+  claveXML: ClaveXML;
+  signXML: FirmadoXML;
+  sendXML: EnvioXML;
 
 
-  constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS) {
-
+  constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
+              private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
+              private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,) {
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "86153313", "81726354", "FE");
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(), "Jorge Blanco Cordero", "01", "117510169", "Jorge Blanco Cordero", "1", "10", "4", "4", "Mi casa", "506", "86153313",
       "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "", "", "", "", "", "506", "", "506", "", "", "01",
       "0", "01", "CRC", "", "", "", "", "", "", "", "", "", "", "", "", "",
       "", "", "");
+    this.signXML = new FirmadoXML("signXML", "signFE",
+      "67d23a034ddf5991e5a8e9a72e708f4c", "",
+      "2021", "FE");
+    this.sendXML = new EnvioXML("send", "json", "this.token.access_token", "50626032100011751016900100001011522773402174658321", 
+      "", "01", "117510169", "01", "114480790", "","api-stag");
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
     this.impuestoTarifa = new Map();
     this.total_OtrosCargos = 0;
+    
+
   }
 
 
@@ -212,6 +220,84 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   enviar(form: any): void {
+    this.lineas.forEach(linea => {
+      if (linea.descuento > 0) {
+        if (linea.tarifa > 0) {//Linea con descuento y tarifa
+          console.log("Tarifa+descuento");
+          this.lineasJSON.push({ cantidad: linea.cantidad, unidadMedida: linea.tipo, detalle: linea.producto,
+            precioUnitario: linea.precioUnitario, montoTotal: linea.total, subTotal: linea.subtotal, 
+            montoTotalLinea: linea.total, montoDescuento: linea.descuento, naturalezaDescuento: linea.razon, 
+            impuesto: [{ codigo: linea.impuesto.slice(0, 2), tarifa: ((linea.tarifa - 1) * 100), 
+            monto: (linea.tarifa - 1) * linea.subtotal }] });
+        }else{//Linea con solo descuento
+          console.log("descuento");
+          this.lineasJSON.push({ cantidad: linea.cantidad, unidadMedida: linea.tipo, detalle: linea.producto, 
+            precioUnitario: linea.precioUnitario, montoTotal: linea.total, subTotal: linea.subtotal, 
+            montoTotalLinea: linea.total, montoDescuento: linea.descuento, naturalezaDescuento: linea.razon });
+        }
+      }else if (linea.tarifa > 0){//Linea con solo tarifa
+        console.log("Tarifa");
+        this.lineasJSON.push({ cantidad: linea.cantidad, unidadMedida: linea.tipo, detalle: linea.producto,
+          precioUnitario: linea.precioUnitario, montoTotal: linea.total, subTotal: linea.subtotal, 
+          montoTotalLinea: linea.total, impuesto: [{ codigo: linea.impuesto.slice(0, 2), 
+          tarifa: ((linea.tarifa - 1) * 100), monto: (linea.tarifa - 1) * linea.subtotal }] });
+      }else{//Linea solo con productos
+        console.log("Nada");
+        this.lineasJSON.push({ cantidad: linea.cantidad, unidadMedida: linea.tipo, detalle: linea.producto, 
+          precioUnitario: linea.precioUnitario, montoTotal: linea.total, subTotal: linea.subtotal, 
+          montoTotalLinea: linea.total});
+      }
+      
+    });
+    console.log(this.lineasJSON);
+    this.datosXML.detalles = JSON.stringify(this.lineasJSON);
+    this._servicioClaveXML.crearClaveXML(this.claveXML).subscribe(
+      result => {
+        console.log("CLAVE XML ", <any>result);
+        this.datosXML.clave = result.clave;
+        this.datosXML.consecutivo = result.consecutivo;
+        this._createXMLService.crearXML(this.datosXML).subscribe(
+          result2 => {
+            console.log("XML Creado", <any>result2);
+            this.signXML.inXml = result2.xml;
+            this._signXMLService.firmarFEXML(this.signXML).subscribe(
+              result3 =>{
+                console.log("XML FIRMADO", <any>result3);
+                let token = localStorage.getItem("token");
+                if(token){
+                  this.sendXML.token = token;
+                }else{
+                  console.log("SE DESPICHO EL TOKEN");
+                }
+                this.sendXML.fecha = this.datosXML.fecha_emision;
+                this.sendXML.comprobanteXml = result3.xmlFirmado;
+                this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
+                  result4 => {
+                    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                    console.log(<any>result4);
+                  },
+                  error4 =>{
+                    console.log("PICHA");
+                    console.log(<any>error4);
+                  }
+                )
+                
+              },
+              error3 =>{
+                console.log(<any>error3);
+              }
+            )
+          },
+          error2 =>{
+            console.log(<any>error2);
+          }
+        )
+      },
+      error => {
+        //alert(<any>error);
+        console.log(<any>error)
+      }
+    );
     console.log(form);
 
   }
@@ -284,57 +370,57 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     let total_merc_gravada = 0;
     let total_merc_exenta = 0;
     let total_merc_exonerados = 0;
-    let total_gravados = 0; 
+    let total_gravados = 0;
     let total_exentos = 0;
     let total_exonerados = 0;
-    let total_ventas = 0; 
+    let total_ventas = 0;
     let total_descuentos = 0;
-    let total_ventas_neta = 0; 
+    let total_ventas_neta = 0;
     let total_impuestos = 0;
     this.lineas.forEach(linea => {
       if (linea.impuesto === "01-01" || linea.impuesto === '01-05') {//Exento
-        if(linea.tipo === 'Sp' || linea.tipo === 'St' || linea.tipo === 'Os'){
+        if (linea.tipo === 'Sp' || linea.tipo === 'St' || linea.tipo === 'Os') {
           total_serv_exentos += linea.subtotal;
-        }else{
+        } else {
           total_merc_exenta += linea.subtotal;
         }
         total_exentos += linea.subtotal;
-      }else{//gravado
-        if(linea.tipo === 'Sp' || linea.tipo === 'St' || linea.tipo === 'Os'){
+      } else {//gravado
+        if (linea.tipo === 'Sp' || linea.tipo === 'St' || linea.tipo === 'Os') {
           total_serv_gravados += linea.subtotal;
-        }else{
+        } else {
           total_merc_gravada += linea.subtotal;
         }
         total_gravados += linea.subtotal;
       }
-      if(linea.porcentaje){
-        total_descuentos += linea.subtotal*(linea.descuento/100);
-      }else{
+      if (linea.porcentaje) {
+        total_descuentos += linea.subtotal * (linea.descuento / 100);
+      } else {
         total_descuentos += linea.descuento;
       }
-      total_impuestos += linea.subtotal * (linea.tarifa-1);
+      total_impuestos += linea.subtotal * (linea.tarifa - 1);
     });
     total_ventas = total_gravados + total_exentos + total_exonerados;
-    this.datosXML.total_ventas = total_ventas.toString(); 
+    this.datosXML.total_ventas = total_ventas.toString();
     this.otrosCargos.forEach(cargo => {
       console.log("cargo");
       this.actualizarCargo(cargo);
     });
-    total_ventas_neta = total_ventas - total_descuentos;    
+    total_ventas_neta = total_ventas - total_descuentos;
     total_comprobante = total_ventas_neta + total_impuestos + this.total_OtrosCargos;
     this.datosXML.total_comprobante = total_comprobante.toString();
     this.datosXML.total_serv_gravados = total_serv_gravados.toString();
     this.datosXML.total_serv_exentos = total_serv_exentos.toString();
     this.datosXML.total_merc_gravada = total_merc_gravada.toString();
     this.datosXML.total_merc_exenta = total_merc_exenta.toString();
-    this.datosXML.total_gravados = total_gravados.toString(); 
+    this.datosXML.total_gravados = total_gravados.toString();
     this.datosXML.total_exentos = total_exentos.toString();
-    
+
     this.datosXML.total_descuentos = total_descuentos.toString();
-    this.datosXML.total_ventas_neta = total_ventas_neta.toString(); 
+    this.datosXML.total_ventas_neta = total_ventas_neta.toString();
     this.datosXML.total_impuestos = total_impuestos.toString();
-    
-    
+
+
   }
 
   getCabys() {
@@ -360,25 +446,25 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   nuevoCargo() {
-    this.otrosCargos.push(new OtroCargo("", "", 1,false, "", "", "",0));
+    this.otrosCargos.push(new OtroCargo("", "", 1, false, "", "", "", 0));
   }
 
   borrarCargo(index: number) {
     this.otrosCargos.splice(index, 1);
   }
 
-  setMontoCargo(cargo: OtroCargo){
-    if(cargo.tipoDocumento === "Impuesto de servicio 10%"){
+  setMontoCargo(cargo: OtroCargo) {
+    if (cargo.tipoDocumento === "Impuesto de servicio 10%") {
       cargo.porcentaje = true;
-      cargo.monto = 10;      
+      cargo.monto = 10;
     }
     this.actualizarCargo(cargo);
   }
 
-  actualizarCargo(cargo: OtroCargo){
+  actualizarCargo(cargo: OtroCargo) {
     console.log("UPDATE");
-    if (cargo.porcentaje) {      
-      cargo.total = Number(this.datosXML.total_ventas) * (cargo.monto/100);
+    if (cargo.porcentaje) {
+      cargo.total = Number(this.datosXML.total_ventas) * (cargo.monto / 100);
     } else {
       cargo.total = cargo.monto;
     }
