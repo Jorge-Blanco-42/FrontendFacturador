@@ -181,7 +181,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   paginatorResumen!: MatPaginator;
 
   inputEnter() {
-    console.log("puto el que submit");
+    //console.log("puto el que submit");
   }
 
   ngAfterViewInit() {
@@ -215,7 +215,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   private _normalizeValue(value: string): string {
-    //console.log("normalize value ",value);
+    ////console.log("normalize value ",value);
     return value.toLowerCase().replace(/\s/g, '');
   }
 
@@ -223,82 +223,82 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.lineas.forEach(linea => {
       if (linea.descuento > 0) {
         if (linea.tarifa > 0) {//Linea con descuento y tarifa
-          console.log("Tarifa+descuento");
+          //console.log("Tarifa+descuento");
           this.lineasJSON.push({ cantidad: linea.cantidad, unidadMedida: linea.tipo, detalle: linea.producto,
             precioUnitario: linea.precioUnitario, montoTotal: linea.total, subTotal: linea.subtotal, 
             montoTotalLinea: linea.total, montoDescuento: linea.descuento, naturalezaDescuento: linea.razon, 
             impuesto: [{ codigo: linea.impuesto.slice(0, 2), tarifa: ((linea.tarifa - 1) * 100), 
             monto: (linea.tarifa - 1) * linea.subtotal }] });
         }else{//Linea con solo descuento
-          console.log("descuento");
+          //console.log("descuento");
           this.lineasJSON.push({ cantidad: linea.cantidad, unidadMedida: linea.tipo, detalle: linea.producto, 
             precioUnitario: linea.precioUnitario, montoTotal: linea.total, subTotal: linea.subtotal, 
             montoTotalLinea: linea.total, montoDescuento: linea.descuento, naturalezaDescuento: linea.razon });
         }
       }else if (linea.tarifa > 0){//Linea con solo tarifa
-        console.log("Tarifa");
+        //console.log("Tarifa");
         this.lineasJSON.push({ cantidad: linea.cantidad, unidadMedida: linea.tipo, detalle: linea.producto,
           precioUnitario: linea.precioUnitario, montoTotal: linea.total, subTotal: linea.subtotal, 
           montoTotalLinea: linea.total, impuesto: [{ codigo: linea.impuesto.slice(0, 2), 
           tarifa: ((linea.tarifa - 1) * 100), monto: (linea.tarifa - 1) * linea.subtotal }] });
       }else{//Linea solo con productos
-        console.log("Nada");
+        //console.log("Nada");
         this.lineasJSON.push({ cantidad: linea.cantidad, unidadMedida: linea.tipo, detalle: linea.producto, 
           precioUnitario: linea.precioUnitario, montoTotal: linea.total, subTotal: linea.subtotal, 
           montoTotalLinea: linea.total});
       }
       
     });
-    console.log(this.lineasJSON);
+    //console.log(this.lineasJSON);
     this.datosXML.detalles = JSON.stringify(this.lineasJSON);
     this._servicioClaveXML.crearClaveXML(this.claveXML).subscribe(
       result => {
-        console.log("CLAVE XML ", <any>result);
+        //console.log("CLAVE XML ", <any>result);
         this.datosXML.clave = result.clave;
         this.datosXML.consecutivo = result.consecutivo;
         this._createXMLService.crearXML(this.datosXML).subscribe(
           result2 => {
-            console.log("XML Creado", <any>result2);
+            //console.log("XML Creado", <any>result2);
             this.signXML.inXml = result2.xml;
             this._signXMLService.firmarFEXML(this.signXML).subscribe(
               result3 =>{
-                console.log("XML FIRMADO", <any>result3);
+                //console.log("XML FIRMADO", <any>result3);
                 let token = localStorage.getItem("token");
                 if(token){
                   this.sendXML.token = token;
                 }else{
-                  console.log("SE DESPICHO EL TOKEN");
+                  //console.log("SE DESPICHO EL TOKEN");
                 }
                 this.sendXML.fecha = this.datosXML.fecha_emision;
                 this.sendXML.comprobanteXml = result3.xmlFirmado;
                 this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
                   result4 => {
-                    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                    console.log(<any>result4);
+                    //console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                    //console.log(<any>result4);
                   },
                   error4 =>{
-                    console.log("PICHA");
-                    console.log(<any>error4);
+                    //console.log("PICHA");
+                    //console.log(<any>error4);
                   }
                 )
                 
               },
               error3 =>{
-                console.log(<any>error3);
+                //console.log(<any>error3);
               }
             )
           },
           error2 =>{
-            console.log(<any>error2);
+            //console.log(<any>error2);
           }
         )
       },
       error => {
         //alert(<any>error);
-        console.log(<any>error)
+        //console.log(<any>error)
       }
     );
-    console.log(form);
+    //console.log(form);
 
   }
 
@@ -310,7 +310,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   actualizarTipoCambio(fecha: Date) {
     let latest_date = this.datepipe.transform(fecha, 'yyyy-MM-dd');
-    console.log(latest_date);
+    //console.log(latest_date);
     let arrayfecha = [];
     if (latest_date) {
       arrayfecha = latest_date.split("-");
@@ -320,28 +320,28 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     }
     this._servicioTipoCambio.getTipoCambio(this.cambio).subscribe(
       result => {
-        console.log("Tipo de cambio: ", <any>result)
+        //console.log("Tipo de cambio: ", <any>result)
         this.tipo_cambio = result.venta;
         this.datosXML.tipo_cambio = this.tipo_cambio.toString();
       },
       error => {
-        console.log(<any>error)
+        //console.log(<any>error)
       }
     );
   }
   actualizarTarifaLinea(linea: Linea) {
     let tarifa = this.impuestoTarifa.get(linea.impuesto);
-    console.log(tarifa);
+    //console.log(tarifa);
     if (tarifa != undefined) {
       linea.tarifa = tarifa;
     }
-    console.log(linea);
+    //console.log(linea);
     this.calcularTotalesLinea(linea);
   }
 
   calcularTotalesLinea(linea: Linea) {
     linea.subtotal = linea.cantidad * linea.precioUnitario
-    console.log(linea.porcentaje);
+    //console.log(linea.porcentaje);
     if (linea.porcentaje) {
       if (linea.tarifa != 0) {
         linea.total = linea.subtotal * linea.tarifa - (linea.subtotal * (linea.descuento / 100))
@@ -361,7 +361,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   calcularTotales() {
-    console.log("suelte la harina, pa");
+    //console.log("suelte la harina, pa");
     this.total_OtrosCargos = 0;
     let total_comprobante = 0;
     let total_serv_gravados = 0;
@@ -403,7 +403,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     total_ventas = total_gravados + total_exentos + total_exonerados;
     this.datosXML.total_ventas = total_ventas.toString();
     this.otrosCargos.forEach(cargo => {
-      console.log("cargo");
+      //console.log("cargo");
       this.actualizarCargo(cargo);
     });
     total_ventas_neta = total_ventas - total_descuentos;
@@ -434,15 +434,15 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           this.cabys = result;
           localStorage.setItem("cabys", JSON.stringify(result))
           localStorage.setItem("descripciones", JSON.stringify(this.cabys))
-          console.log("traido", this.descripciones[0]);
+          //console.log("traido", this.descripciones[0]);
         },
         error => {
-          console.log(<any>error)
+          //console.log(<any>error)
         }
       );
     }
     //this.streets.concat(this.descripciones);
-    //console.log(this.streets);
+    ////console.log(this.streets);
   }
 
   nuevoCargo() {
@@ -462,7 +462,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   actualizarCargo(cargo: OtroCargo) {
-    console.log("UPDATE");
+    //console.log("UPDATE");
     if (cargo.porcentaje) {
       cargo.total = Number(this.datosXML.total_ventas) * (cargo.monto / 100);
     } else {
@@ -485,10 +485,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.dataSourceResumen.connect().next(this.lineas);
     if (this.paginatorResumen) {
       this.paginatorResumen._changePageSize(this.paginatorResumen.pageSize);
-      console.log("caca")
+      //console.log("caca")
     }
     this.setDataSourceResumenAttributes()
-    console.log(this.dataSourceResumen);
+    //console.log(this.dataSourceResumen);
   }
 
   setImpuesto(linea: Linea, cabys: { descripcion: string, impuesto: string }) {
@@ -522,11 +522,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   guardarEmisor() {
-    console.log("PENDIENTE")
+    //console.log("PENDIENTE")
   }
 
   guardarReceptor() {
-    console.log("PENDIENTE")
+    //console.log("PENDIENTE")
   }
 
   borrarLinea(index: number) {
@@ -569,7 +569,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.datosXML.receptor_canton = row.receptor_canton;
     this.datosXML.receptor_barrio = row.receptor_barrio;
     this.datosXML.receptor_distrito = row.receptor_distrito;
-    console.log(row);
+    //console.log(row);
   }
 
   // aqui hay algo raro.. TIPORECEPTOR AL REVES
@@ -587,7 +587,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       this.receptorDeshabilitado = false;
       this.isCollapsedReceptorData = false;
     }
-    console.log(this.clienteRegistrado);
+    //console.log(this.clienteRegistrado);
 
   }
 
