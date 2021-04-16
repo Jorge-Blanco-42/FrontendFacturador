@@ -23,22 +23,55 @@ import { ViewChild, AfterViewInit } from '@angular/core';
 
 //inicio mary
 export interface Clientes {
-  nombre: string;
-  identificacion: number;
-  correo: string;
+  
+   nombre: string,
+   receptor_tipo_identif: string,  identificacion: string,
+   receptor_provincia: string,  receptor_canton: string,
+   receptor_distrito: string,  receptor_barrio: string,
+   receptor_cod_pais_tel: string,  receptor_tel: string,
+   receptor_cod_pais_fax: string,  receptor_fax: string,
+   correo : string
+   
+   /*
+   nombre: string;
+   identificacion: number;
+   correo: string;*/
+
 }
 
 const ELEMENT_DATA: Clientes[] = [
-  { nombre: 'Daniel Riquelme Argüello', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'Josué Siles Durán ', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'Pedro Melendez Melendez', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'Sebastían Rojas Lora', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'Andres Gómez Sanchez', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'Dennis Angulo Fuentes', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'José Martinez Garay', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'Esteban Gonzalez Matamoros', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'Alejandra Rivera Alvarado', identificacion: 123456789, correo: 'example@example.com' },
-  { nombre: 'Daniel Vargas Camacho', identificacion: 123456789, correo: 'example@example.com' },
+  {nombre: "David Gónzalez",receptor_tipo_identif: "01",  identificacion: "123456789",
+   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
+   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
+   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
+   {nombre: "Jorge Blanco Cordero",receptor_tipo_identif: "01",  identificacion: "123456789",
+   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
+   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
+   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
+   {nombre: "María Fernanda Niño Ramírez",receptor_tipo_identif: "01",  identificacion: "123456789",
+   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
+   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
+   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
+   {nombre: "José Martinez Garay",receptor_tipo_identif: "01",  identificacion: "123456789",
+   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
+   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
+   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
+   {nombre: "Daniel Vargas Camacho",receptor_tipo_identif: "01",  identificacion: "123456789",
+   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
+   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
+   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
+   {nombre: "Usuario de prueba 1",receptor_tipo_identif: "01",  identificacion: "123456789",
+   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
+   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
+   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
+   {nombre: "Usuario de prueba 2",receptor_tipo_identif: "01",  identificacion: "123456789",
+   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
+   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
+   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
+   {nombre: "Usuario de prueba 3",receptor_tipo_identif: "01",  identificacion: "123456789",
+   receptor_provincia: "1",  receptor_canton: "1", receptor_distrito: "1",  receptor_barrio: "1",
+   receptor_cod_pais_tel: "506",  receptor_tel: "22446688",receptor_cod_pais_fax: "506", 
+   receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"},
 ];
 
 const ELEMENT_DATA_LINEA: Linea[] = [
@@ -64,7 +97,7 @@ const ELEMENT_DATA_LINEA: Linea[] = [
   styleUrls: ['./create-factura.component.css'],
   providers: [DatePipe, ServicioTipoCambio, ServicioCaByS]
 })
-export class CreateFacturaComponent implements OnInit, AfterViewInit{
+export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
@@ -76,7 +109,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit{
   public isCollapsedResumenData = true;
   public emisorDeshabilitado = true;
   public receptorDeshabilitado = true;
-  public tipoReceptor: string;
+  public clienteRegistrado: boolean = true;
+  public radioCliente:number= 0;
   impuestoTarifa: Map<string, number>;
   public datosXML: CreacionXML;
   public cambio: TipoCambio;
@@ -84,32 +118,31 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit{
   public maxDate = new Date();
   public lineas: Linea[] = [];
   public otrosCargos: OtroCargo[] = [];
-  cabys: {impuesto: string, descripcion: string}[] = [];
+  cabys: { impuesto: string, descripcion: string }[] = [];
   descripciones: string[] = [];
   clienteSeleccionado = false;
   receptorDatosImportantes = true;
 
   dataSource = new MatTableDataSource(ELEMENT_DATA);
-  dataSourceResumen : MatTableDataSource<Linea>= new MatTableDataSource(this.lineas);
-  
+  dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
+
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS) {
-    this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", "", "Jorge Blanco Cordero", "01", "117510169", "Jorge Blanco Cordero", "", "", "", "", "", "", "",
-      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-      "", "", "CRC", "", "", "", "", "", "", "", "", "", "", "", "", "",
+
+    this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(), "Jorge Blanco Cordero", "01", "117510169", "Jorge Blanco Cordero", "1", "10", "4", "4", "Mi casa", "506", "86153313",
+      "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "", "", "", "", "", "506", "", "506", "", "", "01",
+      "0", "01", "CRC", "", "", "", "", "", "", "", "", "", "", "", "", "",
       "", "", "");
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
-    this.tipoReceptor = "REGISTRADO";
     this.impuestoTarifa = new Map();
 
   }
 
 
   ngOnInit(): void {
-    this.datosXML.condicion_venta = "Contado";
-    this.datosXML.medio_pago = "Efectivo";
-    this.tipoReceptor = "REGISTRADO";
+    this.datosXML.condicion_venta = "01";
+    this.datosXML.medio_pago = "01";
     this.actualizarTipoCambio(this.maxDate);
     this.getCabys();
     this.impuestoTarifa.set("01-01", 0);
@@ -128,9 +161,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit{
     this.paginator = mp;
     this.setDataSourceAttributes();
   }
-  
+
   setDataSourceAttributes() {
-    if(this.paginator){
+    if (this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
   }
@@ -139,7 +172,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit{
   paginatorResumen!: MatPaginator;
 
   ngAfterViewInit() {
-    if(this.paginatorResumen){
+    if (this.paginatorResumen) {
       this.dataSourceResumen.paginator = this.paginatorResumen;
     }
   }
@@ -148,15 +181,15 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit{
   //   this.paginatorResumen = mp;
   //   this.setDataSourceResumenAttributes();
   // }
-  
+
   setDataSourceResumenAttributes() {
-    if(this.paginatorResumen){
+    if (this.paginatorResumen) {
       this.dataSourceResumen.paginator = this.paginatorResumen;
     }
   }
 
   private _filter(value: string): { descripcion: string, impuesto: string }[] {
-    if(value){
+    if (value) {
       const filterValue = this._normalizeValue(value);
       if (filterValue.length > 3) {
         return this.cabys.filter(cabys => this._normalizeValue(cabys.descripcion).includes(filterValue));
@@ -275,7 +308,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit{
     this.lineas.push(new Linea("", control, filtro, 0, "Sp", 0, 0, "", "01-08", false, 0, 1.13, "", ""));
     this.dataSourceResumen.data = this.lineas;
     this.dataSourceResumen.connect().next(this.lineas);
-    if(this.paginatorResumen){
+    if (this.paginatorResumen) {
       this.paginatorResumen._changePageSize(this.paginatorResumen.pageSize);
       console.log("caca")
     }
@@ -283,7 +316,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit{
     console.log(this.dataSourceResumen);
   }
 
-  setImpuesto(linea:Linea, cabys: { descripcion: string, impuesto: string }) {
+  setImpuesto(linea: Linea, cabys: { descripcion: string, impuesto: string }) {
     let impuesto = cabys.impuesto;
     switch (impuesto) {
       case "1%":
@@ -351,23 +384,35 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit{
   getRecord(row: any) {
     this.clienteSeleccionado = true;
     this.datosXML.receptor_nombre = row.nombre;
+    this.datosXML.receptor_tipo_identif = row.receptor_tipo_identif;
+    this.datosXML.receptor_num_identif = row.identificacion;
+    this.datosXML.receptor_email = row.correo;
+    this.datosXML.receptor_tel = row.receptor_tel;
+    this.datosXML.receptor_fax = row.receptor_fax;
+    this.datosXML.receptor_provincia = row.receptor_provincia;
+    this.datosXML.receptor_canton = row.receptor_canton;
+    this.datosXML.receptor_barrio = row.receptor_barrio;
+    this.datosXML.receptor_distrito = row.receptor_distrito;
     console.log(row);
   }
 
   // aqui hay algo raro.. TIPORECEPTOR AL REVES
-  seleccionarTipoCliente() {
+  seleccionarTipoCliente(registrado: boolean) {
     this.clienteSeleccionado = false;
-    console.log(this.tipoReceptor);
-    if (this.tipoReceptor === "REGISTRADO") {
-      this.receptorDatosImportantes = false;
-      this.receptorDeshabilitado = false;
-      this.isCollapsedReceptorData = false;
-      this.datosXML.receptor_nombre = "";
-    } else {
+    if (registrado) {
+      this.clienteRegistrado = true;
       this.receptorDatosImportantes = true;
       this.receptorDeshabilitado = true;
       this.isCollapsedReceptorData = true;
+      this.datosXML.receptor_nombre = "";
+    } else {
+      this.clienteRegistrado = false;
+      this.receptorDatosImportantes = false;
+      this.receptorDeshabilitado = false;
+      this.isCollapsedReceptorData = false;
     }
+    console.log(this.clienteRegistrado);
+
   }
 
   modificarReceptor() {
