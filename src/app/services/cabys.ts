@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
 import { FormBuilder} from "@angular/forms";
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ServicioCaByS {
@@ -12,7 +13,7 @@ export class ServicioCaByS {
     constructor(
         public _http: HttpClient
     ) {
-        this.backendUrl = Global.backendUrl;
+        this.backendUrl = environment.backendUrl;
     }
 
     getCaByS(): Observable<any> {

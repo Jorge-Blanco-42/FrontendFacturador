@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
 import { FormBuilder} from "@angular/forms";
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ServicioCertificado {
@@ -13,7 +14,7 @@ export class ServicioCertificado {
     constructor(
         public _http: HttpClient
     ) {
-        this.backendUrl = Global.backendUrl;
+        this.backendUrl = environment.backendUrl;
         this.url = Global.url;
     }
 
