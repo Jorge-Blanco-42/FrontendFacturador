@@ -238,3 +238,13 @@
     #tablaResumenFactura h6 {
         color: #7357C2;
     }
+
+    .footer-flex{
+        display: flex; 
+        flex-direction: column; 
+        height: 100%;
+    }
+
+    #content{
+        flex: 1;
+    }
