@@ -96,50 +96,58 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
-
   private paginator: MatPaginator | undefined;
-  // private paginatorResumen: MatPaginator | undefined;
-  public isCollapsedEmisorData = true;
-  public isCollapsedReceptorData = true;
-  public isCollapsedResumenData = true;
-  public emisorDeshabilitado = true;
-  public receptorDeshabilitado = true;
+
+  public isCollapsedEmisorData: boolean = true;
+  public isCollapsedReceptorData: boolean = true;
+  public isCollapsedResumenData: boolean = true;
+  public emisorDeshabilitado: boolean = true;
+  public receptorDeshabilitado: boolean = true;
   public clienteRegistrado: boolean = true;
+  clienteSeleccionado: boolean = false;
+  receptorDatosImportantes: boolean = true;
+
   public radioCliente: number = 0;
-  public impuestoTarifa: Map<string, number>;
-  public datosXML: CreacionXML;
-  public cambio: TipoCambio;
-  public tipo_cambio: Number;
   public total_OtrosCargos: number;
+  public tipo_cambio: Number;
+
+  public impuestoTarifa: Map<string, number>;
+  public cambio: TipoCambio;
+
   public maxDate = new Date();
+  cabys: { impuesto: string, descripcion: string }[] = [];
+  public lineasJSON: {}[] = [];
+  
+  public datosXML: CreacionXML;
   public lineas: Linea[] = [];
   public otrosCargos: OtroCargo[] = [];
-  cabys: { impuesto: string, descripcion: string }[] = [];
-  descripciones: string[] = [];
-  clienteSeleccionado = false;
-  receptorDatosImportantes = true;
-  public lineasJSON: {}[] = [];
-
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
-  dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
   claveXML: ClaveXML;
   signXML: FirmadoXML;
   sendXML: EnvioXML;
 
+  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
               private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
               private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "86153313", "81726354", "FE");
-    this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(), "Jorge Blanco Cordero", "01", "117510169", "Jorge Blanco Cordero", "1", "10", "4", "4", "Mi casa", "506", "86153313",
-      "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "", "", "", "", "", "506", "", "506", "", "", "01",
-      "0", "01", "CRC", "", "", "", "", "", "", "", "", "", "", "", "", "",
-      "", "", "");
-    this.signXML = new FirmadoXML("signXML", "signFE",
-      "67d23a034ddf5991e5a8e9a72e708f4c", "",
-      "2021", "FE");
-    this.sendXML = new EnvioXML("send", "json", "this.token.access_token", "50626032100011751016900100001011522773402174658321", 
-      "", "01", "117510169", "01", "114480790", "","api-stag");
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "86153313", 
+                                 "81726354", "FE");
+
+    this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
+                                    "Jorge Blanco Cordero", "01", "117510169", "Jorge Blanco Cordero", 
+                                    "1", "10", "4", "4", "Mi casa", "506", "86153313",
+                                    "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "",
+                                     "", "", "", "", "506", "", "506", "", "", "01","0", "01", "CRC", 
+                                     "", "", "", "", "", "", "", "", "", "", "", "", "","", "", "");
+
+    this.signXML = new FirmadoXML("signXML", "signFE","67d23a034ddf5991e5a8e9a72e708f4c", "",
+                                  "2021", "FE");
+
+    this.sendXML = new EnvioXML("send", "json", "this.token.access_token", 
+                                "50626032100011751016900100001011522773402174658321","", "01", 
+                                "117510169", "01", "114480790", "","api-stag");
+
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
     this.impuestoTarifa = new Map();
@@ -148,24 +156,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   }
 
-
-  ngOnInit(): void {
-    this.datosXML.condicion_venta = "01";
-    this.datosXML.medio_pago = "01";
-    this.actualizarTipoCambio(this.maxDate);
-    this.getCabys();
-    this.impuestoTarifa.set("01-01", 0);
-    this.impuestoTarifa.set("01-02", 1.01);
-    this.impuestoTarifa.set("01-03", 1.02);
-    this.impuestoTarifa.set("01-04", 1.04);
-    this.impuestoTarifa.set("01-05", 0);
-    this.impuestoTarifa.set("01-06", 1.02);
-    this.impuestoTarifa.set("01-07", 1.04);
-    this.impuestoTarifa.set("01-08", 1.13);
-    this.impuestoTarifa.set("07", 0);
-    this.impuestoTarifa.set("08", 0);
-  }
-
+  
   @ViewChild('clientesPaginator') set matPaginator(mp: MatPaginator) {
     this.paginator = mp;
     this.setDataSourceAttributes();
@@ -180,8 +171,20 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   @ViewChild('resumenPaginator')
   paginatorResumen!: MatPaginator;
 
-  inputEnter() {
-    //console.log("puto el que submit");
+  ngOnInit(): void {
+
+    this.actualizarTipoCambio(this.maxDate);
+    this.getCabys();
+    this.impuestoTarifa.set("01-01", 0);
+    this.impuestoTarifa.set("01-02", 1.01);
+    this.impuestoTarifa.set("01-03", 1.02);
+    this.impuestoTarifa.set("01-04", 1.04);
+    this.impuestoTarifa.set("01-05", 0);
+    this.impuestoTarifa.set("01-06", 1.02);
+    this.impuestoTarifa.set("01-07", 1.04);
+    this.impuestoTarifa.set("01-08", 1.13);
+    this.impuestoTarifa.set("07", 0);
+    this.impuestoTarifa.set("08", 0);
   }
 
   ngAfterViewInit() {
@@ -189,11 +192,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       this.dataSourceResumen.paginator = this.paginatorResumen;
     }
   }
-
-  // @ViewChild(MatPaginator) set matPaginatorResumen(mp: MatPaginator) {
-  //   this.paginatorResumen = mp;
-  //   this.setDataSourceResumenAttributes();
-  // }
 
   setDataSourceResumenAttributes() {
     if (this.paginatorResumen) {
@@ -211,7 +209,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     } else {
       return this.cabys.slice(0, 50);
     }
-    //return this.descripciones.filter(descripcion => this._normalizeValue(descripcion).includes(filterValue));
   }
 
   private _normalizeValue(value: string): string {
@@ -329,6 +326,30 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  nuevaLinea() {
+    var control = new FormControl();
+    var filtro = control.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
+    this.lineas.push(new Linea("", control, filtro, 1, "Sp", 5, 0, "", "01-08", false, 0, 1.13, 0, 0));
+    this.dataSourceResumen.data = this.lineas;
+    this.dataSourceResumen.connect().next(this.lineas);
+    if (this.paginatorResumen) {
+      this.paginatorResumen._changePageSize(this.paginatorResumen.pageSize);
+      //console.log("caca")
+    }
+    this.setDataSourceResumenAttributes()
+    //console.log(this.dataSourceResumen);
+  }
+
+  borrarLinea(index: number) {
+    this.lineas.splice(index, 1)
+    this.dataSourceResumen.data = this.dataSourceResumen.data;
+    this.setDataSourceResumenAttributes()
+  }
+
   actualizarTarifaLinea(linea: Linea) {
     let tarifa = this.impuestoTarifa.get(linea.impuesto);
     //console.log(tarifa);
@@ -441,7 +462,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
         }
       );
     }
-    //this.streets.concat(this.descripciones);
     ////console.log(this.streets);
   }
 
@@ -472,23 +492,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.otrosCargos.forEach(cargo => {
       this.total_OtrosCargos += cargo.total;
     });
-  }
-
-  nuevaLinea() {
-    var control = new FormControl();
-    var filtro = control.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
-    this.lineas.push(new Linea("", control, filtro, 1, "Sp", 5, 0, "", "01-08", false, 0, 1.13, 0, 0));
-    this.dataSourceResumen.data = this.lineas;
-    this.dataSourceResumen.connect().next(this.lineas);
-    if (this.paginatorResumen) {
-      this.paginatorResumen._changePageSize(this.paginatorResumen.pageSize);
-      //console.log("caca")
-    }
-    this.setDataSourceResumenAttributes()
-    //console.log(this.dataSourceResumen);
   }
 
   setImpuesto(linea: Linea, cabys: { descripcion: string, impuesto: string }) {
@@ -529,12 +532,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     //console.log("PENDIENTE")
   }
 
-  borrarLinea(index: number) {
-    this.lineas.splice(index, 1)
-    this.dataSourceResumen.data = this.dataSourceResumen.data;
-    this.setDataSourceResumenAttributes()
-  }
-
   toggle() {
     this.isCollapsedEmisorData = !this.isCollapsedEmisorData;
     this.emisorDeshabilitado = true;
@@ -572,7 +569,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     //console.log(row);
   }
 
-  // aqui hay algo raro.. TIPORECEPTOR AL REVES
   seleccionarTipoCliente(registrado: boolean) {
     this.clienteSeleccionado = false;
     if (registrado) {
