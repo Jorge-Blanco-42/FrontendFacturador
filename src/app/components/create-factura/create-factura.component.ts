@@ -119,6 +119,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public lineasJSON: {}[] = [];
   
   public datosXML: CreacionXML;
+  public datosXML2: CreacionXML;
   public lineas: Linea[] = [];
   public otrosCargos: OtroCargo[] = [];
   claveXML: ClaveXML;
@@ -131,22 +132,29 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
               private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
               private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "86153313", 
-                                 "81726354", "FE");
-
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012349", 
+                                 "98762235", "FE");
+  
+    this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
+    "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "117510169", "Jorge Luis Blanco Cordero",
+    "6", "02", "03", "01", "En la jungla", "506", "86153313", "506", "00000000", "jorge.luis1999@hotmail.com", "Walner Borbon",
+    "01", "702320717", "6", "02", "03", "01", "506", "84922891", "506", "00000000", "walner.borbon@hotmail.com",
+    "01", "0", "01", "CRC", "569.48", "0", "10000", "10000", "0", "10000", "10000", "20000", "100", "19900", "1170", "21070",
+    "Jiji", "Bichota", "", 'False')
+    
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
                                     "Jorge Blanco Cordero", "01", "117510169", "Jorge Blanco Cordero", 
                                     "1", "10", "4", "4", "Mi casa", "506", "86153313",
                                     "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "",
                                      "", "", "", "", "506", "", "506", "", "", "01","0", "01", "CRC", 
-                                     "", "", "", "", "", "", "", "", "", "", "", "", "","", "", "");
+                                     "", "", "", "", "", "", "", "", "", "", "", "", "","", "", "False");
 
     this.signXML = new FirmadoXML("signXML", "signFE","67d23a034ddf5991e5a8e9a72e708f4c", "",
                                   "2021", "FE");
 
-    this.sendXML = new EnvioXML("send", "json", "this.token.access_token", 
-                                "50626032100011751016900100001011522773402174658321","", "01", 
-                                "117510169", "01", "114480790", "","api-stag");
+    this.sendXML = new EnvioXML("send", "json", "", 
+                                "","", "01", 
+                                "117510169", "", "", "","api-stag");
 
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
@@ -212,7 +220,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   private _normalizeValue(value: string): string {
-    ////console.log("normalize value ",value);
+    //console.log("normalize value ",value);
     return value.toLowerCase().replace(/\s/g, '');
   }
 
@@ -247,31 +255,60 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       
     });
     //console.log(this.lineasJSON);
-    this.datosXML.detalles = JSON.stringify(this.lineasJSON);
+    //this.datosXML.detalles = JSON.stringify(this.lineasJSON);
+    var linea = { "1": { "cantidad": "1", "unidadMedida": "Sp", "detalle": "Impresora", "precioUnitario": "10000", "montoTotal": "10000", "subtotal": "9900", "montoTotalLinea": "9900", "montoDescuento": "100", "naturalezaDescuento": "Pronto pago" }, "2": { "cantidad": "1", "unidadMedida": "Unid", "detalle": "producto", "precioUnitario": "10000", "montoTotal": "10000", "subtotal": "10000", "montoTotalLinea": "11170", "impuesto": { "1": { "codigo": "01", "tarifa": "11.7", "monto": "1170" } } } }
+
+    this.datosXML.detalles = JSON.stringify(linea);
+    this.datosXML.total_ventas = "20000";
+    this.datosXML.total_ventas_neta = "19900";
+    this.datosXML.total_serv_gravados = "0";
+    this.datosXML.total_serv_exentos = "10000";
+    this.datosXML.total_merc_gravada = "10000";
+    this.datosXML.total_merc_exenta = "0";
+    this.datosXML.total_impuestos = "1170";
+    this.datosXML.total_gravados = "10000";
+    this.datosXML.total_exentos = "10000";
+    this.datosXML.total_descuentos = "100";
+    this.datosXML.total_comprobante = "1170";
+    this.datosXML2.detalles = JSON.stringify(linea);
+                                                            //2021-04-18T00:50:00-06:00
+    let fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
+    if(fecha)  this.datosXML2.fecha_emision = fecha.toString();
     this._servicioClaveXML.crearClaveXML(this.claveXML).subscribe(
       result => {
-        //console.log("CLAVE XML ", <any>result);
-        this.datosXML.clave = result.clave;
-        this.datosXML.consecutivo = result.consecutivo;
-        this._createXMLService.crearXML(this.datosXML).subscribe(
+        console.log("CLAVE XML ", <any>result);
+        this.datosXML.clave = result.resp.clave;
+        this.datosXML.consecutivo = result.resp.consecutivo;
+        this.datosXML2.clave = result.resp.clave;
+        this.datosXML2.consecutivo = result.resp.consecutivo;
+        //this._createXMLService.crearXML(this.datosXML).subscribe(
+        this._createXMLService.crearXML(this.datosXML2).subscribe(
           result2 => {
-            //console.log("XML Creado", <any>result2);
-            this.signXML.inXml = result2.xml;
+            console.log("XML Creado", <any>result2);
+            this.signXML.inXml = result2.resp.xml;
             this._signXMLService.firmarFEXML(this.signXML).subscribe(
               result3 =>{
-                //console.log("XML FIRMADO", <any>result3);
+                console.log("XML FIRMADO", <any>result3);
                 let token = localStorage.getItem("token");
                 if(token){
                   this.sendXML.token = token;
                 }else{
-                  //console.log("SE DESPICHO EL TOKEN");
+                  console.log("SE DESPICHO EL TOKEN");
                 }
-                this.sendXML.fecha = this.datosXML.fecha_emision;
+                // this.sendXML.clave = this.datosXML.clave;
+                // this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
+                // this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
+                // this.sendXML.fecha = this.datosXML.fecha_emision;
+                
+                this.sendXML.clave = this.datosXML2.clave;
+                this.sendXML.recp_tipoIdentificacion = this.datosXML2.receptor_tipo_identif;
+                this.sendXML.recp_numeroIdentificacion = this.datosXML2.receptor_num_identif;
+                this.sendXML.fecha = this.datosXML2.fecha_emision;
+
                 this.sendXML.comprobanteXml = result3.xmlFirmado;
                 this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
                   result4 => {
-                    //console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                    //console.log(<any>result4);
+                    console.log(<any>result4);
                   },
                   error4 =>{
                     //console.log("PICHA");
