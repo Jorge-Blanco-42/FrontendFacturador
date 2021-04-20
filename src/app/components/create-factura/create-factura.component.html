@@ -454,8 +454,8 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);">
-                                            <label class="custom-control-label" for="porcentaje">%</label>
+                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentaje' + i" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);">
+                                            <label class="custom-control-label" [attr.for]="'porcentaje' + i">%</label>
                                         </div>
                                     </div>
                                 </div>
@@ -535,8 +535,9 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="porcentajeCargo" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)">
-                                            <label class="custom-control-label" for="porcentajeCargo">%</label>
+
+                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)">
+                                            <label class="custom-control-label" [attr.for]="'porcentajeCargo' + i">%</label>
                                         </div>
                                     </div>
                                 </div>
@@ -555,7 +556,8 @@
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
-                        <td><input type="text" class="form-control" [(ngModel)]="cargo.total" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{cargo.total | number : '1.2-2' }}
+                        </td>
                         <td><button type="button" (click)="borrarCargo(i);" class="btn"><i
                                     class="fa fa-trash"></i></button></td>
                     </tr>
