@@ -524,9 +524,9 @@
                 <tbody>
                     <tr *ngFor="let cargo of otrosCargos; let i = index">
                         <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)">
-                                <option value="Cobro de un tercero">Cobro de un tercero</option>
-                                <option value="Impuesto de servicio 10%">Impuesto de servicio 10%</option>
-                                <option value="Otros cargos">Otros cargos</option>
+                                <option value="04">Cobro de un tercero</option>
+                                <option value="06">Impuesto de servicio 10%</option>
+                                <option value="99">Otros cargos</option>
                             </select></th>
                         <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="" [ngModelOptions]="{standalone: true}"></td>
                         <td>
@@ -542,7 +542,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}">
+                        <td *ngIf="cargo.tipoDocumento === '04'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}">
                                 <option value="01">Cédula Física</option>
                                 <option value="02">Cédula Jurídica</option>
                                 <option value=03>Pasaporte</option>
@@ -550,11 +550,11 @@
                                 <option value=05>DIDI</option>
                                 <option value=06>NITE</option>
                             </select></td>
-                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
-                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
-                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
-                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
-                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
+                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
+                        <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
+                        <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                         <td><input type="text" class="form-control" [(ngModel)]="cargo.total" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
                         <td><button type="button" (click)="borrarCargo(i);" class="btn"><i
                                     class="fa fa-trash"></i></button></td>

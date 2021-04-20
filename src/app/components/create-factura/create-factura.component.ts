@@ -132,8 +132,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012356",
-      "98762242", "FE");
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012357",
+      "98762243", "FE");
 
     this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
       "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "117510169", "Jorge Luis Blanco Cordero",
@@ -265,6 +265,32 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     lineasStr += '}';
     console.log(lineasStr);
     this.datosXML.detalles = lineasStr;
+    let otrosCargosStr = '{"';
+    this.otrosCargos.forEach((cargo, i) => {
+      if (i > 0) {
+        otrosCargosStr += ',"' + (i + 1) + '":';
+      } else {
+        otrosCargosStr += (i + 1) + '":';
+      }
+      if(cargo.tipoDocumento === '04'){
+        otrosCargosStr +='{';
+        otrosCargosStr += '"NumeroIdentidadTercero":"' + cargo.identificacion + '","NombreTercero":"' + cargo.nombre + 
+                          '","Detalle":"' + cargo.detalle + '","Porcentaje":';
+        otrosCargosStr += this.otroCargoPorcentaje(cargo);
+        otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
+        otrosCargosStr += '}'
+      }else{
+        otrosCargosStr +='{';
+        otrosCargosStr += '"Detalle":"' + cargo.detalle + '", "Porcentaje":';
+        otrosCargosStr += this.otroCargoPorcentaje(cargo);
+        otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
+        otrosCargosStr += '}'
+      }
+    });
+    otrosCargosStr += '}';
+    console.log(otrosCargosStr);
+    console.log(JSON.parse(otrosCargosStr));
+    this.datosXML.otrosType = otrosCargosStr;
     //console.log(JSON.parse(lineasStr));
     // this.datosXML.detalles = JSON.stringify(this.lineasJSON);
     // var linea = { "1": { "cantidad": "1", "unidadMedida": "Sp", "detalle": "Impresora", "precioUnitario": "10000", "montoTotal": "10000", "subtotal": "9900", "montoTotalLinea": "9900", "montoDescuento": "100", "naturalezaDescuento": "Pronto pago" }, "2": { "cantidad": "1", "unidadMedida": "Unid", "detalle": "producto", "precioUnitario": "10000", "montoTotal": "10000", "subtotal": "10000", "montoTotalLinea": "11170", "impuesto": { "1": { "codigo": "01", "tarifa": "11.7", "monto": "1170" } } } }
@@ -524,7 +550,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   setMontoCargo(cargo: OtroCargo) {
-    if (cargo.tipoDocumento === "Impuesto de servicio 10%") {
+    if (cargo.tipoDocumento === "06") {
       cargo.porcentaje = true;
       cargo.monto = 10;
     }
@@ -682,5 +708,13 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                   '","monto":"' + Math.round((linea.tarifa - 1) * linea.subtotal * 100) / 100 + '"}}';
     }
     return lineaStr;
+  }
+
+  otroCargoPorcentaje(cargo: OtroCargo): string{
+    if(cargo.porcentaje){
+      return '"' + (cargo.monto/100 * Number.parseFloat(this.datosXML.total_ventas)) + '"';
+    }else{
+      return '"' + cargo.monto + '"';
+    }
   }
 }
