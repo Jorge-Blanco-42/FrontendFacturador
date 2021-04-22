@@ -14,11 +14,13 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table'  
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { ErrorComponent } from './components/error/error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CreateFacturaComponent
+    CreateFacturaComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
