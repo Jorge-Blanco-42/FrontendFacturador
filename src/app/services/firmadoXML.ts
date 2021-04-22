@@ -17,10 +17,15 @@ export class ServicioFirmadoXML{
 
 
     firmarFEXML(sign: FirmadoXML) : Observable<any>{
-        let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-        var params = "w=" + sign.w + "&r=" + sign.r + "&p12Url=" + sign.p12Url + "&inXml=" 
-            + sign.inXml + "&pinP12=" + sign.pinP12 + "&tipodoc=" + sign.tipodoc;
-        return this._http.post(this.url,params,{headers:headers});
+        let form = new FormData();
+        form.append("w", sign.w);
+        form.append("r", sign.r);
+        form.append("p12Url", sign.p12Url);
+        form.append("inXml", sign.inXml);
+        form.append("pinP12", sign.pinP12);
+        form.append("tipodoc", sign.tipodoc);
+        console.log(sign);
+        return this._http.post(this.url,form);
     }
 
 
