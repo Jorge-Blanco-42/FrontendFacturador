@@ -171,7 +171,7 @@
 
                     <!-- Row shown when there is no matching data. -->
                     <tr class="header" class="mat-row" *matNoDataRow>
-                        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                        <td class="mat-cell" colspan="4" aria-label="Sin resultados" aria-describedby="pendiente">No data matching the filter "{{input.value}}"</td>
                     </tr>
 
                 </table>
@@ -272,7 +272,7 @@
                     </div>
                     <div class="row justify-content-end" *ngIf="!clienteSeleccionado">
                         <div class="form-item col-auto">
-                            <button type="button" (click)="guardarReceptor()" class="btn btn-outline-secondary">
+                            <button type="button" (click)="guardarReceptor()" class="btn btn-outline-secondary" aria-label="Botón guardar nuevo receptor" aria-describedby="pendiente">
                                 GUARDAR
                             </button>
                         </div>
@@ -280,17 +280,17 @@
                     <div *ngIf="clienteSeleccionado">
                         <div class="row justify-content-end" *ngIf="receptorDeshabilitado">
                             <div class="form-item col-auto">
-                                <button type="button" (click)="modificarReceptor()" class="btn btn-outline-secondary">
+                                <button type="button" (click)="modificarReceptor()" class="btn btn-outline-secondary" aria-label="Botón modificar datos de receptor" aria-describedby="pendiente">
                                     MODIFICAR
                                 </button>
                             </div>
                         </div>
                         <div class="row justify-content-end" *ngIf="!receptorDeshabilitado">
                             <div class="form-item col-auto">
-                                <button type="button" (click)="actualizarReceptor()" class="btn btn-outline-secondary">
+                                <button type="button" (click)="actualizarReceptor()" class="btn btn-outline-secondary" aria-label="Botón guardar cambios de datos de receptor" aria-describedby="pendiente">
                                     GUARDAR
                                 </button>
-                                <button type="button" (click)="cancelarReceptor()" class="btn btn-outline-secondary ml-3">
+                                <button type="button" (click)="cancelarReceptor()" class="btn btn-outline-secondary ml-3" aria-label="Botón cancelar modificacion de datos de receptor" aria-describedby="pendiente">
                                     CANCELAR
                                 </button>
                             </div>
