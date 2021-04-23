@@ -1,0 +1,50 @@
+.jumbotron {
+    color: white;
+    background-image: url('../../../assets/img/invoice carousel.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 90%;
+  }
+
+  .container-fluid{
+    padding-left: 0;
+    padding-right: 0;
+ }
+
+.whiteP{
+    font-size: 20px;
+}
+
+.b-white-purple:hover{
+    color: white;
+    background-color: #514aac;
+    border-color:transparent;
+
+}
+
+.fa-check{
+    color: #4d2c91;
+}
+
+.fa-times-circle{
+    color: #4d2c91;
+}
+
+.lnr{
+    font-size: 20px;
+}
+
+.fa-chevron-down{
+    text-decoration:none;
+    color: white;
+
+}
+
+.fa-chevron-down:hover{
+    color: rgb(255, 255, 255, 0.5) ;
+}
+
+#CRFlag{
+    width: 25px;
+}

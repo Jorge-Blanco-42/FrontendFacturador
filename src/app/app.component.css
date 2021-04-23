@@ -30,3 +30,12 @@
     padding-top: 2%;
     color: gray;
 }
+
+#logo{
+    font-family: 'Segoe UI';
+    font-weight: bold;
+}
+
+#logo:hover{
+    color: white;
+}
