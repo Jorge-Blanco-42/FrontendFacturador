@@ -2,7 +2,7 @@
     <!------------------------------->
     <!--------Datos del emisor------->
     <!------------------------------->
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de datos de emisor de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Datos del emisor</h5>
         </div>
@@ -113,7 +113,7 @@
     <!------------------------------->
     <!------Datos del receptor------->
     <!------------------------------->
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de datos del receptor de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Datos del receptor</h5>
         </div>
@@ -392,7 +392,7 @@
     </div>
 
     <br>
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de líneas de detalle de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Lineas de detalle</h5>
         </div>
@@ -491,19 +491,19 @@
                         </td>
                         <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Total de linea de detalle" aria-describedby="pendiente">₡{{linea.total | number : '1.2-2' }}
                         </td>
-                        <td><button type="button" class="btn" (click)="borrarLinea(i);"><i
+                        <td><button type="button" class="btn" (click)="borrarLinea(i);" aria-label="Boton para eliminar linea de detalle" aria-describedby="pendiente"><i
                                     class="fa fa-trash"></i></button></td>
                     </tr>
                 </tbody>
             </table>
 
         </div>
-        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevaLinea();">
+        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevaLinea();" aria-label="Boton para agregar nueva linea de detalle" aria-describedby="pendiente" >
             AGREGAR
         </button>
     </div>
     <br>
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de otros cargos de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Otros cargos</h5>
         </div>
@@ -511,42 +511,42 @@
 
     <div class="card p-3 w-95 m-auto">
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover" aria-label="Tabla de otros cargos" aria-describedby="pendiente">
                 <thead class="header">
                     <tr class="text-center">
-                        <th scope="col" class="grande">Tipo de documento</th>
-                        <th scope="col">Detalle</th>
-                        <th scope="col" class="mediano">Porcentaje</th>
-                        <th scope="col">Tipo de identificación</th>
-                        <th scope="col">Identificación</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col" class="mediano">Monto</th>
-                        <th scope="col" class="px-3">Acción</th>
+                        <th scope="col" class="grande" aria-label="Encabezado Tipo de documento de otros cargos" aria-describedby="pendiente">Tipo de documento</th>
+                        <th scope="col" aria-label="Encabezado Detalle de otros cargos" aria-describedby="pendiente">Detalle</th>
+                        <th scope="col" class="mediano" aria-label="Encabezado Porcentaje de otros cargos" aria-describedby="pendiente">Porcentaje</th>
+                        <th scope="col" aria-label="Encabezado Tipo de identificación de otros cargos" aria-describedby="pendiente">Tipo de identificación</th>
+                        <th scope="col" aria-label="Encabezado Identificación de otros cargos" aria-describedby="pendiente">Identificación</th>
+                        <th scope="col" aria-label="Encabezado Nombre de otros cargos" aria-describedby="pendiente">Nombre</th>
+                        <th scope="col" class="mediano" aria-label="Encabezado Monto de otros cargos" aria-describedby="pendiente">Monto</th>
+                        <th scope="col" class="px-3" aria-label="Encabezado Acción borrar otro cargo" aria-describedby="pendiente">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let cargo of otrosCargos; let i = index">
-                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)">
+                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)" aria-label="Tipo de documento de otro cargo" aria-describedby="pendiente">
                                 <option value="04">Cobro de un tercero</option>
                                 <option value="06">Impuesto de servicio 10%</option>
                                 <option value="99">Otros cargos</option>
                             </select></th>
-                        <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="" [ngModelOptions]="{standalone: true}" required></td>
+                        <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="" [ngModelOptions]="{standalone: true}" required aria-label="Detalle de otro cargo" aria-describedby="pendiente"></td>
                         <td>
                             <div class="input-group">
-                                <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required>
+                                <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required aria-label="Monto de otro cargo" aria-describedby="pendiente">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
 
-                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)">
+                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)" aria-label="Checkbox para monto en porcentaje de otro cargo" aria-describedby="pendiente">
                                             <label class="custom-control-label" [attr.for]="'porcentajeCargo' + i">%</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td *ngIf="cargo.tipoDocumento === '04'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}">
+                        <td *ngIf="cargo.tipoDocumento === '04'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}" aria-label="Tipo de identificación de otro cargo" aria-describedby="pendiente">
                                 <option value="01">Cédula Física</option>
                                 <option value="02">Cédula Jurídica</option>
                                 <option value=03>Pasaporte</option>
@@ -554,26 +554,26 @@
                                 <option value=05>DIDI</option>
                                 <option value=06>NITE</option>
                             </select></td>
-                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
-                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}" aria-label="Identificación de otro cargo" aria-describedby="pendiente"></td>
+                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}" aria-label="Nombre de tercero de otro cargo" aria-describedby="pendiente"></td>
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
-                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{cargo.total | number : '1.2-2' }}
+                        <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Monto total de otro cargo" aria-describedby="pendiente">₡{{cargo.total | number : '1.2-2' }} 
                         </td>
-                        <td><button type="button" (click)="borrarCargo(i);" class="btn"><i
+                        <td><button type="button" (click)="borrarCargo(i);" class="btn" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
                                     class="fa fa-trash"></i></button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevoCargo();">
+        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevoCargo();" aria-label="Boton para agregar un cargo nuevo" aria-describedby="pendiente">
             AGREGAR
         </button>
     </div>
 
     <br>
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de resumen de factura" aria-describedby="pendiente" >
         <div class="divider">
             <h5>Resumen</h5>
         </div>
@@ -581,7 +581,7 @@
 
     <div class="container">
         <div class="card p-3">
-            <table id="resumenTabla" mat-table [dataSource]="dataSourceResumen" class="mat-elevation-z8">
+            <table id="resumenTabla" mat-table [dataSource]="dataSourceResumen" class="mat-elevation-z8" aria-label="Tabla resumen de lineas de factura" aria-describedby="pendiente">
 
                 <!-- Position Column -->
 
