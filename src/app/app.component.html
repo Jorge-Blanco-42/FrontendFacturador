@@ -4,8 +4,8 @@
 
 <div class="footer-flex">
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-        <a class="navbar-brand" [routerLink]="'.'">ImgLogo</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light pb-3">
+        <a id =  "logo" class="navbar-brand" [routerLink]="['/home']">HONKPANY</a>
 
         <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       &#9776;
@@ -14,7 +14,7 @@
         <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" [routerLink]="['/crearFactura']" (click)="isMenuCollapsed = true">CrearFactura</a>
+                    <a class="nav-link" [routerLink]="['/crearFactura']" (click)="isMenuCollapsed = true">Crear Factura</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" [routerLink]="'.'" (click)="isMenuCollapsed = true">Route2</a>
