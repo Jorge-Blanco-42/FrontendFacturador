@@ -32,6 +32,7 @@
                                 <div class="form-item col-md-4">
                                     <label for="NombreComercialEmisor">Nombre Comercial</label>
                                     <input type="text" class="form-control" id="NombreComercialEmisor" name="nombreComercialEmisor" [disabled]="true" [(ngModel)]="datosXML.nombre_comercial" aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" required/>
+                                    
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="IdentificacionEmisor">Identificación</label>
@@ -203,12 +204,15 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="NombreComercialReceptor">Nombre Comercial</label>
-                            <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor" aria-describedby="pendiente" required
-                            />
+                            <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" #nombreComercialReceptor="ngModel" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor" aria-describedby="pendiente" required
+                            pattern="[a-zA-Z]+"/>
+                            <span class="text-danger" *ngIf="nombreComercialReceptor.touched && !nombreComercialReceptor.valid">
+                                <span>Dato inválido.</span>
+                                </span>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TipoIdentificacionReceptor">Tipo de Identificación</label>
-                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_tipo_identif" aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor"  [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_tipo_identif" aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente" required>
                                 <option value="01">Cédula Física</option>
                                 <option value="02">Cédula Jurídica</option>
                                 <option value=03>Pasaporte</option>
@@ -219,41 +223,48 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="IdentificacionReceptor">Identificación</label>
-                            <input type="text" class="form-control" id="IdentificacionReceptor" name="identificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_num_identif" aria-label="Identificación del receptor" aria-describedby="pendiente" required
-                            />
+                            <input type="text" class="form-control" id="IdentificacionReceptor" name="identificacionReceptor" #identificacionReceptor="ngModel" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_num_identif" aria-label="Identificación del receptor" aria-describedby="pendiente" required
+                            pattern=""/>
+                            <span class="text-danger" *ngIf="identificacionReceptor.touched && !identificacionReceptor.valid">
+                                <span>Dato inválido.</span>
+                            </span>
                         </div>
 
                     </div>
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="CorreoReceptor">Correo electrónico</label>
-                            <input type="text" class="form-control" id="CorreoReceptor" name="correoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_email" aria-label="Correo electrónico del receptor" aria-describedby="pendiente" required />
+                            <input type="email" class="form-control" id="CorreoReceptor" name="correoReceptor" #correoReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_email" aria-label="Correo electrónico del receptor" aria-describedby="pendiente" required 
+                                 pattern="[\w-\.]+@([\w-]+\.)+[\w-]{2,4}"/>
+                            <span class="text-danger" *ngIf="correoReceptor.touched && !correoReceptor.valid">
+                                <span>Dato inválido.</span>
+                            </span>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TelefonoReceptor">Teléfono</label>
-                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente" required />
+                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" #telefonoReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente" required />
                         </div>
                         <div class="form-item col-md-4">
                             <label for="FaxReceptor">Fax</label>
-                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required/>
+                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" #faxReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="ProvinciaReceptor">Provincia</label>
-                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente"  required>
+                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" #provinciaReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente"  required>
                                 <option value="1">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="CantonReceptor">Cantón</label>
-                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" #cantonReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente" required>
                                 <option value="01">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="DistritoReceptor">Distrito</label>
-                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" #distritoReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente" required>
                                 <option value="01">Carmen</option>
                             </select>
                         </div>
@@ -261,13 +272,13 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="BarrioReceptor">Barrio</label>
-                            <select class="form-control" id="BarrioReceptor" name="BarrioReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="BarrioReceptor" name="barrioReceptor" #barrioReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente" required>
                                 <option value="01">San José (parte)</option>
                             </select>
                         </div>
                         <div class="form-item col-md-8">
                             <label for="IdentificacionReceptor">Otras señas</label>
-                            <input type="text" class="form-control" id="IdentificacionReceptor" name="otrasSenasReceptor" [disabled]="receptorDeshabilitado" aria-label="Otras señas del receptor" aria-describedby="pendiente" />
+                            <input type="text" class="form-control" id="OtrasSenasReceptor" name="otrasSenasReceptor" [disabled]="receptorDeshabilitado" aria-label="Otras señas del receptor" aria-describedby="pendiente" />
                         </div>
                     </div>
                     <div class="row justify-content-end" *ngIf="!clienteSeleccionado">
