@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ServicioFirmadoXML } from '../../services/firmadoXML';
 import { ServicioClaveXML } from '../../services/claveXML'
 import { ServicioCreacionXML } from '../../services/creacionXML';
-import { ServicioCaByS } from '../../services/cabys'
+import { ServicioCaByS } from '../../services/cabys';
+import { ServicioDecodificador } from '../../services/decodificador';
 import { FirmadoXML } from '../../models/firmadoXML';
 import { CreacionXML } from '../../models/creacionXML';
 import { ServicioEnvioXML } from '../../services/envioXML';
@@ -10,7 +11,7 @@ import { EnvioXML } from '../../models/envioXML';
 import { ClaveXML } from '../../models/claveXML';
 import { TipoCambio } from '../../models/tipoCambio';
 import { ServicioTipoCambio } from '../../services/tipoCambioXML';
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -20,6 +21,8 @@ import { OtroCargo } from 'src/app/models/otroCargo';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ViewChild, AfterViewInit } from '@angular/core';
+import { ServicioCorreo } from 'src/app/services/correo';
+import { Correo } from 'src/app/models/correo';
 
 //inicio mary
 export interface Clientes {
@@ -37,49 +40,49 @@ export interface Clientes {
 const ELEMENT_DATA: Clientes[] = [
   {
     nombre: "David Gónzalez", receptor_tipo_identif: "01", identificacion: "123456789",
-    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_provincia: "1", receptor_canton: "01", receptor_distrito: "01", receptor_barrio: "01",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
   {
     nombre: "Jorge Blanco Cordero", receptor_tipo_identif: "01", identificacion: "123456789",
-    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_provincia: "1", receptor_canton: "01", receptor_distrito: "01", receptor_barrio: "01",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
   {
     nombre: "María Fernanda Niño Ramírez", receptor_tipo_identif: "01", identificacion: "117170242",
-    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_provincia: "1", receptor_canton: "01", receptor_distrito: "01", receptor_barrio: "01",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
   {
     nombre: "José Martinez Garay", receptor_tipo_identif: "01", identificacion: "123456789",
-    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_provincia: "1", receptor_canton: "01", receptor_distrito: "01", receptor_barrio: "01",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
   {
     nombre: "Daniel Vargas Camacho", receptor_tipo_identif: "01", identificacion: "123456789",
-    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_provincia: "1", receptor_canton: "01", receptor_distrito: "01", receptor_barrio: "01",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
   {
     nombre: "Usuario de prueba 1", receptor_tipo_identif: "01", identificacion: "123456789",
-    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_provincia: "1", receptor_canton: "01", receptor_distrito: "01", receptor_barrio: "01",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
   {
     nombre: "Usuario de prueba 2", receptor_tipo_identif: "01", identificacion: "123456789",
-    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_provincia: "1", receptor_canton: "01", receptor_distrito: "01", receptor_barrio: "01",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
   {
     nombre: "Usuario de prueba 3", receptor_tipo_identif: "01", identificacion: "123456789",
-    receptor_provincia: "1", receptor_canton: "1", receptor_distrito: "1", receptor_barrio: "1",
+    receptor_provincia: "1", receptor_canton: "01", receptor_distrito: "01", receptor_barrio: "01",
     receptor_cod_pais_tel: "506", receptor_tel: "22446688", receptor_cod_pais_fax: "506",
     receptor_fax: "00000000", correo: "jorge.luis1999@hotmail.com"
   },
@@ -90,7 +93,8 @@ const ELEMENT_DATA: Clientes[] = [
   selector: 'app-create-factura',
   templateUrl: './create-factura.component.html',
   styleUrls: ['./create-factura.component.css'],
-  providers: [DatePipe, ServicioTipoCambio, ServicioCaByS]
+  providers: [DatePipe, ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,
+              ServicioCorreo]
 })
 export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
@@ -131,7 +135,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
-    private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,) {
+    private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
+    private _servicioCorreo: ServicioCorreo) {
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012357",
       "98762243", "FE");
 
@@ -143,11 +148,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       "Jiji", "Bichota", "", 'False')
 
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
-      "Jorge Blanco Cordero", "01", "117510169", "Jorge Blanco Cordero",
-      "1", "10", "4", "4", "Mi casa", "506", "86153313",
+      "Rodolfo de Jesus Mora Zamora", "01", "113160737", "n/a",
+      "1", "10", "04", "04", "Mi casa", "506", "86153313",
       "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "",
       "", "", "", "", "506", "", "506", "", "", "01", "0", "01", "CRC",
-      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "False");
+      "", "", "", "", "", "", "", "", "", "", "", "", "nada", "nada", "", "False");
 
     this.signXML = new FirmadoXML("signXML", "signFE", "67d23a034ddf5991e5a8e9a72e708f4c", "",
       "2021", "FE");
@@ -272,15 +277,15 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       } else {
         otrosCargosStr += (i + 1) + '":';
       }
-      if(cargo.tipoDocumento === '04'){
-        otrosCargosStr +='{';
-        otrosCargosStr += '"NumeroIdentidadTercero":"' + cargo.identificacion + '","NombreTercero":"' + cargo.nombre + 
-                          '","Detalle":"' + cargo.detalle + '","Porcentaje":';
+      if (cargo.tipoDocumento === '04') {
+        otrosCargosStr += '{';
+        otrosCargosStr += '"NumeroIdentidadTercero":"' + cargo.identificacion + '","NombreTercero":"' + cargo.nombre +
+          '","Detalle":"' + cargo.detalle + '","Porcentaje":';
         otrosCargosStr += this.otroCargoPorcentaje(cargo);
         otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
         otrosCargosStr += '}'
-      }else{
-        otrosCargosStr +='{';
+      } else {
+        otrosCargosStr += '{';
         otrosCargosStr += '"Detalle":"' + cargo.detalle + '", "Porcentaje":';
         otrosCargosStr += this.otroCargoPorcentaje(cargo);
         otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
@@ -289,8 +294,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     });
     otrosCargosStr += '}';
     console.log(otrosCargosStr);
-    console.log(JSON.parse(otrosCargosStr));
-    this.datosXML.otrosType = otrosCargosStr;
+    if (otrosCargosStr !== '{"}') {
+      this.datosXML.otrosType = otrosCargosStr;
+    }
+
     //console.log(JSON.parse(lineasStr));
     // this.datosXML.detalles = JSON.stringify(this.lineasJSON);
     // var linea = { "1": { "cantidad": "1", "unidadMedida": "Sp", "detalle": "Impresora", "precioUnitario": "10000", "montoTotal": "10000", "subtotal": "9900", "montoTotalLinea": "9900", "montoDescuento": "100", "naturalezaDescuento": "Pronto pago" }, "2": { "cantidad": "1", "unidadMedida": "Unid", "detalle": "producto", "precioUnitario": "10000", "montoTotal": "10000", "subtotal": "10000", "montoTotalLinea": "11170", "impuesto": { "1": { "codigo": "01", "tarifa": "11.7", "monto": "1170" } } } }
@@ -315,8 +322,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
         console.log("CLAVE XML ", <any>result);
         this.datosXML.clave = result.resp.clave;
         this.datosXML.consecutivo = result.resp.consecutivo;
-        this.datosXML.clave = result.resp.clave;
-        this.datosXML.consecutivo = result.resp.consecutivo;
         //this._createXMLService.crearXML(this.datosXML).subscribe(
         this._createXMLService.crearXML(this.datosXML).subscribe(
           result2 => {
@@ -331,23 +336,36 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                 } else {
                   console.log("Problemas de token");
                 }
-                // this.sendXML.clave = this.datosXML.clave;
-                // this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
-                // this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
-                // this.sendXML.fecha = this.datosXML.fecha_emision;
-
                 this.sendXML.clave = this.datosXML.clave;
                 this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
                 this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
                 this.sendXML.fecha = this.datosXML.fecha_emision;
 
-                this.sendXML.comprobanteXml = result3.xmlFirmado;
+                this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
+                // this._servicioDecodificador.decodificarXML(result3.resp.xmlFirmado).subscribe(
+                //   decodificado =>{
+                //     console.log("XML:\n", decodificado.xmlDecoded);
+                //   },
+                //   errorDec =>{
+                //     console.log(errorDec);
+                //   }
+
+                // )
+                // let correo = new Correo(this.datosXML.receptor_email, "Su factura electrónica",
+                //   "Ver archivo adjunto", "factura.xml", result3.resp.xmlFirmado, "base64");
+                // this._servicioCorreo.enviarCorreo(correo).subscribe(
+                //   respuesta => {
+                //     console.log(respuesta);
+                //   },
+                //   errorDec => {
+                //     console.log(errorDec);
+                //   }
+                // )
                 this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
                   result4 => {
                     console.log(<any>result4);
                   },
                   error4 => {
-                    //console.log("PICHA");
                     //console.log(<any>error4);
                   }
                 )
@@ -438,14 +456,14 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     //console.log(linea.porcentaje);
     let montoImpuesto = 0;
     let montoDescuento = 0;
-    if(linea.impuesto.slice(0,2) === '07'){
-      montoImpuesto = (linea.tarifa-1) * linea.base;
-    }else{
-      montoImpuesto = (linea.tarifa-1) * linea.subtotal;
+    if (linea.impuesto.slice(0, 2) === '07') {
+      montoImpuesto = (linea.tarifa - 1) * linea.base;
+    } else {
+      montoImpuesto = (linea.tarifa - 1) * linea.subtotal;
     }
-    if(linea.porcentaje){
+    if (linea.porcentaje) {
       montoDescuento = (linea.subtotal * (linea.descuento / 100));
-    }else{
+    } else {
       montoDescuento = linea.descuento;
     }
     linea.total = linea.subtotal + montoImpuesto - montoDescuento;
@@ -491,10 +509,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       } else {
         total_descuentos += linea.descuento;
       }
-      if(linea.impuesto.slice(0,2) === '07'){
-        total_impuestos += (linea.tarifa-1) * linea.base;
-      }else{
-        total_impuestos += (linea.tarifa-1) * linea.subtotal;
+      if (linea.impuesto.slice(0, 2) === '07') {
+        total_impuestos += (linea.tarifa - 1) * linea.base;
+      } else {
+        total_impuestos += (linea.tarifa - 1) * linea.subtotal;
       }
     });
     total_ventas = total_gravados + total_exentos + total_exonerados;
@@ -681,14 +699,14 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       '","montoTotalLinea":"' + linea.total + '"';
   }
 
-  lineaConDescuento(linea: Linea){
+  lineaConDescuento(linea: Linea) {
     let lineaStr = this.lineaNormal(linea);
-    if(linea.porcentaje){
-      lineaStr += ',"montoDescuento":"' + ((linea.descuento/100) * linea.subtotal) + '","naturalezaDescuento":"' + linea.razon +'"';
-    }else{
-      lineaStr += ',"montoDescuento":"' + linea.descuento + '","naturalezaDescuento":"' + linea.razon +'"';
-    }     
-    return lineaStr;  
+    if (linea.porcentaje) {
+      lineaStr += ',"montoDescuento":"' + ((linea.descuento / 100) * linea.subtotal) + '","naturalezaDescuento":"' + linea.razon + '"';
+    } else {
+      lineaStr += ',"montoDescuento":"' + linea.descuento + '","naturalezaDescuento":"' + linea.razon + '"';
+    }
+    return lineaStr;
   }
 
   lineaConImpuesto(linea: Linea, lineaStr: string): string {
@@ -696,24 +714,24 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     lineaStr += ',"impuesto":';
     lineaStr += '{"1":{"codigo":"' + linea.impuesto.slice(0, 2);
     if (impuesto === '01' || impuesto === '07') { //IVA
-        lineaStr += '","codigoTarifa":"' + linea.impuesto.slice(3, 5) +
+      lineaStr += '","codigoTarifa":"' + linea.impuesto.slice(3, 5) +
         '","tarifa":"' + Math.round((linea.tarifa - 1) * 100) + '"';
       if (impuesto === '01') {
         lineaStr += ',"monto":"' + Math.round((linea.tarifa - 1) * linea.subtotal * 100) / 100 + '"}}';
-      } else{
+      } else {
         lineaStr += '","monto":"' + Math.round((linea.tarifa - 1) * linea.base * 100) / 100 + '"}}';
       }
     } else {
       lineaStr += '","Factor IVA":"' + Math.round((linea.tarifa - 1) * 100) +
-                  '","monto":"' + Math.round((linea.tarifa - 1) * linea.subtotal * 100) / 100 + '"}}';
+        '","monto":"' + Math.round((linea.tarifa - 1) * linea.subtotal * 100) / 100 + '"}}';
     }
     return lineaStr;
   }
 
-  otroCargoPorcentaje(cargo: OtroCargo): string{
-    if(cargo.porcentaje){
-      return '"' + (cargo.monto/100 * Number.parseFloat(this.datosXML.total_ventas)) + '"';
-    }else{
+  otroCargoPorcentaje(cargo: OtroCargo): string {
+    if (cargo.porcentaje) {
+      return '"' + (cargo.monto / 100 * Number.parseFloat(this.datosXML.total_ventas)) + '"';
+    } else {
       return '"' + cargo.monto + '"';
     }
   }

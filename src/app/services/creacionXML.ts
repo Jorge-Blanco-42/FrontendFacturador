@@ -66,9 +66,7 @@ export class ServicioCreacionXML {
         form.append("total_impuestos", xmlData.total_impuestos);
         form.append("total_comprobante", xmlData.total_comprobante);
         form.append("otros", xmlData.otros);
-        form.append("otrosType", xmlData.otrosType);
         form.append("detalles", xmlData.detalles);
-        form.append("omitir_receptor", xmlData.omitir_receptor);
 
         console.log("DIr: ", xmlData);
 
