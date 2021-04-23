@@ -17,7 +17,7 @@
                     <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" name="nombreRazonSocialEmisor" [(ngModel)]="datosXML.emisor_nombre" readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente"
                         required/>
                     <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary" (click)="toggle()">
+                        <button type="button" class="btn btn-outline-secondary" (click)="toggle()" aria-label="Botón ver datos del emisor" aria-describedby="pendiente">
                             VER DATOS
                         </button>
                     </div>
@@ -55,19 +55,19 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="ProvinciaEmisor">Provincia</label>
-                                    <select class="form-control" id="ProvinciaEmisor" name="provinciaEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia" required>
+                                    <select class="form-control" id="ProvinciaEmisor" name="provinciaEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia" required aria-label="Provincia del emisor" aria-describedby="pendiente">
                                         <option value="1">San José</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="CantonEmisor">Cantón</label>
-                                    <select class="form-control" id="CantonEmisor" name="cantonEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton" required>
+                                    <select class="form-control" id="CantonEmisor" name="cantonEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton" required aria-label="Canton del emisor" aria-describedby="pendiente">
                                         <option value="10">Alajuelita</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="DistritoEmisor">Distrito</label>
-                                    <select class="form-control" id="DistritoEmisor" name="distritoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito">
+                                    <select class="form-control" id="DistritoEmisor" name="distritoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito" aria-label="Distrito del emisor" aria-describedby="pendiente">
                                         <option value="04">Concepción</option>
                                     </select>
                                 </div>
@@ -75,7 +75,7 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="BarrioEmisor">Barrio</label>
-                                    <select class="form-control" id="BarrioEmisor" name="BarrioEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio">
+                                    <select class="form-control" id="BarrioEmisor" name="BarrioEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio" aria-label="Barrio del emisor" aria-describedby="pendiente">
                                         <option value="04">Chirivico</option>
                                     </select>
                                 </div>
@@ -86,17 +86,17 @@
                             </div>
                             <div class="row justify-content-end" *ngIf="emisorDeshabilitado">
                                 <div class="form-item col-auto">
-                                    <button type="button" (click)="modificarEmisor()" class="btn btn-outline-secondary">
+                                    <button type="button" (click)="modificarEmisor()" class="btn btn-outline-secondary" aria-label="Botón modificar datos de emisor" aria-describedby="pendiente">
                                         MODIFICAR
                                     </button>
                                 </div>
                             </div>
                             <div class="row justify-content-end" *ngIf="!emisorDeshabilitado">
                                 <div class="form-item col-auto">
-                                    <button type="button" (click)="guardarEmisor()" class="btn btn-outline-secondary">
+                                    <button type="button" (click)="guardarEmisor()" class="btn btn-outline-secondary" aria-label="Botón guardar datos de emisor" aria-describedby="pendiente">
                                         GUARDAR
                                     </button>
-                                    <button type="button" (click)="cancelarEmisor()" class="btn btn-outline-secondary ml-3">
+                                    <button type="button" (click)="cancelarEmisor()" class="btn btn-outline-secondary ml-3" aria-label="Botón cancelar modificación de datos de emisor" aria-describedby="pendiente">
                                         CANCELAR
                                     </button>
                                 </div>
@@ -124,21 +124,13 @@
             <div class="col-md-6 py-3 form-item">
                 <p class="d-inline pr-3">Tipo de cliente: </p>
                 <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="receptorRegistrado" name="prueba" [(ngModel)]="radioCliente" class="custom-control-input" [value]="0" (click)="seleccionarTipoCliente(true)">
+                    <input class="pl-3" type="radio" id="receptorRegistrado" name="prueba" [(ngModel)]="radioCliente" class="custom-control-input" [value]="0" (click)="seleccionarTipoCliente(true)" aria-label="Seleccionar cliente registrado" aria-describedby="pendiente">
                     <label class="custom-control-label" for="receptorRegistrado">Registrado</label>
                 </div>
                 <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="receptorNuevo" name="prueba" [(ngModel)]="radioCliente" class="custom-control-input" [value]="1" (click)="seleccionarTipoCliente(false)">
+                    <input class="pl-3" type="radio" id="receptorNuevo" name="prueba" [(ngModel)]="radioCliente" class="custom-control-input" [value]="1" (click)="seleccionarTipoCliente(false)" aria-label="Seleccionar cliente nuevo" aria-describedby="pendiente">
                     <label class="custom-control-label" for="receptorNuevo">Nuevo</label>
                 </div>
-                <!-- <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="receptorRegistrado" name="receptor" [(ngModel)]="clienteRegistrado" class="custom-control-input" value=true (click)="seleccionarTipoCliente()">
-                    <label class="custom-control-label" for="receptorRegistrado">Registrado</label>
-                </div>
-                <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="receptorNuevo" name="receptor" [(ngModel)]="clienteRegistrado" class="custom-control-input" value=false (click)="seleccionarTipoCliente()">
-                    <label class="custom-control-label" for="receptorNuevo">Nuevo</label>
-                </div> -->
             </div>
         </div>
         <div class="row" *ngIf="clienteRegistrado">
@@ -156,20 +148,20 @@
 
                     <!-- Name Column -->
                     <ng-container matColumnDef="busquedaNombreCliente">
-                        <th class="header" mat-header-cell *matHeaderCellDef> Nombre </th>
-                        <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                        <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Nombre" aria-describedby="pendiente"> Nombre </th>
+                        <td mat-cell *matCellDef="let element" aria-label="Nombre" aria-describedby="pendiente"> {{element.nombre}} </td>
                     </ng-container>
 
                     <!-- Weight Column -->
                     <ng-container matColumnDef="busquedaIdentificacionCliente">
-                        <th class="header" mat-header-cell *matHeaderCellDef> Identificación </th>
-                        <td mat-cell *matCellDef="let element"> {{element.identificacion}} </td>
+                        <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Identidicación" aria-describedby="pendiente"> Identificación </th>
+                        <td mat-cell *matCellDef="let element" aria-label="Identificación" aria-describedby="pendiente"> {{element.identificacion}} </td>
                     </ng-container>
 
                     <!-- Symbol Column -->
                     <ng-container matColumnDef="busquedaCorreoCliente">
-                        <th class="header" mat-header-cell *matHeaderCellDef> Correo electrónico </th>
-                        <td mat-cell *matCellDef="let element"> {{element.correo}} </td>
+                        <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Correo" aria-describedby="pendiente"> Correo electrónico </th>
+                        <td mat-cell *matCellDef="let element" aria-label="Correo" aria-describedby="pendiente"> {{element.correo}} </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -587,20 +579,20 @@
 
                 <!-- Name Column -->
                 <ng-container matColumnDef="productoLinea">
-                    <th class="header" mat-header-cell *matHeaderCellDef> Producto </th>
-                    <td mat-cell *matCellDef="let element"> {{element.producto}} </td>
+                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Producto" aria-describedby="pendiente"> Producto </th>
+                    <td mat-cell *matCellDef="let element" aria-label="Producto" aria-describedby="pendiente"> {{element.producto}} </td>
                 </ng-container>
 
                 <!-- Weight Column -->
                 <ng-container matColumnDef="cantidadProductoLinea">
-                    <th class="header" mat-header-cell *matHeaderCellDef> Cantidad </th>
-                    <td mat-cell *matCellDef="let element"> {{element.cantidad}} </td>
+                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Cantidad" aria-describedby="pendiente"> Cantidad </th>
+                    <td mat-cell *matCellDef="let element" aria-label="Cantidad" aria-describedby="pendiente"> {{element.cantidad}} </td>
                 </ng-container>
 
                 <!-- Symbol Column -->
                 <ng-container matColumnDef="totalLinea">
-                    <th class="header" mat-header-cell *matHeaderCellDef> Total </th>
-                    <td mat-cell *matCellDef="let element"> {{element.total | number : '1.2-2' }} </td>
+                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Total" aria-describedby="pendiente"> Total </th>
+                    <td mat-cell *matCellDef="let element" aria-label="Total" aria-describedby="pendiente"> {{element.total | number : '1.2-2' }} </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumnsResumen"></tr>
@@ -615,14 +607,14 @@
         </div>
     </div>
 
-    <div class="container" id="tablaResumenFactura">
+    <div class="container" id="tablaResumenFactura" aria-label="Resumen de totales de factura" aria-describedby="pendiente">
         <div class="card p-5 mt-3">
             <div class="row pb-2">
                 <div class="col-md-6 text-left">
                     <h4>Subtotal</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h5>₡ {{datosXML.total_ventas | number : '1.2-2' }}</h5>
+                    <h5 aria-label="Subtotal" aria-describedby="pendiente">₡ {{datosXML.total_ventas | number : '1.2-2' }}</h5>
                 </div>
             </div>
             <div class="row pb-2">
@@ -630,7 +622,7 @@
                     <h4>Impuestos</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h5>₡ {{datosXML.total_impuestos | number : '1.2-2' }}</h5>
+                    <h5 aria-label="Impuestos" aria-describedby="pendiente">₡ {{datosXML.total_impuestos | number : '1.2-2' }}</h5>
                 </div>
             </div>
             <div class="row pb-2">
@@ -638,12 +630,12 @@
                     <h4>Otros cargos</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h5>₡{{total_OtrosCargos}}</h5>
+                    <h5 aria-label="Otros cargos" aria-describedby="pendiente">₡{{total_OtrosCargos}}</h5>
                 </div>
             </div>
 
             <div class="pb-3">
-                <button type="button" class="btn btn-outline-secondary" (click)="toggleResumen()">
+                <button type="button" class="btn btn-outline-secondary" (click)="toggleResumen()" aria-label="Botón ver detalles de totales" aria-describedby="pendiente">
                     VER DETALLES
                 </button>
             </div>
@@ -666,7 +658,7 @@
                                     <p class="mb-1">Mercadería gravada</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡{{datosXML.total_merc_gravada | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Mercadería gravada" aria-describedby="pendiente">₡{{datosXML.total_merc_gravada | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -675,7 +667,7 @@
                                     <p class="mb-1">Mercadería exenta</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_merc_exenta | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Mercadería exenta" aria-describedby="pendiente">₡ {{datosXML.total_merc_exenta | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -684,7 +676,7 @@
                                     <p class="mb-1">Mercadería exonerada</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ 123456789</p>
+                                    <p class="mb-1" aria-label="Mercadería exonerada" aria-describedby="pendiente">₡ 123456789</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -693,7 +685,7 @@
                                     <p class="mb-1">Servicios gravados</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_serv_gravados | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Servicios gravados" aria-describedby="pendiente">₡ {{datosXML.total_serv_gravados | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -702,7 +694,7 @@
                                     <p class="mb-1">Servicios exentos</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_serv_exentos | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Servicios exentos" aria-describedby="pendiente">₡ {{datosXML.total_serv_exentos | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -711,7 +703,7 @@
                                     <p class="mb-1">Servicios exonerados</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ 123456789</p>
+                                    <p class="mb-1" aria-label="Servicios exonerados" aria-describedby="pendiente">₡ 123456789</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -720,7 +712,7 @@
                                     <p class="mb-1">Total gravado</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_gravados | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Total gravado" aria-describedby="pendiente">₡ {{datosXML.total_gravados | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -729,7 +721,7 @@
                                     <p class="mb-1">Total exento</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_exentos | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Total exento" aria-describedby="pendiente">₡ {{datosXML.total_exentos | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -738,7 +730,7 @@
                                     <p class="mb-1">Total exonerado</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ 123456789</p>
+                                    <p class="mb-1" aria-label="Total exonerado" aria-describedby="pendiente">₡ 123456789</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -747,13 +739,13 @@
                                     <h6 class="mb-1">Descuento: </h6>
                                 </div>
                                 <div class="col-md-3 text-left">
-                                    <p class="mb-1">₡ {{datosXML.total_descuentos | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Descuento" aria-describedby="pendiente">₡ {{datosXML.total_descuentos | number : '1.2-2' }}</p>
                                 </div>
                                 <div class="col-md-3 text-md-right">
                                     <h6 class="mb-1">Venta neta: </h6>
                                 </div>
                                 <div class="col-md-3 text-left">
-                                    <p class="mb-1">₡ {{datosXML.total_ventas_neta | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Venta neta" aria-describedby="pendiente">₡ {{datosXML.total_ventas_neta | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -766,12 +758,12 @@
                     <h2>Total</h2>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h2>₡ {{datosXML.total_comprobante | number : '1.2-2' }}</h2>
+                    <h2 aria-label="Total general de la factura" aria-describedby="pendiente">₡ {{datosXML.total_comprobante | number : '1.2-2' }}</h2>
                 </div>
             </div>
             <div class="row pt-4">
                 <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)">
+                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)" aria-label="Botón enviar factura" aria-describedby="pendiente">
                         <h5>ENVIAR</h5>
                     </button>
                 </div>
