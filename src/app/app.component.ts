@@ -47,7 +47,7 @@ export class AppComponent implements OnInit {
 
     var lineaStr = JSON.stringify(linea)
     this.createXML = new CreacionXML("genXML", "gen_xml_fe", "50617061800070232071700100001011522773451107756391",
-      "00100001011522773451", "2018-06-17T12:00:00-06:00", "Walner Borbon", "01", "702320717", "Walner Borbon",
+      "00100001011522773451", "2021-04-18T00:50:00-06:00", "Walner Borbon", "01", "702320717", "Walner Borbon",
       "6", "02", "03", "01", "En la jungla", "506", "64206205", "506", "00000000", "walner1borbon@gmail.com", "Walner Borbon",
       "01", "702320717", "6", "02", "03", "01", "506", "84922891", "506", "00000000", "walner.borbon@hotmail.com",
       "01", "0", "01", "CRC", "569.48", "0", "10000", "10000", "0", "10000", "10000", "20000", "100", "19900", "1170", "21070",
@@ -77,7 +77,16 @@ export class AppComponent implements OnInit {
         console.log(<any>error)
       }
     );
+    /*
     this.crearClave();
+    this._createXMLService.crearXML(this.createXML).subscribe(
+      result =>{
+        console.log("XML", <any>result);
+      },
+      error =>{
+        console.log(<any>error);
+      }
+    )*/
     //this.getTipoCambio('11', '02', '2007');
 
   }

@@ -67,16 +67,16 @@
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="DistritoEmisor">Distrito</label>
-                                    <select class="form-control" id="DistritoEmisor" name="distritoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito" required>
-                                        <option value="4">Concepción</option>
+                                    <select class="form-control" id="DistritoEmisor" name="distritoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito">
+                                        <option value="04">Concepción</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="BarrioEmisor">Barrio</label>
-                                    <select class="form-control" id="BarrioEmisor" name="BarrioEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio" required>
-                                        <option value="4">Chirivico</option>
+                                    <select class="form-control" id="BarrioEmisor" name="BarrioEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio">
+                                        <option value="04">Chirivico</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-8">
@@ -256,13 +256,13 @@
                         <div class="form-item col-md-4">
                             <label for="CantonReceptor">Cantón</label>
                             <select class="form-control" id="CantonReceptor" name="cantonReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente" required>
-                                <option value="1">San José</option>
+                                <option value="01">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="DistritoReceptor">Distrito</label>
                             <select class="form-control" id="DistritoReceptor" name="distritoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente" required>
-                                <option value="1">Carmen</option>
+                                <option value="01">Carmen</option>
                             </select>
                         </div>
                     </div>
@@ -270,7 +270,7 @@
                         <div class="form-item col-md-4">
                             <label for="BarrioReceptor">Barrio</label>
                             <select class="form-control" id="BarrioReceptor" name="BarrioReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente" required>
-                                <option value="1">San José (parte)</option>
+                                <option value="01">San José (parte)</option>
                             </select>
                         </div>
                         <div class="form-item col-md-8">
@@ -457,8 +457,8 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="porcentaje" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);" aria-label="Checkbox para descuento en porcentaje" aria-describedby="pendiente" >
-                                            <label class="custom-control-label" for="porcentaje">%</label>
+                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentaje' + i" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);" aria-label="Checkbox para descuento en porcentaje" aria-describedby="pendiente">
+                                            <label class="custom-control-label" [attr.for]="'porcentaje' + i">%</label>
                                         </div>
                                     </div>
                                 </div>
@@ -476,14 +476,20 @@
                                 <option value="01-06">IVA transitorio 2%</option>
                                 <option value="01-07">IVA transitorio 4%</option>
                                 <option value="01-08" selected>IVA 13%</option>
-                                <option value="07">IVA (cálculo especial)</option>
+                                <option value="07-02">IVA reducido 1% especial</option>
+                                <option value="07-03">IVA reducido 2% especial</option>
+                                <option value="07-04">IVA reducido 4% especial</option>
+                                <option value="07-05">IVA transitorio 0% especial</option>
+                                <option value="07-06">IVA transitorio 2% especial</option>
+                                <option value="07-07">IVA transitorio 4% especial</option>
+                                <option value="07-08">IVA 13% especial</option>
                                 <option value="08">IVA Régimen de Bienes Usados (Factor)</option>
                             </select></td>
-                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" (change)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}" aria-label="Base imponible de impuesto en linea de detalle" aria-describedby="pendiente"></td>
-                        <td><input *ngIf="linea.impuesto === '07' || linea.impuesto === '08'" (ngModelChange)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}" aria-label="Tarifa de impuesto en linea de detalle" aria-describedby="pendiente"></td>
-                        <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Subtotal de linea de detalle" aria-describedby="pendiente" >₡{{linea.subtotal | number : '1.2-2' }}
+                        <td><input *ngIf="linea.impuesto.slice(0,2) === '07'" (change)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}" aria-label="Base imponible de impuesto en linea de detalle" aria-describedby="pendiente"></td>
+                        <td><input *ngIf="linea.impuesto === '08'" (ngModelChange)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1.13" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}" aria-label="Tarifa de impuesto en linea de detalle" aria-describedby="pendiente"></td>
+                        <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Subtotal de linea de detalle" aria-describedby="pendiente">₡{{linea.subtotal | number : '1.2-2' }}
                         </td>
-                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{linea.total | number : '1.2-2' }}
+                        <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Total de linea de detalle" aria-describedby="pendiente">₡{{linea.total | number : '1.2-2' }}
                         </td>
                         <td><button type="button" class="btn" (click)="borrarLinea(i);"><i
                                     class="fa fa-trash"></i></button></td>
@@ -520,10 +526,10 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let cargo of otrosCargos; let i = index">
-                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)" required>
-                                <option value="Cobro de un tercero">Cobro de un tercero</option>
-                                <option value="Impuesto de servicio 10%">Impuesto de servicio 10%</option>
-                                <option value="Otros cargos">Otros cargos</option>
+                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)">
+                                <option value="04">Cobro de un tercero</option>
+                                <option value="06">Impuesto de servicio 10%</option>
+                                <option value="99">Otros cargos</option>
                             </select></th>
                         <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="" [ngModelOptions]="{standalone: true}" required></td>
                         <td>
@@ -532,14 +538,15 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="porcentajeCargo" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)">
-                                            <label class="custom-control-label" for="porcentajeCargo">%</label>
+
+                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)">
+                                            <label class="custom-control-label" [attr.for]="'porcentajeCargo' + i">%</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}">
+                        <td *ngIf="cargo.tipoDocumento === '04'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}">
                                 <option value="01">Cédula Física</option>
                                 <option value="02">Cédula Jurídica</option>
                                 <option value=03>Pasaporte</option>
@@ -547,12 +554,13 @@
                                 <option value=05>DIDI</option>
                                 <option value=06>NITE</option>
                             </select></td>
-                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
-                        <td *ngIf="cargo.tipoDocumento === 'Cobro de un tercero'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
-                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
-                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
-                        <td *ngIf="cargo.tipoDocumento != 'Cobro de un tercero'"><input type="text" class="form-control invisible"></td>
-                        <td><input type="text" class="form-control" [(ngModel)]="cargo.total" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
+                        <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
+                        <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
+                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{cargo.total | number : '1.2-2' }}
+                        </td>
                         <td><button type="button" (click)="borrarCargo(i);" class="btn"><i
                                     class="fa fa-trash"></i></button></td>
                     </tr>
