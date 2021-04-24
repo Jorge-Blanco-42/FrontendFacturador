@@ -17,7 +17,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { ErrorComponent } from './components/error/error.component';
 import { HomeComponent } from './components/home/home.component';
 import {IvyCarouselModule} from 'angular-responsive-carousel';
-
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +40,9 @@ import {IvyCarouselModule} from 'angular-responsive-carousel';
     MatAutocompleteModule,
     ReactiveFormsModule,
     MatPaginatorModule, 
-    IvyCarouselModule
+    IvyCarouselModule,
+    MDBBootstrapModule.forRoot()
+
   ],
   providers: [],
   bootstrap: [AppComponent]

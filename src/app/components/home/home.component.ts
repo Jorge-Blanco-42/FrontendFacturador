@@ -14,8 +14,18 @@ export class HomeComponent implements OnInit {
     var el = <HTMLElement>document.getElementById(name);
     el.scrollIntoView();
   }
+
+    public myInterval: number = 3000;
+    public activeSlideIndex: number = 0;
+    public noWrapSlides:boolean = false;
+
+    activeSlideChange(){
+        console.log(this.activeSlideIndex);
+    }
+
   
   ngOnInit(): void {
+    
   }
 
   
