@@ -218,22 +218,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private _filter(value: string): { descripcion: string, impuesto: string }[] {
-    if (value) {
-      const filterValue = this._normalizeValue(value);
-      if (filterValue.length > 3) {
-        return this.cabys.filter(cabys => this._normalizeValue(cabys.descripcion).includes(filterValue));
-      }
-      return this.cabys.slice(0, 50);
-    } else {
-      return this.cabys.slice(0, 50);
-    }
-  }
-
-  private _normalizeValue(value: string): string {
-    //console.log("normalize value ",value);
-    return value.toLowerCase().replace(/\s/g, '');
-  }
+  
 
   enviar(form: any): void {
     let lineasStr = '{"';
@@ -412,13 +397,31 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private _filter(value: string): { descripcion: string, impuesto: string }[] {
+    if (value) {
+      const filterValue = this._normalizeValue(value);
+      if (filterValue.length > 3) {
+        return this.cabys.filter(cabys => this._normalizeValue(cabys.descripcion).includes(filterValue));
+      }
+      return this.cabys.slice(0, 50);
+    } else {
+      return this.cabys.slice(0, 50);
+    }
+  }
+
+  private _normalizeValue(value: string): string {
+    //console.log("normalize value ",value);
+    return value.toLowerCase().replace(/\s/g, '');
+  }
+
+  filtroCabys(evt: string, linea:Linea) {
+      linea.filtro = this._filter(evt);
+  }
+
   nuevaLinea() {
     var control = new FormControl();
-    var filtro = control.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
-    this.lineas.push(new Linea("", control, filtro, 1, "Sp", 5, 0, "", "01-08", false, 0, 1.13, 0, 0));
+    var filtro = this._filter("");
+    this.lineas.push(new Linea("", filtro, 1, "Sp", 5, 0, "", "01-08", false, 0, 1.13, 0, 0));
     this.dataSourceResumen.data = this.lineas;
     this.dataSourceResumen.connect().next(this.lineas);
     if (this.paginatorResumen) {
