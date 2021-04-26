@@ -270,31 +270,25 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     lineasStr += '}';
     console.log(lineasStr);
     this.datosXML.detalles = lineasStr;
-    let otrosCargosStr = '{"';
+    let otrosCargosStr = '{"otrosCargos":[';
     this.otrosCargos.forEach((cargo, i) => {
       if (i > 0) {
-        otrosCargosStr += ',"' + (i + 1) + '":';
-      } else {
-        otrosCargosStr += (i + 1) + '":';
+        otrosCargosStr += ",";
       }
-      if (cargo.tipoDocumento === '04') {
-        otrosCargosStr += '{';
-        otrosCargosStr += '"NumeroIdentidadTercero":"' + cargo.identificacion + '","NombreTercero":"' + cargo.nombre +
-          '","Detalle":"' + cargo.detalle + '","Porcentaje":';
-        otrosCargosStr += this.otroCargoPorcentaje(cargo);
-        otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
-        otrosCargosStr += '}'
-      } else {
-        otrosCargosStr += '{';
+      otrosCargosStr += '{"TipoDocumento":"' + cargo.tipoDocumento+'",';
+      if (cargo.tipoDocumento === '04') {        
+        otrosCargosStr += '"NumeroIdentidadTercero":"' + cargo.identificacion + 
+                          '","NombreTercero":"' + cargo.nombre +'",';
+      }
         otrosCargosStr += '"Detalle":"' + cargo.detalle + '", "Porcentaje":';
-        otrosCargosStr += this.otroCargoPorcentaje(cargo);
+        otrosCargosStr += cargo.monto;
         otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
         otrosCargosStr += '}'
-      }
+      
     });
-    otrosCargosStr += '}';
+    otrosCargosStr += ']}';
     console.log(otrosCargosStr);
-    if (otrosCargosStr !== '{"}') {
+    if (otrosCargosStr !== '{"otrosCargos":[]}') {
       this.datosXML.otrosType = otrosCargosStr;
     }
 
@@ -728,11 +722,4 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     return lineaStr;
   }
 
-  otroCargoPorcentaje(cargo: OtroCargo): string {
-    if (cargo.porcentaje) {
-      return '"' + (cargo.monto / 100 * Number.parseFloat(this.datosXML.total_ventas)) + '"';
-    } else {
-      return '"' + cargo.monto + '"';
-    }
-  }
 }
