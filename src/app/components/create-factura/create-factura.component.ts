@@ -13,7 +13,7 @@ import { TipoCambio } from '../../models/tipoCambio';
 import { ServicioTipoCambio } from '../../services/tipoCambioXML';
 import { DatePipe } from '@angular/common';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { Linea } from 'src/app/models/linea';
