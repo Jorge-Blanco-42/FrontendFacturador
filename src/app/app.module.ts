@@ -15,12 +15,15 @@ import { MatTableModule } from '@angular/material/table'
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { ErrorComponent } from './components/error/error.component';
-
+import { HomeComponent } from './components/home/home.component';
+import {IvyCarouselModule} from 'angular-responsive-carousel';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
 @NgModule({
   declarations: [
     AppComponent,
     CreateFacturaComponent,
-    ErrorComponent
+    ErrorComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +39,10 @@ import { ErrorComponent } from './components/error/error.component';
     MatTableModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
-    MatPaginatorModule
+    MatPaginatorModule, 
+    IvyCarouselModule,
+    MDBBootstrapModule.forRoot()
+
   ],
   providers: [],
   bootstrap: [AppComponent]

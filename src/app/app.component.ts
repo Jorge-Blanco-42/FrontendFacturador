@@ -6,6 +6,7 @@ import { FirmadoXML } from './models/firmadoXML';
 import { CreacionXML } from './models/creacionXML';
 import { ServicioUsuario } from './services/usuario';
 import { ServicioEnvioXML } from './services/envioXML';
+import { ServicioNotaDebitoCredito} from './services/notaDebitoCredito';
 import { Usuario } from './models/usuario';
 import { ServicioCertificado } from './services/certificado';
 import { Certificado } from './models/certificado';
@@ -14,12 +15,13 @@ import { EnvioXML } from './models/envioXML';
 import { ClaveXML } from './models/claveXML';
 import {TipoCambio} from './models/tipoCambio';
 import {ServicioTipoCambio} from './services/tipoCambioXML';
+import { notaDebitoCredito } from './models/notaDebitoCredito';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ServicioFirmadoXML, ServicioCreacionXML, ServicioUsuario, ServicioCertificado, ServicioEnvioXML, ServicioClaveXML, ServicioTipoCambio]
+  providers: [ServicioFirmadoXML, ServicioCreacionXML, ServicioUsuario, ServicioCertificado, ServicioEnvioXML, ServicioClaveXML, ServicioTipoCambio, ServicioNotaDebitoCredito]
 })
 export class AppComponent implements OnInit {
   title = 'Facturador';
@@ -33,11 +35,12 @@ export class AppComponent implements OnInit {
   public claveXML: ClaveXML;
   public isMenuCollapsed = true;
   public tipoCambio: TipoCambio;
+  public devCredNote: notaDebitoCredito; 
   //public sendXML: EnvioXML; 
 
   constructor(private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _userService: ServicioUsuario, private _certificateService: ServicioCertificado, private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,
-    private _exchangeRateService: ServicioTipoCambio) {
+    private _exchangeRateService: ServicioTipoCambio, private _devCredNoteService: ServicioNotaDebitoCredito) {
 
     this.signXML = new FirmadoXML("signXML", "signFE",
       "b337c43a00ec8b0ed9882375d56b270f", "pendiente",
@@ -59,6 +62,7 @@ export class AppComponent implements OnInit {
     this.token = new Token("","","","","","","","");
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "1234567890", "81726354", "FE");
     this.tipoCambio = new TipoCambio();
+    this.devCredNote = new notaDebitoCredito("clave", "clave", "fisico","702320717" ,"506", "1522773402", "normal", "07756342", "ND");
   }
 
 
@@ -75,7 +79,7 @@ export class AppComponent implements OnInit {
       error => {
         //alert(<any>error);
         console.log(<any>error)
-      }
+      },  
     );
     /*
     this.crearClave();
@@ -88,7 +92,14 @@ export class AppComponent implements OnInit {
       }
     )*/
     //this.getTipoCambio('11', '02', '2007');
-
+    /*this._devCredNoteService.crearNotaDebitoCredito(this.devCredNote).subscribe(
+      result => {
+        console.log(':)', <any>result)
+      },
+      error => {
+        console.log(':c', <any>error)
+      }
+    );*/  
   }
 
   getToken(certificate: Certificado) {
