@@ -197,7 +197,7 @@
                 <mat-paginator #clientesPaginator class="searchBar" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
             </div>
         </div>
-        <div class="row" >
+        <div class="row">
             <div class="container searchBar">
                 <div class="row">
                     <div class="form-item col-md-8">
@@ -264,16 +264,16 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TelefonoReceptor">Teléfono</label>
-                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" #telefonoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente" required
-                                pattern="[0-9]{8}" />
+                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" #telefonoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente"
+                                required pattern="[0-9]{8}" />
                             <span class="text-danger" *ngIf="telefonoReceptor.touched && !telefonoReceptor.valid">
                                 <span>Dato inválido.</span>
                             </span>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="FaxReceptor">Fax</label>
-                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" #faxReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required pattern="[0-9]{8}"
-                            />
+                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" #faxReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required
+                                pattern="[0-9]{8}" />
                             <span class="text-danger" *ngIf="faxReceptor.touched && !faxReceptor.valid">
                                 <span>Dato inválido.</span>
                             </span>
@@ -282,19 +282,22 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="ProvinciaReceptor">Provincia</label>
-                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" #provinciaReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" #provinciaReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente"
+                                required>
                                 <option value="1">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="CantonReceptor">Cantón</label>
-                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" #cantonReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" #cantonReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente"
+                                required>
                                 <option value="01">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="DistritoReceptor">Distrito</label>
-                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" #distritoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" #distritoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente"
+                                required>
                                 <option value="01">Carmen</option>
                             </select>
                         </div>
@@ -302,13 +305,14 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="BarrioReceptor">Barrio</label>
-                            <select class="form-control" id="BarrioReceptor" name="barrioReceptor" #barrioReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="BarrioReceptor" name="barrioReceptor" #barrioReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente"
+                                required>
                                 <option value="01">San José (parte)</option>
                             </select>
                         </div>
                         <div class="form-item col-md-8">
                             <label for="OtrasSenasReceptor">Otras señas</label>
-                            <input type="text" class="form-control" id="OtrasSenasReceptor" name="otrasSenasReceptor" [attr.disabled]="receptorDeshabilitado  ? true: null"  aria-label="Otras señas del receptor" aria-describedby="pendiente" />
+                            <input type="text" class="form-control" id="OtrasSenasReceptor" name="otrasSenasReceptor" [attr.disabled]="receptorDeshabilitado  ? true: null" aria-label="Otras señas del receptor" aria-describedby="pendiente" />
                         </div>
                     </div>
                     <div class="row justify-content-end" *ngIf="!clienteSeleccionado">
@@ -458,12 +462,12 @@
                         <th scope="row">
                             <input type="text" #cabys="ngModel" [(ngModel)]="linea.producto" [name]="'cabys'+i" class="form-control has-search" placeholder="Buscar" (ngModelChange)="filtroCabys($event, linea)" [matAutocomplete]="auto" required aria-label="Buscar producto para agregar a linea de detalle"
                                 aria-describedby="pendiente" />
-                                <span class="text-danger" *ngIf="!cabys.valid">
+                            <span class="text-danger" *ngIf="!cabys.valid">
                                     <span class="font-weight-normal">Dato inválido.</span>
-                                </span>
+                            </span>
 
                             <mat-autocomplete [panelWidth]="800" #auto="matAutocomplete">
-                                <mat-option *ngFor="let cabys of linea.filtro" [value]="cabys.descripcion" (click)="setImpuesto(linea, cabys);">
+                                <mat-option *ngFor="let cabys of linea.filtro" [value]="cabys.descripcion" (click)="setCabys(linea, cabys);">
                                     {{cabys.descripcion}}
                                 </mat-option>
                             </mat-autocomplete>
@@ -819,8 +823,7 @@
             </div>
             <div class="row pt-4">
                 <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)" aria-label="Botón enviar factura" aria-describedby="pendiente"
-                    [disabled]="myForm.invalid && (!clienteSeleccionado || !clienteRegistrado)">
+                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)" aria-label="Botón enviar factura" aria-describedby="pendiente" [disabled]="myForm.invalid && (!clienteSeleccionado || !clienteRegistrado)">
                         <h5>ENVIAR</h5>
                     </button>
                 </div>

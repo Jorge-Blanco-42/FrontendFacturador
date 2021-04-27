@@ -5,6 +5,7 @@ import { ErrorComponent } from './components/error/error.component'
 import { HomeComponent} from './components/home/home.component'
 const routes: Routes = [
   {path: 'crearFactura', component: CreateFacturaComponent },
+  {path: '', component: HomeComponent },
   {path : 'home', component: HomeComponent},
   {path: '**', component: ErrorComponent }
 ];
