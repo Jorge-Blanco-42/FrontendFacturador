@@ -673,6 +673,18 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       this.receptorDatosImportantes = false;
       this.receptorDeshabilitado = false;
       this.isCollapsedReceptorData = false;
+
+      this.datosXML.receptor_nombre = "";
+      this.datosXML.receptor_tipo_identif = "";
+      this.datosXML.receptor_num_identif = "";
+      this.datosXML.receptor_email = "";
+      this.datosXML.receptor_tel = "";
+      this.datosXML.receptor_fax = "";
+      this.datosXML.receptor_provincia = "";
+      this.datosXML.receptor_canton = "";
+      this.datosXML.receptor_barrio = "";
+      this.datosXML.receptor_distrito = "";
+      
     }
     //console.log(this.clienteRegistrado);
 

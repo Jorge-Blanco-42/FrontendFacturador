@@ -197,13 +197,13 @@
                 <mat-paginator #clientesPaginator class="searchBar" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
             </div>
         </div>
-        <div class="row" *ngIf="!(clienteRegistrado) || clienteSeleccionado">
+        <div class="row" >
             <div class="container searchBar">
                 <div class="row">
                     <div class="form-item col-md-8">
                         <label for="NombreReceptor">Nombre o Razon Social del cliente</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="NombreReceptor" name="nombreReceptor" #nombreReceptor="ngModel" [(ngModel)]="datosXML.receptor_nombre" [disabled]="receptorDatosImportantes" aria-label="Nombre del receptor con boton para mostrar información"
+                            <input type="text" class="form-control" id="NombreReceptor" name="nombreReceptor" #nombreReceptor="ngModel" [(ngModel)]="datosXML.receptor_nombre" [attr.disabled]="receptorDatosImportantes ? true: null" aria-label="Nombre del receptor con boton para mostrar información"
                                 aria-describedby="pendiente" required pattern="[a-zA-Z ]+" />
                             <span class="text-danger" *ngIf="nombreReceptor.touched && !nombreReceptor.valid">
                                 <span>Dato inválido.</span>
@@ -221,11 +221,11 @@
                     </div>
 
                 </div>
-                <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedReceptorData">
+                <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedReceptorData" *ngIf="!(clienteRegistrado) || clienteSeleccionado">
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="NombreComercialReceptor">Nombre Comercial</label>
-                            <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" #nombreComercialReceptor="ngModel" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor"
+                            <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" #nombreComercialReceptor="ngModel" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor"
                                 aria-describedby="pendiente" required pattern="[a-zA-Z ]+" />
                             <span class="text-danger" *ngIf="nombreComercialReceptor.touched && !nombreComercialReceptor.valid">
                                 <span>Dato inválido.</span>
@@ -233,7 +233,7 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TipoIdentificacionReceptor">Tipo de Identificación</label>
-                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_tipo_identif" aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente"
+                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_tipo_identif" aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente"
                                 required>
                                 <option value="01">Cédula Física</option>
                                 <option value="02">Cédula Jurídica</option>
@@ -245,8 +245,8 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="IdentificacionReceptor">Identificación</label>
-                            <input type="text" class="form-control" id="IdentificacionReceptor" name="identificacionReceptor" #identificacionReceptor="ngModel" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_num_identif" aria-label="Identificación del receptor"
-                                aria-describedby="pendiente" required pattern="" />
+                            <input type="text" class="form-control" id="IdentificacionReceptor" name="identificacionReceptor" #identificacionReceptor="ngModel" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_num_identif" aria-label="Identificación del receptor"
+                                aria-describedby="pendiente" required />
                             <span class="text-danger" *ngIf="identificacionReceptor.touched && !identificacionReceptor.valid">
                                 <span>Dato inválido.</span>
                             </span>
@@ -256,7 +256,7 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="CorreoReceptor">Correo electrónico</label>
-                            <input type="email" class="form-control" id="CorreoReceptor" name="correoReceptor" #correoReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_email" aria-label="Correo electrónico del receptor" aria-describedby="pendiente"
+                            <input type="email" class="form-control" id="CorreoReceptor" name="correoReceptor" #correoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_email" aria-label="Correo electrónico del receptor" aria-describedby="pendiente"
                                 required pattern="[\w-\.]+@([\w-]+\.)+[\w-]{2,4}" />
                             <span class="text-danger" *ngIf="correoReceptor.touched && !correoReceptor.valid">
                                 <span>Dato inválido.</span>
@@ -264,7 +264,7 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TelefonoReceptor">Teléfono</label>
-                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" #telefonoReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente" required
+                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" #telefonoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente" required
                                 pattern="[0-9]{8}" />
                             <span class="text-danger" *ngIf="telefonoReceptor.touched && !telefonoReceptor.valid">
                                 <span>Dato inválido.</span>
@@ -272,7 +272,7 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="FaxReceptor">Fax</label>
-                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" #faxReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required pattern="[0-9]{8}"
+                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" #faxReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required pattern="[0-9]{8}"
                             />
                             <span class="text-danger" *ngIf="faxReceptor.touched && !faxReceptor.valid">
                                 <span>Dato inválido.</span>
@@ -282,19 +282,19 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="ProvinciaReceptor">Provincia</label>
-                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" #provinciaReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" #provinciaReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente" required>
                                 <option value="1">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="CantonReceptor">Cantón</label>
-                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" #cantonReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" #cantonReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente" required>
                                 <option value="01">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="DistritoReceptor">Distrito</label>
-                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" #distritoReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" #distritoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente" required>
                                 <option value="01">Carmen</option>
                             </select>
                         </div>
@@ -302,13 +302,13 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="BarrioReceptor">Barrio</label>
-                            <select class="form-control" id="BarrioReceptor" name="barrioReceptor" #barrioReceptor="ngModel" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente" required>
+                            <select class="form-control" id="BarrioReceptor" name="barrioReceptor" #barrioReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null"  [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente" required>
                                 <option value="01">San José (parte)</option>
                             </select>
                         </div>
                         <div class="form-item col-md-8">
                             <label for="OtrasSenasReceptor">Otras señas</label>
-                            <input type="text" class="form-control" id="OtrasSenasReceptor" name="otrasSenasReceptor" [disabled]="receptorDeshabilitado" aria-label="Otras señas del receptor" aria-describedby="pendiente" />
+                            <input type="text" class="form-control" id="OtrasSenasReceptor" name="otrasSenasReceptor" [attr.disabled]="receptorDeshabilitado  ? true: null"  aria-label="Otras señas del receptor" aria-describedby="pendiente" />
                         </div>
                     </div>
                     <div class="row justify-content-end" *ngIf="!clienteSeleccionado">
@@ -376,7 +376,7 @@
             <div class="col-md-4 form-item">
                 <div class="form-group mb-0" *ngIf="datosXML.condicion_venta === '02'">
                     <label for="plazo">Plazo del crédito:</label>
-                    <input type="text" class="form-control" id="plazo" placeholder="" name="plazo" #plazo="ngModel" [(ngModel)]="datosXML.plazo_credito" aria-label="Plazo del crédito del receptor" aria-describedby="pendiente" required pattern="[0-9]{8}" />
+                    <input type="text" class="form-control" id="plazo" placeholder="" name="plazo" #plazo="ngModel" [(ngModel)]="datosXML.plazo_credito" aria-label="Plazo del crédito del receptor" aria-describedby="pendiente" required pattern="[0-9]+" />
                     <span class="text-danger" *ngIf="plazo.touched && !plazo.valid">
                         <span>Dato inválido.</span>
                     </span>
@@ -456,8 +456,11 @@
                 <tbody>
                     <tr *ngFor="let linea of lineas; let i = index">
                         <th scope="row">
-                            <input type="text" #cabys="ngModel" [(ngModel)]="linea.producto" [ngModelOptions]="{standalone: true}" class="form-control has-search" placeholder="Buscar" (ngModelChange)="filtroCabys($event, linea)" [matAutocomplete]="auto" required aria-label="Buscar producto para agregar a linea de detalle"
+                            <input type="text" #cabys="ngModel" [(ngModel)]="linea.producto" [name]="'cabys'+i" class="form-control has-search" placeholder="Buscar" (ngModelChange)="filtroCabys($event, linea)" [matAutocomplete]="auto" required aria-label="Buscar producto para agregar a linea de detalle"
                                 aria-describedby="pendiente" />
+                                <span class="text-danger" *ngIf="!cabys.valid">
+                                    <span class="font-weight-normal">Dato inválido.</span>
+                                </span>
 
                             <mat-autocomplete [panelWidth]="800" #auto="matAutocomplete">
                                 <mat-option *ngFor="let cabys of linea.filtro" [value]="cabys.descripcion" (click)="setImpuesto(linea, cabys);">
@@ -532,7 +535,7 @@
                         </td>
                         <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Total de linea de detalle" aria-describedby="pendiente">₡{{linea.total | number : '1.2-2' }}
                         </td>
-                        <td><button type="button" class="btn" (click)="borrarLinea(i);" aria-label="Boton para eliminar linea de detalle" aria-describedby="pendiente"><i
+                        <td><button *ngIf="i>0" type="button" class="btn" (click)="borrarLinea(i);" aria-label="Boton para eliminar linea de detalle" aria-describedby="pendiente"><i
                                     class="fa fa-trash"></i></button></td>
                     </tr>
                 </tbody>
@@ -572,7 +575,11 @@
                                 <option value="06">Impuesto de servicio 10%</option>
                                 <option value="99">Otros cargos</option>
                             </select></th>
-                        <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="" [ngModelOptions]="{standalone: true}" required aria-label="Detalle de otro cargo" aria-describedby="pendiente"></td>
+                        <td><input type="text" class="form-control" #detalleCargo="ngModel" [(ngModel)]="cargo.detalle" placeholder="" [name]="'detalleCargo'+i" required aria-label="Detalle de otro cargo" aria-describedby="pendiente">
+                            <span class="text-danger" *ngIf="!detalleCargo.valid">
+                                <span>Dato inválido.</span>
+                            </span>
+                        </td>
                         <td>
                             <div class="input-group">
                                 <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required aria-label="Monto de otro cargo" aria-describedby="pendiente">
@@ -812,7 +819,8 @@
             </div>
             <div class="row pt-4">
                 <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)" aria-label="Botón enviar factura" aria-describedby="pendiente">
+                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)" aria-label="Botón enviar factura" aria-describedby="pendiente"
+                    [disabled]="myForm.invalid && (!clienteSeleccionado || !clienteRegistrado)">
                         <h5>ENVIAR</h5>
                     </button>
                 </div>
