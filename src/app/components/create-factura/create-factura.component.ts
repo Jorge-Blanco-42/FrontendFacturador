@@ -680,10 +680,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       this.datosXML.receptor_email = "";
       this.datosXML.receptor_tel = "";
       this.datosXML.receptor_fax = "";
-      this.datosXML.receptor_provincia = "";
-      this.datosXML.receptor_canton = "";
-      this.datosXML.receptor_barrio = "";
-      this.datosXML.receptor_distrito = "";
+      this.datosXML.receptor_provincia = "1";
+      this.datosXML.receptor_canton = "01";
+      this.datosXML.receptor_barrio = "01";
+      this.datosXML.receptor_distrito = "01";
       
     }
     //console.log(this.clienteRegistrado);
