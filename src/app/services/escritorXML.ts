@@ -34,6 +34,7 @@ export class ServicioEscritorXML {
         let datos = new FormData();
         datos.append("xmlDecoded", xml);
         datos.append("otrosCargos", cargos);
+        console.log(cargos);
         return this._http.post(this.backendUrl + 'agregarCargosXML', datos);
     }
 }
