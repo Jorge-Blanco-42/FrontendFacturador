@@ -16,12 +16,25 @@ export class ServicioEscritorXML {
         this.backendUrl = environment.backendUrl;
     }
 
-    
+    arreglosGenerales(xml: string, actividad:string): Observable<any> {
+        let datos = new FormData();
+        datos.append("xmlDecoded", xml);
+        datos.append("CodigoActividad", actividad);
+        return this._http.post(this.backendUrl + 'arreglosGeneralesXML', datos);
+    }
+
+    arreglarLineas(xml:string, lineas:string): Observable<any>{
+        let datos = new FormData();
+        datos.append("xmlDecoded", xml);
+        datos.append("lineas", lineas);
+        return this._http.post(this.backendUrl + 'arreglarLineasXML', datos);
+    }
 
     addOtrosCargos(xml: string, cargos: string): Observable<any> {
         let datos = new FormData();
         datos.append("xmlDecoded", xml);
         datos.append("otrosCargos", cargos);
+        console.log(cargos);
         return this._http.post(this.backendUrl + 'agregarCargosXML', datos);
     }
 }
