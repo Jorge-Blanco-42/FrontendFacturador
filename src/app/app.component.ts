@@ -75,7 +75,6 @@ export class AppComponent implements OnInit {
     localStorage.removeItem("refresh");
     this._certificateService.getCertificado("1").subscribe(
       result => {
-        console.log("This is the certificate: ", <any>result)
         this.certificate = result;
         console. log(this.certificate);
         this.getToken(this.certificate);
@@ -85,33 +84,6 @@ export class AppComponent implements OnInit {
         console.log(<any>error)
       },  
     );
-    /*
-    this.crearClave();
-    this._createXMLService.crearXML(this.createXML).subscribe(
-      result =>{
-        console.log("XML", <any>result);
-      },
-      error =>{
-        console.log(<any>error);
-      }
-    )*/
-    //this.getTipoCambio('11', '02', '2007');
-    /*this._devCredNoteService.crearNotaDebitoCredito(this.devCredNote).subscribe(
-      result => {
-        console.log(':)', <any>result)
-      },
-      error => {
-        console.log(':c', <any>error)
-      }
-    );*/ 
-    /*this._signXMLCNDCService.firmarXMLNDNC(this.signXMLCNDC).subscribe(
-      result => {
-        console.log(':)', <any>result)
-      },
-      error => {
-        console.log(':c', <any>error)
-      }
-    ); */
   }
 
   getToken(certificate: Certificado) {
@@ -119,17 +91,8 @@ export class AppComponent implements OnInit {
       result => {
         console.log("This is the token: ", result);
         this.token = result.resp;
-        localStorage.setItem("token", this.token.refresh_token);
-        localStorage.setItem("refresh", this.token.access_token);
-        /*this.sendXML.token = this.token.access_token;
-        this._sendXMLService.sendFEXML(this.sendXML).subscribe(
-          result => {
-            console.log("This is the answer: ",<any>result)
-          },
-          error =>{
-            console.log(<any>error)
-          }
-        );*/
+        localStorage.setItem("token", this.token.access_token);
+        localStorage.setItem("refresh", this.token.refresh_token);
         setInterval(()=>{
           let refresh = localStorage.getItem("refresh");
           if(refresh){
@@ -150,8 +113,8 @@ export class AppComponent implements OnInit {
       result => {
         console.log("This is the refresh: ", <any>result);
         this.token = result.resp;
-        localStorage.setItem("token", this.token.refresh_token);
-        localStorage.setItem("refresh", this.token.access_token);
+        localStorage.setItem("token", this.token.access_token);
+        localStorage.setItem("refresh", this.token.refresh_token);
       },
       error => {
         console.log(<any>error)
