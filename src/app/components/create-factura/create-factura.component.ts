@@ -24,6 +24,7 @@ import { ViewChild, AfterViewInit } from '@angular/core';
 import { ServicioCorreo } from 'src/app/services/correo';
 import { Correo } from 'src/app/models/correo';
 import { ServicioEscritorXML } from 'src/app/services/escritorXML';
+import { ServicioConsultas } from 'src/app/services/consultas';
 
 //inicio mary
 export interface Clientes {
@@ -97,7 +98,7 @@ const ELEMENT_DATA: Clientes[] = [
   templateUrl: './create-factura.component.html',
   styleUrls: ['./create-factura.component.css'],
   providers: [DatePipe, ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,
-    ServicioCorreo, ServicioEscritorXML]
+    ServicioCorreo, ServicioEscritorXML, ServicioConsultas]
 })
 export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
@@ -132,7 +133,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   claveXML: ClaveXML;
   signXML: FirmadoXML;
   sendXML: EnvioXML;
-  
+
 
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
@@ -140,7 +141,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
-    private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML) {
+    private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012364",
       "98762250", "FE");
 
@@ -225,7 +226,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
 
   enviar(form: any): void {
-    
+
     let lineasStr = '{"';
     let arregloLineas: { lineas: { codigo: string, subtotal: string }[] } = { lineas: [] };
     this.lineas.forEach((linea, i) => {
@@ -262,8 +263,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     console.log(arregloLineas);
     lineasStr += '}';
 
-    this.datosXML.detalles = lineasStr;    
-    
+    this.datosXML.detalles = lineasStr;
+
     console.log(this.datosXML.detalles);
     let otrosCargosStr = '{"otrosCargos":[';
     this.otrosCargos.forEach((cargo, i) => {
@@ -344,20 +345,30 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                 this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
                                 this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
                                   result4 => {
-                                    //console.log(<any>result4);
+                                    console.log(<any>result4);
                                     console.log(this.sendXML.comprobanteXml);
                                     if (result4.resp.Status === 202) {
-                                      let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
-                                        "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
-                                        this.sendXML.comprobanteXml, "base64");
-                                      this._servicioCorreo.enviarCorreo(correo).subscribe(
-                                        res => {
-                                          console.log("correo enviado", correo);
+                                      let token = localStorage.getItem("token");
+                                      this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
+                                        resp => {
+                                          console.log(resp);
+                                          let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
+                                            "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
+                                            this.sendXML.comprobanteXml, "base64");
+                                          this._servicioCorreo.enviarCorreo(correo).subscribe(
+                                            res => {
+                                              console.log("correo enviado", correo);
+                                            },
+                                            error => {
+                                              console.log("No se pudo enviar el correo");
+                                            }
+                                          );
                                         },
                                         error => {
-                                          console.log("No se pudo enviar el correo");
+                                          console.log("error en consulta");
                                         }
-                                      );
+                                      )
+
                                     }
                                   },
                                   error4 => {
@@ -740,7 +751,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   lineaNormal(linea: Linea): string {
-    let producto = linea.producto.replace(replacer,"&quot;");
+    let producto = linea.producto.replace(replacer, "&quot;");
     return '{"cantidad":"' + linea.cantidad + '","unidadMedida":"' + linea.tipo + '","detalle":"' + producto +
       '","precioUnitario":"' + linea.precioUnitario + '","montoTotal":"' + linea.total + '","subTotal":"' + linea.subtotal +
       '","montoTotalLinea":"' + linea.total + '"';

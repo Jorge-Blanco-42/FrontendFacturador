@@ -76,7 +76,6 @@ export class AppComponent implements OnInit {
     this._certificateService.getCertificado("1").subscribe(
       result => {
         this.certificate = result;
-        console. log(this.certificate);
         this.getToken(this.certificate);
       },
       error => {
