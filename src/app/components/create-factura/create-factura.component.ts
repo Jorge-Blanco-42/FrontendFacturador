@@ -142,8 +142,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012364",
-      "98762250", "FE");
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012365",
+      "98762251", "FE");
 
     this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
       "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "117510169", "Jorge Luis Blanco Cordero",
@@ -346,12 +346,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                 this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
                                   result4 => {
                                     console.log(<any>result4);
-                                    console.log(this.sendXML.comprobanteXml);
                                     if (result4.resp.Status === 202) {
                                       let token = localStorage.getItem("token");
                                       this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
                                         resp => {
-                                          console.log(resp);
+                                          console.log("",resp);
                                           let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
                                             "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
                                             this.sendXML.comprobanteXml, "base64");
