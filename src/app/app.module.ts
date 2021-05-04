@@ -18,12 +18,14 @@ import { ErrorComponent } from './components/error/error.component';
 import { HomeComponent } from './components/home/home.component';
 import {IvyCarouselModule} from 'angular-responsive-carousel';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { ConsultarComponent } from './components/consultar/consultar.component';
 @NgModule({
   declarations: [
     AppComponent,
     CreateFacturaComponent,
     ErrorComponent,
-    HomeComponent
+    HomeComponent,
+    ConsultarComponent
   ],
   imports: [
     BrowserModule,
