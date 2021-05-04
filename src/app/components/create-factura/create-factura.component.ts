@@ -142,8 +142,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012371",
-      "98762257", "FE");
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012373",
+      "98762259", "FE");
 
     this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
       "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "117510169", "Jorge Luis Blanco Cordero",
@@ -308,6 +308,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           result2 => {
             //console.log("XML Creado", <any>result2);
             let xml = result2.resp.xml;
+            // console.log("XML sin arreglar", xml);
             this._servicioDecodificador.decodificarXML(xml).subscribe(
               decodificado => {
                 xml = decodificado.xmlDecoded;
@@ -335,10 +336,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                         this._servicioDecodificador.codificarXML(xml).subscribe(
                           encodedXML => {
                             xml = encodedXML.xmlencoded;
+                            // console.log("xml a firmar ",xml);
                             this.signXML.inXml = xml;
                             this._signXMLService.firmarFEXML(this.signXML).subscribe(
                               result3 => {
-                                console.log("XML FIRMADO", <any>result3);
                                 let token = localStorage.getItem("token");
                                 if (token) {
                                   this.sendXML.token = token;
