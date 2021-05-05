@@ -5,8 +5,8 @@
             <input id="buscarDocumento" class="form-control searchBar" (keyup)="applyFilter($event)" placeholder="Buscar documento" #input aria-label="Buscar documento" aria-describedby="pendiente">
         </div>
 
-        <div class="container">
-            <table id="tablaFacturas" mat-table [dataSource]="datosFacturas" class="mat-elevation-z8 tablaMat" aria-label="Tabla de documentos emitidos" aria-describedby="pendiente">
+        <div class="container overflow-auto">
+            <table id="tablaFacturas" mat-table [dataSource]="datosFacturas" class="mat-elevation-z8 tablaMat w-100" aria-label="Tabla de documentos emitidos" aria-describedby="pendiente">
 
                 <!-- Position Column -->
 
@@ -14,57 +14,68 @@
                 <ng-container matColumnDef="fecha">
                     <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado fecha" aria-describedby="pendiente"> Fecha </th>
                     <td mat-cell *matCellDef="let element" aria-label="fecha" aria-describedby="pendiente">
-                        {{element.nombre}} </td>
+                        {{element.fecha}} </td>
                 </ng-container>
 
                 <!-- Weight Column -->
                 <ng-container matColumnDef="nombreComercial">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado nombre comercial" aria-describedby="pendiente"> Nombre comercial </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado nombre comercial" aria-describedby="pendiente"> Nombre comercial </th>
                     <td mat-cell *matCellDef="let element" aria-label="nombre comercial" aria-describedby="pendiente">
-                        {{element.identificacion}} </td>
+                        {{element.nombreComercial}} </td>
                 </ng-container>
 
                 <!-- Symbol Column -->
                 <ng-container matColumnDef="numeroConsecutivo">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado consecutivo del documento" aria-describedby="pendiente"> Número consecutivo </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado consecutivo del documento" aria-describedby="pendiente"> Número consecutivo </th>
                     <td mat-cell *matCellDef="let element" aria-label="consecutivo" aria-describedby="pendiente">
-                        {{element.correo}} </td>
+                        {{element.numeroConsecutivo}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="claveDocumento">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado clave del documento" aria-describedby="pendiente"> Clave del documento </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado clave del documento" aria-describedby="pendiente"> Clave del documento
+                    </th>
                     <td mat-cell *matCellDef="let element" aria-label="clave" aria-describedby="pendiente">
-                        {{element.correo}} </td>
+                        {{element.claveDocumento}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="tipoDocumento">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado tipo de documento" aria-describedby="pendiente"> Tipo de documento </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado tipo de documento" aria-describedby="pendiente"> Tipo de documento </th>
                     <td mat-cell *matCellDef="let element" aria-label="tipo de documento" aria-describedby="pendiente">
-                        {{element.correo}} </td>
+                        {{element.tipoDocumento}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="notaCredito">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado generar nota de crédito" aria-describedby="pendiente"> Nota crédito </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado generar nota de crédito" aria-describedby="pendiente"> Nota crédito </th>
                     <td mat-cell *matCellDef="let element" aria-label="generar nota de crédito" aria-describedby="pendiente">
-                        {{element.correo}} </td>
+                        <button type="button" (click)="crearNotaCredito(element);" class="btn ml-2" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
+                                class="fa fa-file-text-o"></i><i
+                                class="fa fa-file-text"></i></button>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="notaDebito">
                     <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado generar nota de débito" aria-describedby="pendiente"> Nota débito </th>
                     <td mat-cell *matCellDef="let element" aria-label="generar nota de débito" aria-describedby="pendiente">
-                        {{element.correo}} </td>
+                        <button type="button text-center" (click)="crearNotaDebito(element);" class="btn ml-2" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
+                                class="fa fa-file-text-o"></i><i
+                                class="fa fa-file-text"></i></button>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="enviarCorreo">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado enviar correo" aria-describedby="pendiente"> Enviar correo </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado enviar correo" aria-describedby="pendiente"> Enviar correo </th>
                     <td mat-cell *matCellDef="let element" aria-label="enviar correo" aria-describedby="pendiente">
-                        {{element.correo}} </td>
+                        <button type="button" (click)="EnviarCorreo(element);" class="btn ml-2" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
+                                class="fa fa-envelope-o"></i></button>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="anular">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado anular documento" aria-describedby="pendiente"> Anular </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado anular documento" aria-describedby="pendiente"> Anular </th>
                     <td mat-cell *matCellDef="let element" aria-label="anular documento" aria-describedby="pendiente">
-                        {{element.correo}} </td>
+                        <button type="button" (click)="anularFactura(element);" class="btn ml-2" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
+                                class="fa fa-times-circle-o"></i></button>
+                    </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="columnasFactura"></tr>

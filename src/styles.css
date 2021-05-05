@@ -262,3 +262,13 @@
         margin-top: 15px;
         margin-bottom: 15px;
     }
+    /* Consultas */
+    
+    .btn:hover .fa-file-text-o,
+    .btn .fa-file-text {
+        display: none;
+    }
+    
+    .btn:hover .fa-file-text {
+        display: inline;
+    }

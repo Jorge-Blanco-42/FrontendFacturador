@@ -6,20 +6,16 @@ import { MatPaginator } from '@angular/material/paginator';
 
 const facturas = [
   {
-    fecha: "05/05/2021", nombreComercial: "", numeroConsecutivo:"", 
-    claveDocumento:"",tipoDocumento:""
+    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo:"00100001010100012357", 
+    claveDocumento:"50621042100011751016900100001010100012357198762243",tipoDocumento:"Factura electrónica"
   },
   {
-    fecha: "05/05/2021", nombreComercial: "", numeroConsecutivo:"", 
-    claveDocumento:"",tipoDocumento:""
+    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo:"00100001010100012358", 
+    claveDocumento:"50621042100011751016900100001010100012358198762244",tipoDocumento:"Nota de crédito"
   },
   {
-    fecha: "05/05/2021", nombreComercial: "", numeroConsecutivo:"", 
-    claveDocumento:"",tipoDocumento:""
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "", numeroConsecutivo:"", 
-    claveDocumento:"",tipoDocumento:""
+    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo:"00100001010100012359", 
+    claveDocumento:"50621042100011751016900100001010100012359198762244",tipoDocumento:"Nota de débito"
   },
 
 ]
@@ -55,4 +51,19 @@ export class ConsultarComponent implements OnInit {
     this.datosFacturas.filter = filterValue.trim().toLowerCase();
   }
 
+  crearNotaCredito(element:any){
+
+  }
+
+  crearNotaDebito(element:any){
+    
+  }
+
+  EnviarCorreo(element:any){
+    
+  }
+
+  anularFactura(element:any){
+    
+  }
 }
