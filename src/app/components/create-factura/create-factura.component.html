@@ -204,7 +204,7 @@
                         <label for="NombreReceptor">Nombre o Razon Social del cliente</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="NombreReceptor" name="nombreReceptor" #nombreReceptor="ngModel" [(ngModel)]="datosXML.receptor_nombre" [attr.disabled]="receptorDatosImportantes ? true: null" aria-label="Nombre del receptor con boton para mostrar información"
-                                aria-describedby="pendiente" required pattern="[a-zA-Z ]+" />
+                                aria-describedby="pendiente" required  />
                             <span class="text-danger" *ngIf="nombreReceptor.touched && !nombreReceptor.valid">
                                 <span>Dato inválido.</span>
                             </span>
@@ -226,7 +226,7 @@
                         <div class="form-item col-md-4">
                             <label for="NombreComercialReceptor">Nombre Comercial</label>
                             <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" #nombreComercialReceptor="ngModel" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor"
-                                aria-describedby="pendiente" required pattern="[a-zA-Z ]+" />
+                                aria-describedby="pendiente" required />
                             <span class="text-danger" *ngIf="nombreComercialReceptor.touched && !nombreComercialReceptor.valid">
                                 <span>Dato inválido.</span>
                             </span>
@@ -823,7 +823,7 @@
             </div>
             <div class="row pt-4">
                 <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)" aria-label="Botón enviar factura" aria-describedby="pendiente" [disabled]="myForm.invalid && (!clienteSeleccionado || !clienteRegistrado)">
+                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)" aria-label="Botón enviar factura" aria-describedby="pendiente" [disabled]="myForm.invalid || (!clienteSeleccionado || !clienteRegistrado)">
                         <h5>ENVIAR</h5>
                     </button>
                 </div>
