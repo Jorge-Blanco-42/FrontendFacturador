@@ -272,3 +272,21 @@
     .btn:hover .fa-file-text {
         display: inline;
     }
+
+    .btn:hover .fa-envelope-o,
+    .btn .fa-envelope {
+        display: none;
+    }
+    
+    .btn:hover .fa-envelope {
+        display: inline;
+    }
+
+    .btn:hover .fa-times-circle-o,
+    .btn .fa-times-circle {
+        display: none;
+    }
+    
+    .btn:hover .fa-times-circle {
+        display: inline;
+    }
