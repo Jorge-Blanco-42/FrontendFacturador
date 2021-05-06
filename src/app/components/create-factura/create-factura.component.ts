@@ -104,7 +104,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
-  private paginator: MatPaginator | undefined;
+  private paginator!: MatPaginator;
 
   public isCollapsedEmisorData: boolean = true;
   public isCollapsedReceptorData: boolean = true;
