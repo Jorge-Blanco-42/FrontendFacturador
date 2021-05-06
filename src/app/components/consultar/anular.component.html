@@ -1,64 +1,63 @@
-
 <div class="container">
     <div class="row">
-      <div class="card col-md-5">
-        <h4 class="text-center">Emisor</h4>
-        <h6>nombre</h6>
-        <h6>cedula</h6>
-        <h6>correo</h6>
-        <h6>telefono</h6>
-      </div>
-      <div class="col-md-2">
-        <!-- espacio(?) -->
-      </div>
-      <div class="card col-md-5">
-        <h4 class="text-center">Receptor</h4>
-        <h6>nombre</h6>
-        <h6>cedula</h6>
-        <h6>correo</h6>
-        <h6>telefono</h6>
-      </div>
+        <div class="card col-md-5">
+            <h4 class="text-center">Emisor</h4>
+            <h6>nombre</h6>
+            <h6>cedula</h6>
+            <h6>correo</h6>
+            <h6>telefono</h6>
+        </div>
+        <div class="col-md-2">
+            <!-- espacio(?) -->
+        </div>
+        <div class="card col-md-5">
+            <h4 class="text-center">Receptor</h4>
+            <h6>nombre</h6>
+            <h6>cedula</h6>
+            <h6>correo</h6>
+            <h6>telefono</h6>
+        </div>
     </div>
     <div class="row">
-      <table mat-table [dataSource]="versions[0].datas" class="mat-elevation-z8">
+        <table mat-table [dataSource]="datosFactura" class="mat-elevation-z8">
 
-        <!--- Note that these columns can be defined in any order.
+            <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
-      
-        <!-- Position Column -->
-        <ng-container matColumnDef="position">
-          <th mat-header-cell *matHeaderCellDef> No. </th>
-          <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-        </ng-container>
-      
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-        </ng-container>
-      
-        <!-- Weight Column -->
-        <ng-container matColumnDef="weight">
-          <th mat-header-cell *matHeaderCellDef> Weight </th>
-          <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-        </ng-container>
-      
-        <!-- Symbol Column -->
-        <ng-container matColumnDef="symbol">
-          <th mat-header-cell *matHeaderCellDef> Symbol </th>
-          <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-        </ng-container>
-      
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      
-      
-    </div> 
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="position">
+                <th mat-header-cell *matHeaderCellDef> No. </th>
+                <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="weight">
+                <th mat-header-cell *matHeaderCellDef> Weight </th>
+                <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="symbol">
+                <th mat-header-cell *matHeaderCellDef> Symbol </th>
+                <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+
+    </div>
     <div mat-dialog-actions>
         <button mat-button class="btn btn-outline-secondary" (click)="onNoClick()">Cancelar</button>
-      </div>
-      <div mat-dialog-actions>
+    </div>
+    <div mat-dialog-actions>
         <button mat-button class="btn btn-outline-secondary" (click)="onNoClick()">Anular</button>
-      </div>
+    </div>
 </div>

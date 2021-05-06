@@ -20,14 +20,15 @@ import { HomeComponent } from './components/home/home.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { ConsultarComponent, DialogAnular } from './components/consultar/consultar.component';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 @NgModule({
   declarations: [
     AppComponent,
     CreateFacturaComponent,
     ErrorComponent,
     HomeComponent,
-    ConsultarComponent
+    ConsultarComponent,
+    DialogAnular
   ],
   imports: [
     BrowserModule,
