@@ -290,3 +290,7 @@
     .btn:hover .fa-times-circle {
         display: inline;
     }
+
+    .producto-columna{
+        max-width: 20rem;
+    }

@@ -3,6 +3,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Linea } from 'src/app/models/linea';
+import { OtroCargo } from 'src/app/models/otroCargo';
 
 export interface PeriodicElement {
   name: string;
@@ -10,6 +12,10 @@ export interface PeriodicElement {
   weight: number;
   symbol: string;
 }
+
+const LINEAS : Linea[] = JSON.parse('[{"producto":"Aguacate nabal, fresco o refrigerado","codigo":"0131100020500","filtro":[{"impuesto":"1%","descripcion":"Aguacate nabal, fresco o refrigerado","codigoBienServicio":"0131100020500"}],"cantidad":7,"tipo":"Unid","precioUnitario":750,"descuento":1000,"razon":"","impuesto":"01-02","porcentaje":false,"base":0,"tarifa":1.01,"subtotal":5250,"total":4302.5},{"producto":"Chocolate con leche, en bloques, barras o tabletas (que contengan más del 50% del peso en bruto en cacao)","codigo":"2366000000300","filtro":[{"impuesto":"13%","descripcion":"Chocolate con leche, en bloques, barras o tabletas (que contengan más del 50% del peso en bruto en cacao)","codigoBienServicio":"2366000000300"}],"cantidad":6,"tipo":"Unid","precioUnitario":1100,"descuento":0,"razon":"","impuesto":"01-08","porcentaje":false,"base":0,"tarifa":1.13,"subtotal":6600,"total":7457.999999999999},{"producto":"Limones y limas, frescos o refrigerados, n.c.p.","codigo":"0132200009900","filtro":[{"impuesto":"13%","descripcion":"Limones y limas, frescos o refrigerados, n.c.p.","codigoBienServicio":"0132200009900"}],"cantidad":5,"tipo":"Unid","precioUnitario":500,"descuento":0,"razon":"","impuesto":"01-08","porcentaje":false,"base":0,"tarifa":1.13,"subtotal":2500,"total":2824.9999999999995},{"producto":"Mango verde, fresco o refrigerado","codigo":"0131601021700","filtro":[{"impuesto":"1%","descripcion":"Mango verde, fresco o refrigerado","codigoBienServicio":"0131601021700"}],"cantidad":4,"tipo":"Unid","precioUnitario":450,"descuento":0,"razon":"","impuesto":"01-02","porcentaje":false,"base":0,"tarifa":1.01,"subtotal":1800,"total":1818}]');
+
+const OTROS_CARGOS : OtroCargo[] = JSON.parse('[{"tipoDocumento":"04","detalle":"Propina","monto":1000,"porcentaje":false,"tipoIdentificacion":"01","identificacion":"117510169","nombre":"Jorge Blanco","total":1000},{"tipoDocumento":"06","detalle":"Servicio de envio","monto":10,"porcentaje":true,"tipoIdentificacion":"","identificacion":"","nombre":"","total":1500}]');
 
 const ELEMENT_DATA: PeriodicElement[] = [
   { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
@@ -86,6 +92,7 @@ export class ConsultarComponent implements OnInit {
   datosFacturas = new MatTableDataSource(facturas);
   private paginator!: MatPaginator;
   private sorter!: MatSort;
+
   constructor(public dialog: MatDialog) {
 
   }
@@ -117,9 +124,10 @@ export class ConsultarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(OTROS_CARGOS);
   }
 
-  openDialog(): void {
+  openDialogAnular(): void {
     const dialogRef = this.dialog.open(DialogAnular, {
       width: '80%',
       height: '70%',
@@ -149,7 +157,7 @@ export class ConsultarComponent implements OnInit {
   }
 
   anularFactura(element: any) {
-    this.openDialog();
+    this.openDialogAnular();
   }
 
 }
@@ -162,10 +170,20 @@ export class DialogAnular implements OnInit {
 
   displayedColumnsLineas: string[] = ['Producto', 'Cantidad', 'PrecioUnitario', 'Descuento', 'Impuestos', 'Subtotal', 'Total'];
   displayedColumnsCargo: string[] = ['TipoDocumento', 'Detalle', 'PorcentajeMonto', 'MontoCargo'];
-  datosFactura: MatTableDataSource<PeriodicElement> = new MatTableDataSource(ELEMENT_DATA);
-  datosCargo: MatTableDataSource<PeriodicElement> = new MatTableDataSource(ELEMENT_DATA);
+  datosFactura: MatTableDataSource<Linea> = new MatTableDataSource(LINEAS);
+  datosCargo: MatTableDataSource<OtroCargo> = new MatTableDataSource(OTROS_CARGOS);
   private paginatorLineas!: MatPaginator;
   private paginatorCargos!: MatPaginator;
+
+  nombreEmisor = "Rodolfo de Jesus Mora Zamora";
+  cedulaEmisor = "113160737";
+  correoEmisor = "rodolfo@gmail.com";
+  telefonoEmisor = "8888-8888";
+
+  nombreReceptor = "María Fernanda Niño";
+  cedulaReceptor = "117170242";
+  correoReceptor = "mary@gmail.com";
+  telefonoReceptor = "8888-8888";
 
   constructor(
     public dialogRef: MatDialogRef<DialogAnular>) {
