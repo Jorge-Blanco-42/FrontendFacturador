@@ -15,12 +15,12 @@ import { MatTableModule } from '@angular/material/table'
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-
 import { ErrorComponent } from './components/error/error.component';
 import { HomeComponent } from './components/home/home.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
-import { ConsultarComponent } from './components/consultar/consultar.component';
+import { ConsultarComponent, DialogAnular } from './components/consultar/consultar.component';
+import {MatDialogModule} from '@angular/material/dialog';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,10 +46,12 @@ import { ConsultarComponent } from './components/consultar/consultar.component';
     MatPaginatorModule,
     MatSortModule,
     IvyCarouselModule,
-    MDBBootstrapModule.forRoot()
+    MDBBootstrapModule.forRoot(),
+    MatDialogModule
 
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DialogAnular]
 })
 export class AppModule { }
