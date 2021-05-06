@@ -1,3 +1,9 @@
+<div class="header-title" aria-label="Sección de datos de emisor de factura" aria-describedby="pendiente">
+    <div class="divider">
+        <h5>Consultar comprobantes</h5>
+    </div>
+</div>
+
 <div class="container card p-3 my-4">
     <div class="row">
 
@@ -6,20 +12,20 @@
         </div>
 
         <div class="container overflow-auto">
-            <table id="tablaFacturas" mat-table [dataSource]="datosFacturas" class="mat-elevation-z8 tablaMat w-100" aria-label="Tabla de documentos emitidos" aria-describedby="pendiente">
+            <table id="tablaFacturas" #tablaFacturas mat-table [dataSource]="datosFacturas" class="mat-elevation-z8 tablaMat w-100" aria-label="Tabla de documentos emitidos" aria-describedby="pendiente" matSort>
 
                 <!-- Position Column -->
 
                 <!-- Name Column -->
                 <ng-container matColumnDef="fecha">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado fecha" aria-describedby="pendiente"> Fecha </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado fecha" aria-describedby="pendiente" mat-sort-header> Fecha </th>
                     <td mat-cell *matCellDef="let element" aria-label="fecha" aria-describedby="pendiente">
                         {{element.fecha}} </td>
                 </ng-container>
 
                 <!-- Weight Column -->
                 <ng-container matColumnDef="nombreComercial">
-                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado nombre comercial" aria-describedby="pendiente"> Nombre comercial </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado nombre comercial" aria-describedby="pendiente" mat-sort-header> Nombre comercial </th>
                     <td mat-cell *matCellDef="let element" aria-label="nombre comercial" aria-describedby="pendiente">
                         {{element.nombreComercial}} </td>
                 </ng-container>
@@ -39,8 +45,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="tipoDocumento">
-                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado tipo de documento" aria-describedby="pendiente"> Tipo de documento </th>
-                    <td mat-cell *matCellDef="let element" aria-label="tipo de documento" aria-describedby="pendiente">
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado tipo de documento" aria-describedby="pendiente" mat-sort-header> Tipo de documento </th>
+                    <td class="text-center" mat-cell *matCellDef="let element" aria-label="tipo de documento" aria-describedby="pendiente">
                         {{element.tipoDocumento}} </td>
                 </ng-container>
 
@@ -48,17 +54,15 @@
                     <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado generar nota de crédito" aria-describedby="pendiente"> Nota crédito </th>
                     <td mat-cell *matCellDef="let element" aria-label="generar nota de crédito" aria-describedby="pendiente">
                         <button type="button" (click)="crearNotaCredito(element);" class="btn ml-2" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
-                                class="fa fa-file-text-o"></i><i
-                                class="fa fa-file-text"></i></button>
+                                class="fa fa-file-text-o"></i><i class="fa fa-file-text"></i></button>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="notaDebito">
-                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado generar nota de débito" aria-describedby="pendiente"> Nota débito </th>
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado generar nota de débito" aria-describedby="pendiente"> Nota débito </th>
                     <td mat-cell *matCellDef="let element" aria-label="generar nota de débito" aria-describedby="pendiente">
                         <button type="button text-center" (click)="crearNotaDebito(element);" class="btn ml-2" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
-                                class="fa fa-file-text-o"></i><i
-                                class="fa fa-file-text"></i></button>
+                                class="fa fa-file-text-o"></i><i class="fa fa-file-text"></i></button>
                     </td>
                 </ng-container>
 
