@@ -132,7 +132,7 @@ export class ConsultarComponent implements OnInit {
   }
 
   openDialogAnular(): void {
-    const dialogRef = this.dialog.open(DialogAnular, {
+    const dialogRef = this.dialog.open(DialogResumen, {
       width: '80%',
       height: '70%',
       data: true
@@ -144,7 +144,7 @@ export class ConsultarComponent implements OnInit {
   }
 
   openDialogCorreo(): void {
-    const dialogRef = this.dialog.open(DialogAnular, {
+    const dialogRef = this.dialog.open(DialogResumen, {
       width: '80%',
       height: '70%',
       data: false
@@ -183,7 +183,7 @@ export class ConsultarComponent implements OnInit {
   templateUrl: './anular.component.html',
   providers: [ServicioCorreo]
 })
-export class DialogAnular implements OnInit {
+export class DialogResumen implements OnInit {
 
   displayedColumnsLineas: string[] = ['Producto', 'Cantidad', 'PrecioUnitario', 'Descuento', 'Impuestos', 'Subtotal', 'Total'];
   displayedColumnsCargo: string[] = ['TipoDocumento', 'Detalle', 'PorcentajeMonto', 'MontoCargo'];
@@ -207,7 +207,7 @@ export class DialogAnular implements OnInit {
   telefonoReceptor = "8888-8888";
 
   constructor(
-    public dialogRef: MatDialogRef<DialogAnular>,
+    public dialogRef: MatDialogRef<DialogResumen>,
     @Inject(MAT_DIALOG_DATA) public anular: boolean, private _servicioCorreo: ServicioCorreo) {
   }
 

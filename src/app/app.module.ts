@@ -19,7 +19,7 @@ import { ErrorComponent } from './components/error/error.component';
 import { HomeComponent } from './components/home/home.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
-import { ConsultarComponent, DialogAnular } from './components/consultar/consultar.component';
+import { ConsultarComponent, DialogResumen } from './components/consultar/consultar.component';
 import { MatDialogModule } from '@angular/material/dialog';
 @NgModule({
   declarations: [
@@ -28,7 +28,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ErrorComponent,
     HomeComponent,
     ConsultarComponent,
-    DialogAnular
+    DialogResumen
   ],
   imports: [
     BrowserModule,
@@ -53,6 +53,6 @@ import { MatDialogModule } from '@angular/material/dialog';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DialogAnular]
+  entryComponents: [DialogResumen]
 })
 export class AppModule { }
