@@ -18,4 +18,10 @@ export class ServicioDecodificador {
         xml.append("xmlEncoded", xmlEncoded);
         return this._http.post(this.backendUrl + 'decodificarXML', xml);
     }
+
+    codificarXML(xmlDecoded: string): Observable<any> {
+        let xml = new FormData();
+        xml.append("xmlDecoded", xmlDecoded);
+        return this._http.post(this.backendUrl + 'codificarXML', xml);
+    }
 }

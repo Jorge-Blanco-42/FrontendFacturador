@@ -13,7 +13,7 @@ import { TipoCambio } from '../../models/tipoCambio';
 import { ServicioTipoCambio } from '../../services/tipoCambioXML';
 import { DatePipe } from '@angular/common';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { Linea } from 'src/app/models/linea';
@@ -23,6 +23,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { ViewChild, AfterViewInit } from '@angular/core';
 import { ServicioCorreo } from 'src/app/services/correo';
 import { Correo } from 'src/app/models/correo';
+import { ServicioEscritorXML } from 'src/app/services/escritorXML';
+import { ServicioConsultas } from 'src/app/services/consultas';
 
 //inicio mary
 export interface Clientes {
@@ -36,6 +38,8 @@ export interface Clientes {
   correo: string
 
 }
+
+const replacer = new RegExp('\"', 'g');
 
 const ELEMENT_DATA: Clientes[] = [
   {
@@ -94,13 +98,13 @@ const ELEMENT_DATA: Clientes[] = [
   templateUrl: './create-factura.component.html',
   styleUrls: ['./create-factura.component.css'],
   providers: [DatePipe, ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,
-              ServicioCorreo]
+    ServicioCorreo, ServicioEscritorXML, ServicioConsultas]
 })
 export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
-  private paginator: MatPaginator | undefined;
+  private paginator!: MatPaginator;
 
   public isCollapsedEmisorData: boolean = true;
   public isCollapsedReceptorData: boolean = true;
@@ -119,7 +123,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public cambio: TipoCambio;
 
   public maxDate = new Date();
-  cabys: { impuesto: string, descripcion: string }[] = [];
+  cabys: { impuesto: string, descripcion: string, codigoBienServicio: string }[] = [];
   public lineasJSON: {}[] = [];
 
   public datosXML: CreacionXML;
@@ -130,15 +134,16 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   signXML: FirmadoXML;
   sendXML: EnvioXML;
 
+
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
-    private _servicioCorreo: ServicioCorreo) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012357",
-      "98762243", "FE");
+    private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012373",
+      "98762259", "FE");
 
     this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
       "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "117510169", "Jorge Luis Blanco Cordero",
@@ -185,7 +190,15 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   paginatorResumen!: MatPaginator;
 
   ngOnInit(): void {
-
+    let token = localStorage.getItem("token");
+    this._servicioConsultas.consultarFacturas(token?token:"").subscribe(
+      resp =>{
+        console.log("ok",resp);
+      },
+      error =>{
+        console.log("error",error);
+      }
+    )
     this.actualizarTipoCambio(this.maxDate);
     this.getCabys();
     this.impuestoTarifa.set("01-01", 1.0);
@@ -218,163 +231,185 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private _filter(value: string): { descripcion: string, impuesto: string }[] {
-    if (value) {
-      const filterValue = this._normalizeValue(value);
-      if (filterValue.length > 3) {
-        return this.cabys.filter(cabys => this._normalizeValue(cabys.descripcion).includes(filterValue));
-      }
-      return this.cabys.slice(0, 50);
-    } else {
-      return this.cabys.slice(0, 50);
-    }
-  }
 
-  private _normalizeValue(value: string): string {
-    //console.log("normalize value ",value);
-    return value.toLowerCase().replace(/\s/g, '');
-  }
 
   enviar(form: any): void {
+
     let lineasStr = '{"';
+    let arregloLineas: { lineas: { codigo: string, subtotal: string }[] } = { lineas: [] };
     this.lineas.forEach((linea, i) => {
       if (i > 0) {
         lineasStr += ',"' + (i + 1) + '":';
       } else {
         lineasStr += i + 1 + '":';
       }
+      arregloLineas.lineas.push({ codigo: linea.codigo, subtotal: linea.subtotal.toString() });
       if (linea.descuento > 0) {
         if (linea.tarifa > 1.0) {//Linea con descuento y tarifa
-          console.log("Tarifa+descuento");
+          //console.log("Tarifa+descuento");
           let lineaStr = this.lineaConDescuento(linea);
           lineaStr = this.lineaConImpuesto(linea, lineaStr);
           lineasStr += lineaStr;
         } else {//Linea con solo descuento
-          console.log("descuento");
+          //console.log("descuento");
           let lineaStr = this.lineaConDescuento(linea);
           lineasStr += lineaStr;
         }
       } else if (linea.tarifa > 1.0) {//Linea con solo tarifa
-        console.log("Tarifa");
+        //console.log("Tarifa");
         let lineaStr = this.lineaNormal(linea);
         lineaStr = this.lineaConImpuesto(linea, lineaStr);
         lineasStr += lineaStr;
 
       } else {//Linea solo con productos
-        console.log("Nada");
+        //console.log("Nada");
         let lineaStr = this.lineaNormal(linea);
         lineasStr += lineaStr;
       }
       lineasStr += '}';
     });
+    console.log(arregloLineas);
     lineasStr += '}';
-    console.log(lineasStr);
+
     this.datosXML.detalles = lineasStr;
-    let otrosCargosStr = '{"';
+
+    console.log(this.datosXML.detalles);
+    let otrosCargosStr = '{"otrosCargos":[';
     this.otrosCargos.forEach((cargo, i) => {
       if (i > 0) {
-        otrosCargosStr += ',"' + (i + 1) + '":';
-      } else {
-        otrosCargosStr += (i + 1) + '":';
+        otrosCargosStr += ",";
       }
+      otrosCargosStr += '{"TipoDocumento":"' + cargo.tipoDocumento + '",';
       if (cargo.tipoDocumento === '04') {
-        otrosCargosStr += '{';
-        otrosCargosStr += '"NumeroIdentidadTercero":"' + cargo.identificacion + '","NombreTercero":"' + cargo.nombre +
-          '","Detalle":"' + cargo.detalle + '","Porcentaje":';
-        otrosCargosStr += this.otroCargoPorcentaje(cargo);
-        otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
-        otrosCargosStr += '}'
-      } else {
-        otrosCargosStr += '{';
-        otrosCargosStr += '"Detalle":"' + cargo.detalle + '", "Porcentaje":';
-        otrosCargosStr += this.otroCargoPorcentaje(cargo);
-        otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
-        otrosCargosStr += '}'
+        otrosCargosStr += '"NumeroIdentidadTercero":"' + cargo.identificacion +
+          '","NombreTercero":"' + cargo.nombre + '",';
       }
+      otrosCargosStr += '"Detalle":"' + cargo.detalle + '", "Porcentaje":';
+      otrosCargosStr += cargo.monto;
+      otrosCargosStr += ', "MontoCargo":"' + cargo.total + '"';
+      otrosCargosStr += '}'
+
     });
-    otrosCargosStr += '}';
-    console.log(otrosCargosStr);
-    if (otrosCargosStr !== '{"}') {
+    otrosCargosStr += ']}';
+    //console.log(otrosCargosStr);
+    if (otrosCargosStr !== '{"otrosCargos":[]}') {
       this.datosXML.otrosType = otrosCargosStr;
     }
 
-    //console.log(JSON.parse(lineasStr));
-    // this.datosXML.detalles = JSON.stringify(this.lineasJSON);
-    // var linea = { "1": { "cantidad": "1", "unidadMedida": "Sp", "detalle": "Impresora", "precioUnitario": "10000", "montoTotal": "10000", "subtotal": "9900", "montoTotalLinea": "9900", "montoDescuento": "100", "naturalezaDescuento": "Pronto pago" }, "2": { "cantidad": "1", "unidadMedida": "Unid", "detalle": "producto", "precioUnitario": "10000", "montoTotal": "10000", "subtotal": "10000", "montoTotalLinea": "11170", "impuesto": { "1": { "codigo": "01", "tarifa": "11.7", "monto": "1170" } } } }
-    // this.datosXML.detalles = JSON.stringify(linea);
-    // this.datosXML.total_ventas = "20000";
-    // this.datosXML.total_ventas_neta = "19900";
-    // this.datosXML.total_serv_gravados = "0";
-    // this.datosXML.total_serv_exentos = "10000";
-    // this.datosXML.total_merc_gravada = "10000";
-    // this.datosXML.total_merc_exenta = "0";
-    // this.datosXML.total_impuestos = "1170";
-    // this.datosXML.total_gravados = "10000";
-    // this.datosXML.total_exentos = "10000";
-    // this.datosXML.total_descuentos = "100";
-    // this.datosXML.total_comprobante = "1170";
-    // this.datosXML2.detalles = JSON.stringify(linea);
-    //2021-04-18T00:50:00-06:00
     let fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
     if (fecha) this.datosXML.fecha_emision = fecha.toString();
     this._servicioClaveXML.crearClaveXML(this.claveXML).subscribe(
       result => {
-        console.log("CLAVE XML ", <any>result);
+        //console.log("CLAVE XML ", <any>result);
         this.datosXML.clave = result.resp.clave;
         this.datosXML.consecutivo = result.resp.consecutivo;
         //this._createXMLService.crearXML(this.datosXML).subscribe(
         this._createXMLService.crearXML(this.datosXML).subscribe(
           result2 => {
-            console.log("XML Creado", <any>result2);
-            this.signXML.inXml = result2.resp.xml;
-            this._signXMLService.firmarFEXML(this.signXML).subscribe(
-              result3 => {
-                console.log("XML FIRMADO", <any>result3);
-                let token = localStorage.getItem("token");
-                if (token) {
-                  this.sendXML.token = token;
-                } else {
-                  console.log("Problemas de token");
-                }
-                this.sendXML.clave = this.datosXML.clave;
-                this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
-                this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
-                this.sendXML.fecha = this.datosXML.fecha_emision;
+            //console.log("XML Creado", <any>result2);
+            let xml = result2.resp.xml;
+            // console.log("XML sin arreglar", xml);
+            this._servicioDecodificador.decodificarXML(xml).subscribe(
+              decodificado => {
+                xml = decodificado.xmlDecoded;
+                //console.log("xml inicial", xml);
+                this._servicioEscritorXML.arreglosGenerales(xml, "12345").subscribe(
+                  arreglado => {
+                    xml = arreglado.xmlFile;
+                    //console.log("arreglos", xml);
+                    if (otrosCargosStr !== '{"otrosCargos":[]}') {
+                      this._servicioEscritorXML.addOtrosCargos(xml, this.datosXML.otrosType).subscribe(
+                        xmlOtrosCargos => {
+                          xml = xmlOtrosCargos.xmlFile;
+                          //console.log("otros cargos", xml);
+                        },
+                        error => {
+                          console.log(error);
+                        }
+                      )
+                    }
+                    this._servicioEscritorXML.arreglarLineas(xml, JSON.stringify(arregloLineas)).subscribe(
+                      xmlFinal => {
 
-                this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
-                // this._servicioDecodificador.decodificarXML(result3.resp.xmlFirmado).subscribe(
-                //   decodificado =>{
-                //     console.log("XML:\n", decodificado.xmlDecoded);
-                //   },
-                //   errorDec =>{
-                //     console.log(errorDec);
-                //   }
+                        xml = xmlFinal.xmlFile;
+                        //console.log("lineas", xml);
+                        this._servicioDecodificador.codificarXML(xml).subscribe(
+                          encodedXML => {
+                            xml = encodedXML.xmlencoded;
+                            // console.log("xml a firmar ",xml);
+                            this.signXML.inXml = xml;
+                            this._signXMLService.firmarFEXML(this.signXML).subscribe(
+                              result3 => {
+                                let token = localStorage.getItem("token");
+                                if (token) {
+                                  this.sendXML.token = token;
+                                } else {
+                                  //console.log("Problemas de token");
+                                }
+                                this.sendXML.clave = this.datosXML.clave;
+                                this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
+                                this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
+                                this.sendXML.fecha = this.datosXML.fecha_emision;
 
-                // )
-                // let correo = new Correo(this.datosXML.receptor_email, "Su factura electrónica",
-                //   "Ver archivo adjunto", "factura.xml", result3.resp.xmlFirmado, "base64");
-                // this._servicioCorreo.enviarCorreo(correo).subscribe(
-                //   respuesta => {
-                //     console.log(respuesta);
-                //   },
-                //   errorDec => {
-                //     console.log(errorDec);
-                //   }
-                // )
-                this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
-                  result4 => {
-                    console.log(<any>result4);
+                                this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
+                                this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
+                                  result4 => {
+                                    console.log(<any>result4);
+                                    if (result4.resp.Status === 202) {
+                                      let token = localStorage.getItem("token");
+                                      this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
+                                        resp => {
+                                          console.log("",resp);
+                                          let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
+                                            "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
+                                            this.sendXML.comprobanteXml, "base64");
+                                          this._servicioCorreo.enviarCorreo(correo).subscribe(
+                                            res => {
+                                              console.log("correo enviado", correo);
+                                            },
+                                            error => {
+                                              console.log("No se pudo enviar el correo");
+                                            }
+                                          );
+                                        },
+                                        error => {
+                                          console.log("error en consulta");
+                                        }
+                                      )
+
+                                    }
+                                  },
+                                  error4 => {
+                                    //console.log(<any>error4);
+                                  }
+                                )
+
+                              },
+                              error3 => {
+                                //console.log(<any>error3);
+                              }
+                            )
+                          },
+                          error => {
+                            console.log(error);
+                          }
+                        );
+                      },
+                      error => {
+                        console.log(error);
+                      }
+                    );
                   },
-                  error4 => {
-                    //console.log(<any>error4);
+                  error => {
+                    console.log(error);
                   }
-                )
-
+                );
               },
-              error3 => {
-                //console.log(<any>error3);
+              error => {
+                console.log(error);
               }
             )
+
           },
           error2 => {
             //console.log(<any>error2);
@@ -387,7 +422,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       }
     );
     //console.log(form);
-
   }
 
   cambioFecha(event: MatDatepickerInputEvent<Date>) {
@@ -418,13 +452,31 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private _filter(value: string): { descripcion: string, impuesto: string, codigoBienServicio: string }[] {
+    if (value) {
+      const filterValue = this._normalizeValue(value);
+      if (filterValue.length > 3) {
+        return this.cabys.filter(cabys => this._normalizeValue(cabys.descripcion).includes(filterValue));
+      }
+      return this.cabys.slice(0, 50);
+    } else {
+      return this.cabys.slice(0, 50);
+    }
+  }
+
+  private _normalizeValue(value: string): string {
+    //console.log("normalize value ",value);
+    return value.toLowerCase().replace(/\s/g, '');
+  }
+
+  filtroCabys(evt: string, linea: Linea) {
+    linea.filtro = this._filter(evt);
+  }
+
   nuevaLinea() {
     var control = new FormControl();
-    var filtro = control.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
-    this.lineas.push(new Linea("", control, filtro, 1, "Sp", 5, 0, "", "01-08", false, 0, 1.13, 0, 0));
+    var filtro = this._filter("");
+    this.lineas.push(new Linea("", "", filtro, 1, "Sp", 5, 0, "", "01-08", false, 0, 1.13, 0, 0));
     this.dataSourceResumen.data = this.lineas;
     this.dataSourceResumen.connect().next(this.lineas);
     if (this.paginatorResumen) {
@@ -443,11 +495,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   actualizarTarifaLinea(linea: Linea) {
     let tarifa = this.impuestoTarifa.get(linea.impuesto);
-    console.log(tarifa);
+    //console.log(tarifa);
     if (tarifa != undefined) {
       linea.tarifa = tarifa;
     }
-    console.log(linea);
+    //console.log(linea);
     this.calcularTotalesLinea(linea);
   }
 
@@ -467,7 +519,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       montoDescuento = linea.descuento;
     }
     linea.total = linea.subtotal + montoImpuesto - montoDescuento;
-    console.log(linea.total, montoImpuesto, montoDescuento);
+    //console.log(linea.total, montoImpuesto, montoDescuento);
     this.calcularTotales();
   }
 
@@ -588,7 +640,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     });
   }
 
-  setImpuesto(linea: Linea, cabys: { descripcion: string, impuesto: string }) {
+  setCabys(linea: Linea, cabys: { descripcion: string, impuesto: string, codigoBienServicio: string }) {
     let impuesto = cabys.impuesto;
     switch (impuesto) {
       case "1%":
@@ -607,6 +659,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
         linea.impuesto = "01-01"
         break;
     }
+    linea.codigo = cabys.codigoBienServicio;
     this.actualizarTarifaLinea(linea);
   }
 
@@ -676,6 +729,18 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       this.receptorDatosImportantes = false;
       this.receptorDeshabilitado = false;
       this.isCollapsedReceptorData = false;
+
+      this.datosXML.receptor_nombre = "";
+      this.datosXML.receptor_tipo_identif = "";
+      this.datosXML.receptor_num_identif = "";
+      this.datosXML.receptor_email = "";
+      this.datosXML.receptor_tel = "";
+      this.datosXML.receptor_fax = "";
+      this.datosXML.receptor_provincia = "1";
+      this.datosXML.receptor_canton = "01";
+      this.datosXML.receptor_barrio = "01";
+      this.datosXML.receptor_distrito = "01";
+
     }
     //console.log(this.clienteRegistrado);
 
@@ -694,7 +759,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   lineaNormal(linea: Linea): string {
-    return '{"cantidad":"' + linea.cantidad + '","unidadMedida":"' + linea.tipo + '","detalle":"' + linea.producto +
+    let producto = linea.producto.replace(replacer, "&quot;");
+    return '{"cantidad":"' + linea.cantidad + '","unidadMedida":"' + linea.tipo + '","detalle":"' + producto +
       '","precioUnitario":"' + linea.precioUnitario + '","montoTotal":"' + linea.total + '","subTotal":"' + linea.subtotal +
       '","montoTotalLinea":"' + linea.total + '"';
   }
@@ -728,11 +794,4 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     return lineaStr;
   }
 
-  otroCargoPorcentaje(cargo: OtroCargo): string {
-    if (cargo.porcentaje) {
-      return '"' + (cargo.monto / 100 * Number.parseFloat(this.datosXML.total_ventas)) + '"';
-    } else {
-      return '"' + cargo.monto + '"';
-    }
-  }
 }

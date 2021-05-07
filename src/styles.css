@@ -140,7 +140,7 @@
     .custom-radio .custom-control-input:checked~.custom-control-label::before,
     .custom-radio .custom-control-input:checked~.custom-control-label::after {
         background-color: #B085F5;
-        background-image: url(data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E);
+        /* background-image: url(data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E); */
         border-radius: 50%;
     }
     
@@ -207,7 +207,7 @@
         background-color: #B085F5;
     }
     
-    #pruebaTabla {
+    .tablaMat {
         width: 90%;
         margin: auto;
     }
@@ -238,18 +238,18 @@
     #tablaResumenFactura h6 {
         color: #7357C2;
     }
-
-    .footer-flex{
-        display: flex; 
-        flex-direction: column; 
+    
+    .footer-flex {
+        display: flex;
+        flex-direction: column;
         height: 100%;
     }
-
-    #content{
+    
+    #content {
         flex: 1;
     }
-
-    .error-body{
+    
+    .error-body {
         background-color: white;
     }
     
@@ -257,8 +257,40 @@
         padding: 40px 15px;
         text-align: center;
     }
-
+    
     .error-actions {
-        margin-top:15px;
-        margin-bottom:15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    /* Consultas */
+    
+    .btn:hover .fa-file-text-o,
+    .btn .fa-file-text {
+        display: none;
+    }
+    
+    .btn:hover .fa-file-text {
+        display: inline;
+    }
+
+    .btn:hover .fa-envelope-o,
+    .btn .fa-envelope {
+        display: none;
+    }
+    
+    .btn:hover .fa-envelope {
+        display: inline;
+    }
+
+    .btn:hover .fa-times-circle-o,
+    .btn .fa-times-circle {
+        display: none;
+    }
+    
+    .btn:hover .fa-times-circle {
+        display: inline;
+    }
+
+    .producto-columna{
+        max-width: 20rem;
     }

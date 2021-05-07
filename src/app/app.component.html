@@ -3,45 +3,45 @@
 <!--Fin de la chanchada-->
 
 <div class="footer-flex">
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light pb-3">
-        <a id =  "logo" class="navbar-brand" [routerLink]="['/home']">HONKPANY</a>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light pb-3">
+            <a id="logo" class="navbar-brand" [routerLink]="['/home']">HONKPANY</a>
 
-        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+            <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       &#9776;
     </button>
 
-        <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" [routerLink]="['/crearFactura']" (click)="isMenuCollapsed = true">Crear Factura</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" [routerLink]="'.'" (click)="isMenuCollapsed = true">Route2</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" [routerLink]="'.'" (click)="isMenuCollapsed = true">Route3</a>
-                </li>
-            </ul>
+            <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" [routerLink]="['/crearFactura']" (click)="isMenuCollapsed = true">Crear Factura</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="['/consultar']" (click)="isMenuCollapsed = true">Consultar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="'.'" (click)="isMenuCollapsed = true">Route3</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+
+    <section id="content">
+
+        <router-outlet></router-outlet>
+
+    </section>
+
+
+    <footer class="navbar-fixed-bottom footer_area">
+        <div class="container">
+            <div class="col-lg-10 col-sm-10">
+                <aside>
+                    <p>Copyright &copy; | All rights reserved </p>
+                </aside>
+            </div>
         </div>
-    </nav>
-</header>
-
-
-<section id="content">
-
-    <router-outlet></router-outlet>
-
-</section>
-
-
-<footer class="navbar-fixed-bottom footer_area">
-    <div class="container">
-        <div class="col-lg-10 col-sm-10">
-            <aside>
-                <p>Copyright &copy; | All rights reserved </p>
-            </aside>
-        </div>
-    </div>
-</footer>
+    </footer>
 </div>

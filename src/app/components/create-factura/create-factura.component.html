@@ -2,7 +2,7 @@
     <!------------------------------->
     <!--------Datos del emisor------->
     <!------------------------------->
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de datos de emisor de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Datos del emisor</h5>
         </div>
@@ -17,7 +17,7 @@
                     <input type="text" class="form-control" id="txtNombreRazonSocialEmisorId" name="nombreRazonSocialEmisor" [(ngModel)]="datosXML.emisor_nombre" readonly aria-label="Nombre de razon social con boton para mostrar información" aria-describedby="pendiente"
                         required/>
                     <div class="input-group-append">
-                        <button type="button" class="btn btn-secondary" (click)="toggle()">
+                        <button type="button" class="btn btn-outline-secondary" (click)="toggle()" aria-label="Botón ver datos del emisor" aria-describedby="pendiente">
                             VER DATOS
                         </button>
                     </div>
@@ -31,43 +31,58 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="NombreComercialEmisor">Nombre Comercial</label>
-                                    <input type="text" class="form-control" id="NombreComercialEmisor" name="nombreComercialEmisor" [disabled]="true" [(ngModel)]="datosXML.nombre_comercial" aria-label="Nombre Comercial del emisor" aria-describedby="pendiente" required/>
+                                    <input type="text" class="form-control" id="NombreComercialEmisor" name="nombreComercialEmisor" #nombreComercialEmisor="ngModel" [disabled]="true" [(ngModel)]="datosXML.nombre_comercial" aria-label="Nombre Comercial del emisor" aria-describedby="pendiente"
+                                        required/>
+
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="IdentificacionEmisor">Identificación</label>
-                                    <input type="text" class="form-control" id="IdentificacionEmisor" name="identificacionEmisor" [disabled]="true" [(ngModel)]="datosXML.emisor_num_identif" aria-label="Identificación del emisor" aria-describedby="pendiente" required/>
+                                    <input type="text" class="form-control" id="IdentificacionEmisor" name="identificacionEmisor" #identificacionEmisor="ngModel" [disabled]="true" [(ngModel)]="datosXML.emisor_num_identif" aria-label="Identificación del emisor" aria-describedby="pendiente"
+                                        required/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="CorreoEmisor">Correo electrónico</label>
-                                    <input type="text" class="form-control" id="CorreoEmisor" name="correoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_email" aria-label="Correo electrónico del emisor" aria-describedby="pendiente" required/>
+                                    <input type="text" class="form-control" id="CorreoEmisor" name="correoEmisor" #correoEmisor="ngModel" [attr.disabled]="emisorDeshabilitado ? true:null" [(ngModel)]="datosXML.emisor_email" aria-label="Correo electrónico del emisor" aria-describedby="pendiente"
+                                        required pattern="[\w-\.]+@([\w-]+\.)+[\w-]{2,4}" />
+                                    <span class="text-danger" *ngIf="correoEmisor.touched && !correoEmisor.valid">
+                                        <span>Dato inválido.</span>
+                                    </span>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="TelefonoEmisor">Teléfono</label>
-                                    <input type="text" class="form-control" id="TelefonoEmisor" name="telefonoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_tel" aria-label="Teléfono del emisor" aria-describedby="pendiente" required/>
+                                    <input type="text" class="form-control" id="TelefonoEmisor" name="telefonoEmisor" #telefonoEmisor="ngModel" [attr.disabled]="emisorDeshabilitado ? true:null" [(ngModel)]="datosXML.emisor_tel" aria-label="Teléfono del emisor" aria-describedby="pendiente"
+                                        required pattern="[0-9]{8}" />
+                                    <span class="text-danger" *ngIf="telefonoEmisor.touched && !telefonoEmisor.valid">
+                                        <span>Dato inválido.</span>
+                                    </span>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="FaxEmisor">Fax</label>
-                                    <input type="text" class="form-control" id="FaxEmisor" name="faxEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_fax" aria-label="Fax del emisor" aria-describedby="pendiente" required/>
+                                    <input type="text" class="form-control" id="FaxEmisor" name="faxEmisor" #faxEmisor="ngModel" [attr.disabled]="emisorDeshabilitado ? true:null" [(ngModel)]="datosXML.emisor_fax" aria-label="Fax del emisor" aria-describedby="pendiente" required pattern="[0-9]{8}"
+                                    />
+                                    <span class="text-danger" *ngIf="faxEmisor.touched && !faxEmisor.valid">
+                                        <span>Dato inválido.</span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="ProvinciaEmisor">Provincia</label>
-                                    <select class="form-control" id="ProvinciaEmisor" name="provinciaEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia" required>
+                                    <select class="form-control" id="ProvinciaEmisor" name="provinciaEmisor" #provinciaEmisor="ngModel" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia" required aria-label="Provincia del emisor" aria-describedby="pendiente">
                                         <option value="1">San José</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="CantonEmisor">Cantón</label>
-                                    <select class="form-control" id="CantonEmisor" name="cantonEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton" required>
+                                    <select class="form-control" id="CantonEmisor" name="cantonEmisor" #cantonEmisor="ngModel" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton" required aria-label="Canton del emisor" aria-describedby="pendiente">
                                         <option value="10">Alajuelita</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-4">
                                     <label for="DistritoEmisor">Distrito</label>
-                                    <select class="form-control" id="DistritoEmisor" name="distritoEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito">
+                                    <select class="form-control" id="DistritoEmisor" name="distritoEmisor" #distritoEmisor="ngModel" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito" aria-label="Distrito del emisor" aria-describedby="pendiente">
                                         <option value="04">Concepción</option>
                                     </select>
                                 </div>
@@ -75,28 +90,32 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="BarrioEmisor">Barrio</label>
-                                    <select class="form-control" id="BarrioEmisor" name="BarrioEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio">
+                                    <select class="form-control" id="BarrioEmisor" name="barrioEmisor" #barrioEmisor="ngModel" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio" aria-label="Barrio del emisor" aria-describedby="pendiente">
                                         <option value="04">Chirivico</option>
                                     </select>
                                 </div>
                                 <div class="form-item col-md-8">
                                     <label for="OtrasSenasEmisor">Otras señas</label>
-                                    <input type="text" class="form-control" id="OtrasSenasEmisor" name="otrasSenasEmisor" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_otras_senas" aria-label="Otras señas del emisor" aria-describedby="pendiente" required/>
+                                    <input type="text" class="form-control" id="OtrasSenasEmisor" name="otrasSenasEmisor" #otrasSenasEmisor="ngModel" [attr.disabled]="emisorDeshabilitado ? true:null" [(ngModel)]="datosXML.emisor_otras_senas" aria-label="Otras señas del emisor" aria-describedby="pendiente"
+                                        required pattern="[a-zA-Z0-9 ]+" />
+                                    <span class="text-danger" *ngIf="otrasSenasEmisor.touched && !otrasSenasEmisor.valid">
+                                        <span>Dato inválido.</span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="row justify-content-end" *ngIf="emisorDeshabilitado">
                                 <div class="form-item col-auto">
-                                    <button type="button" (click)="modificarEmisor()" class="btn btn-outline-secondary">
+                                    <button type="button" (click)="modificarEmisor()" class="btn btn-outline-secondary" aria-label="Botón modificar datos de emisor" aria-describedby="pendiente">
                                         MODIFICAR
                                     </button>
                                 </div>
                             </div>
                             <div class="row justify-content-end" *ngIf="!emisorDeshabilitado">
                                 <div class="form-item col-auto">
-                                    <button type="button" (click)="guardarEmisor()" class="btn btn-outline-secondary">
+                                    <button type="button" (click)="guardarEmisor()" class="btn btn-outline-secondary" aria-label="Botón guardar datos de emisor" aria-describedby="pendiente">
                                         GUARDAR
                                     </button>
-                                    <button type="button" (click)="cancelarEmisor()" class="btn btn-outline-secondary ml-3">
+                                    <button type="button" (click)="cancelarEmisor()" class="btn btn-outline-secondary ml-3" aria-label="Botón cancelar modificación de datos de emisor" aria-describedby="pendiente">
                                         CANCELAR
                                     </button>
                                 </div>
@@ -113,7 +132,7 @@
     <!------------------------------->
     <!------Datos del receptor------->
     <!------------------------------->
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de datos del receptor de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Datos del receptor</h5>
         </div>
@@ -124,52 +143,44 @@
             <div class="col-md-6 py-3 form-item">
                 <p class="d-inline pr-3">Tipo de cliente: </p>
                 <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="receptorRegistrado" name="prueba" [(ngModel)]="radioCliente" class="custom-control-input" [value]="0" (click)="seleccionarTipoCliente(true)">
+                    <input class="pl-3" type="radio" id="receptorRegistrado" name="prueba" [(ngModel)]="radioCliente" class="custom-control-input" [value]="0" (click)="seleccionarTipoCliente(true)" aria-label="Seleccionar cliente registrado" aria-describedby="pendiente">
                     <label class="custom-control-label" for="receptorRegistrado">Registrado</label>
                 </div>
                 <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="receptorNuevo" name="prueba" [(ngModel)]="radioCliente" class="custom-control-input" [value]="1" (click)="seleccionarTipoCliente(false)">
+                    <input class="pl-3" type="radio" id="receptorNuevo" name="prueba" [(ngModel)]="radioCliente" class="custom-control-input" [value]="1" (click)="seleccionarTipoCliente(false)" aria-label="Seleccionar cliente nuevo" aria-describedby="pendiente">
                     <label class="custom-control-label" for="receptorNuevo">Nuevo</label>
                 </div>
-                <!-- <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="receptorRegistrado" name="receptor" [(ngModel)]="clienteRegistrado" class="custom-control-input" value=true (click)="seleccionarTipoCliente()">
-                    <label class="custom-control-label" for="receptorRegistrado">Registrado</label>
-                </div>
-                <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="receptorNuevo" name="receptor" [(ngModel)]="clienteRegistrado" class="custom-control-input" value=false (click)="seleccionarTipoCliente()">
-                    <label class="custom-control-label" for="receptorNuevo">Nuevo</label>
-                </div> -->
             </div>
         </div>
         <div class="row" *ngIf="clienteRegistrado">
 
             <div class="col-md-12 form-item">
-                <input id="buscarReceptor" class="form-control searchBar" (keyup)="applyFilter($event)" placeholder="Buscar cliente" #input>
+                <input id="buscarReceptor" class="form-control searchBar" (keyup)="applyFilter($event)" placeholder="Buscar cliente" #input aria-label="Buscar cliente receptor" aria-describedby="pendiente">
             </div>
 
             <div class="container ">
 
 
-                <table id="pruebaTabla" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <table id="pruebaTabla" mat-table [dataSource]="dataSource" class="mat-elevation-z8 tablaMat" aria-label="Tabla de clientes registrados" aria-describedby="pendiente">
 
                     <!-- Position Column -->
 
                     <!-- Name Column -->
                     <ng-container matColumnDef="busquedaNombreCliente">
-                        <th class="header" mat-header-cell *matHeaderCellDef> Nombre </th>
-                        <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                        <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Nombre" aria-describedby="pendiente"> Nombre </th>
+                        <td mat-cell *matCellDef="let element" aria-label="Nombre" aria-describedby="pendiente"> {{element.nombre}} </td>
                     </ng-container>
 
                     <!-- Weight Column -->
                     <ng-container matColumnDef="busquedaIdentificacionCliente">
-                        <th class="header" mat-header-cell *matHeaderCellDef> Identificación </th>
-                        <td mat-cell *matCellDef="let element"> {{element.identificacion}} </td>
+                        <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Identidicación" aria-describedby="pendiente"> Identificación </th>
+                        <td mat-cell *matCellDef="let element" aria-label="Identificación" aria-describedby="pendiente"> {{element.identificacion}} </td>
                     </ng-container>
 
                     <!-- Symbol Column -->
                     <ng-container matColumnDef="busquedaCorreoCliente">
-                        <th class="header" mat-header-cell *matHeaderCellDef> Correo electrónico </th>
-                        <td mat-cell *matCellDef="let element"> {{element.correo}} </td>
+                        <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Correo" aria-describedby="pendiente"> Correo electrónico </th>
+                        <td mat-cell *matCellDef="let element" aria-label="Correo" aria-describedby="pendiente"> {{element.correo}} </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -179,21 +190,24 @@
 
                     <!-- Row shown when there is no matching data. -->
                     <tr class="header" class="mat-row" *matNoDataRow>
-                        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                        <td class="mat-cell" colspan="4" aria-label="Sin resultados" aria-describedby="pendiente">No data matching the filter "{{input.value}}"</td>
                     </tr>
 
                 </table>
                 <mat-paginator #clientesPaginator class="searchBar" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
             </div>
         </div>
-        <div class="row" *ngIf="!(clienteRegistrado) || clienteSeleccionado">
+        <div class="row">
             <div class="container searchBar">
                 <div class="row">
                     <div class="form-item col-md-8">
                         <label for="NombreReceptor">Nombre o Razon Social del cliente</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="NombreReceptor" name="nombreReceptor" [(ngModel)]="datosXML.receptor_nombre" [disabled]="receptorDatosImportantes" aria-label="Nombre del receptor con boton para mostrar información" aria-describedby="pendiente"
-                                required/>
+                            <input type="text" class="form-control" id="NombreReceptor" name="nombreReceptor" #nombreReceptor="ngModel" [(ngModel)]="datosXML.receptor_nombre" [attr.disabled]="receptorDatosImportantes ? true: null" aria-label="Nombre del receptor con boton para mostrar información"
+                                aria-describedby="pendiente" required  />
+                            <span class="text-danger" *ngIf="nombreReceptor.touched && !nombreReceptor.valid">
+                                <span>Dato inválido.</span>
+                            </span>
                             <div class="input-group-append" *ngIf="clienteSeleccionado">
                                 <!--AQUI HAY ALGO RARISIMO x2 - TIPORECEPTOR AL REVES-->
                                 <button type="button" class="btn btn-outline-secondary" (click)="toggleReceptor()">
@@ -207,16 +221,20 @@
                     </div>
 
                 </div>
-                <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedReceptorData">
+                <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedReceptorData" *ngIf="!(clienteRegistrado) || clienteSeleccionado">
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="NombreComercialReceptor">Nombre Comercial</label>
-                            <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor" aria-describedby="pendiente" required
-                            />
+                            <input type="text" class="form-control" id="NombreComercialReceptor" name="nombreComercialReceptor" #nombreComercialReceptor="ngModel" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_nombre" aria-label="Nombre Comercial del receptor"
+                                aria-describedby="pendiente" required />
+                            <span class="text-danger" *ngIf="nombreComercialReceptor.touched && !nombreComercialReceptor.valid">
+                                <span>Dato inválido.</span>
+                            </span>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TipoIdentificacionReceptor">Tipo de Identificación</label>
-                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_tipo_identif" required>
+                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_tipo_identif" aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente"
+                                required>
                                 <option value="01">Cédula Física</option>
                                 <option value="02">Cédula Jurídica</option>
                                 <option value=03>Pasaporte</option>
@@ -227,41 +245,59 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="IdentificacionReceptor">Identificación</label>
-                            <input type="text" class="form-control" id="IdentificacionReceptor" name="identificacionReceptor" [disabled]="receptorDatosImportantes" [(ngModel)]="datosXML.receptor_num_identif" aria-label="Identificación del receptor" aria-describedby="pendiente" required
-                            />
+                            <input type="text" class="form-control" id="IdentificacionReceptor" name="identificacionReceptor" #identificacionReceptor="ngModel" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_num_identif" aria-label="Identificación del receptor"
+                                aria-describedby="pendiente" required />
+                            <span class="text-danger" *ngIf="identificacionReceptor.touched && !identificacionReceptor.valid">
+                                <span>Dato inválido.</span>
+                            </span>
                         </div>
 
                     </div>
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="CorreoReceptor">Correo electrónico</label>
-                            <input type="text" class="form-control" id="CorreoReceptor" name="correoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_email" aria-label="Correo electrónico del receptor" aria-describedby="pendiente" required />
+                            <input type="email" class="form-control" id="CorreoReceptor" name="correoReceptor" #correoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_email" aria-label="Correo electrónico del receptor" aria-describedby="pendiente"
+                                required pattern="[\w-\.]+@([\w-]+\.)+[\w-]{2,4}" />
+                            <span class="text-danger" *ngIf="correoReceptor.touched && !correoReceptor.valid">
+                                <span>Dato inválido.</span>
+                            </span>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TelefonoReceptor">Teléfono</label>
-                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente" required />
+                            <input type="text" class="form-control" id="TelefonoReceptor" name="telefonoReceptor" #telefonoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_tel" aria-label="Teléfono del receptor" aria-describedby="pendiente"
+                                required pattern="[0-9]{8}" />
+                            <span class="text-danger" *ngIf="telefonoReceptor.touched && !telefonoReceptor.valid">
+                                <span>Dato inválido.</span>
+                            </span>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="FaxReceptor">Fax</label>
-                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required/>
+                            <input type="text" class="form-control" id="FaxReceptor" name="faxReceptor" #faxReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_fax" aria-label="Fax del receptor" aria-describedby="pendiente" required
+                                pattern="[0-9]{8}" />
+                            <span class="text-danger" *ngIf="faxReceptor.touched && !faxReceptor.valid">
+                                <span>Dato inválido.</span>
+                            </span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="ProvinciaReceptor">Provincia</label>
-                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_provincia">
-                                <option value="1">San José</option> 
+                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" #provinciaReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente"
+                                required>
+                                <option value="1">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="CantonReceptor">Cantón</label>
-                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_canton">
+                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" #cantonReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente"
+                                required>
                                 <option value="01">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="DistritoReceptor">Distrito</label>
-                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_distrito">
+                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" #distritoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente"
+                                required>
                                 <option value="01">Carmen</option>
                             </select>
                         </div>
@@ -269,18 +305,19 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="BarrioReceptor">Barrio</label>
-                            <select class="form-control" id="BarrioReceptor" name="BarrioReceptor" [disabled]="receptorDeshabilitado" [(ngModel)]="datosXML.receptor_barrio">
+                            <select class="form-control" id="BarrioReceptor" name="barrioReceptor" #barrioReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente"
+                                required>
                                 <option value="01">San José (parte)</option>
                             </select>
                         </div>
                         <div class="form-item col-md-8">
-                            <label for="IdentificacionReceptor">Otras señas</label>
-                            <input type="text" class="form-control" id="IdentificacionReceptor" name="otrasSenasReceptor" [disabled]="receptorDeshabilitado" aria-label="Otras señas del receptor" aria-describedby="pendiente" />
+                            <label for="OtrasSenasReceptor">Otras señas</label>
+                            <input type="text" class="form-control" id="OtrasSenasReceptor" name="otrasSenasReceptor" [attr.disabled]="receptorDeshabilitado  ? true: null" aria-label="Otras señas del receptor" aria-describedby="pendiente" />
                         </div>
                     </div>
                     <div class="row justify-content-end" *ngIf="!clienteSeleccionado">
                         <div class="form-item col-auto">
-                            <button type="button" (click)="guardarReceptor()" class="btn btn-outline-secondary">
+                            <button type="button" (click)="guardarReceptor()" class="btn btn-outline-secondary" aria-label="Botón guardar nuevo receptor" aria-describedby="pendiente">
                                 GUARDAR
                             </button>
                         </div>
@@ -288,17 +325,17 @@
                     <div *ngIf="clienteSeleccionado">
                         <div class="row justify-content-end" *ngIf="receptorDeshabilitado">
                             <div class="form-item col-auto">
-                                <button type="button" (click)="modificarReceptor()" class="btn btn-outline-secondary">
+                                <button type="button" (click)="modificarReceptor()" class="btn btn-outline-secondary" aria-label="Botón modificar datos de receptor" aria-describedby="pendiente">
                                     MODIFICAR
                                 </button>
                             </div>
                         </div>
                         <div class="row justify-content-end" *ngIf="!receptorDeshabilitado">
                             <div class="form-item col-auto">
-                                <button type="button" (click)="actualizarReceptor()" class="btn btn-outline-secondary">
+                                <button type="button" (click)="actualizarReceptor()" class="btn btn-outline-secondary" aria-label="Botón guardar cambios de datos de receptor" aria-describedby="pendiente">
                                     GUARDAR
                                 </button>
-                                <button type="button" (click)="cancelarReceptor()" class="btn btn-outline-secondary ml-3">
+                                <button type="button" (click)="cancelarReceptor()" class="btn btn-outline-secondary ml-3" aria-label="Botón cancelar modificacion de datos de receptor" aria-describedby="pendiente">
                                     CANCELAR
                                 </button>
                             </div>
@@ -316,7 +353,7 @@
         <div class="row">
             <div class="col-md-4 form-item">
                 <label for="metodos">Método de pago</label>
-                <select class="form-control" name="metodos" id="metodos" [(ngModel)]="datosXML.medio_pago" required>
+                <select class="form-control" name="metodos" id="metodos" [(ngModel)]="datosXML.medio_pago" aria-label="Método de pago del receptor" aria-describedby="pendiente" required>
                     <option value="01" selected>Efectivo</option>
                     <option value="02">Tarjeta</option>
                     <option value="03">Cheque</option>
@@ -327,7 +364,7 @@
             </div>
             <div class="col-md-4 form-item">
                 <label for="condiciones">Condición de venta</label>
-                <select class="form-control mb-3" name="condiciones" id="condiciones" [(ngModel)]="datosXML.condicion_venta" required>
+                <select class="form-control mb-3" name="condiciones" id="condiciones" [(ngModel)]="datosXML.condicion_venta" aria-label="Condición de venta del receptor" aria-describedby="pendiente" required>
                     <option value="01" selected>Contado</option>
                     <option value="02">Crédito</option>
                     <option value="03">Consignación</option>
@@ -343,7 +380,10 @@
             <div class="col-md-4 form-item">
                 <div class="form-group mb-0" *ngIf="datosXML.condicion_venta === '02'">
                     <label for="plazo">Plazo del crédito:</label>
-                    <input type="text" class="form-control" id="plazo" placeholder="" name="plazo" [(ngModel)]="datosXML.plazo_credito" required>
+                    <input type="text" class="form-control" id="plazo" placeholder="" name="plazo" #plazo="ngModel" [(ngModel)]="datosXML.plazo_credito" aria-label="Plazo del crédito del receptor" aria-describedby="pendiente" required pattern="[0-9]+" />
+                    <span class="text-danger" *ngIf="plazo.touched && !plazo.valid">
+                        <span>Dato inválido.</span>
+                    </span>
                 </div>
             </div>
         </div>
@@ -351,13 +391,13 @@
             <div class="col-md-4 form-item">
                 <div class="form-group mb-0" *ngIf="datosXML.medio_pago === '99'">
                     <label for="detalleCondicion">Detalle método pago:</label>
-                    <input type="text" class="form-control" id="detalleCondicion" placeholder="" name="detalleCondicion">
+                    <input type="text" class="form-control" id="detalleCondicion" placeholder="" name="detalleCondicion" aria-label="Detalle método pago del receptor" aria-describedby="pendiente">
                 </div>
             </div>
             <div class="col-md-4 form-item">
                 <div class="form-group " *ngIf="datosXML.condicion_venta === '99'">
                     <label for="detalleVenta">Detalle condición de venta:</label>
-                    <input type="text" class="form-control" id="detalleVenta" placeholder="" name="detalleVenta">
+                    <input type="text" class="form-control" id="detalleVenta" placeholder="" name="detalleVenta" aria-label="Detalle condición de venta del receptor" aria-describedby="pendiente">
                 </div>
             </div>
         </div>
@@ -365,25 +405,25 @@
             <div class="col-md-4 py-3 form-item">
                 <p class="d-inline pr-3">Tipo de moneda: </p>
                 <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="colones" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="CRC">
+                    <input class="pl-3" type="radio" id="colones" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="CRC" aria-label="Seleccionar colones como tipo de moneda" aria-describedby="pendiente">
                     <label class="custom-control-label" for="colones">Colones</label>
                 </div>
                 <div class="custom-control custom-radio d-inline-block px-4">
-                    <input class="pl-3" type="radio" id="dolares" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="USD">
+                    <input class="pl-3" type="radio" id="dolares" name="moneda" [(ngModel)]="datosXML.cod_moneda" class="custom-control-input" value="USD" aria-label="Seleccionar dolares como tipo de moneda" aria-describedby="pendiente">
                     <label class="custom-control-label" for="dolares">Dólares</label>
                 </div>
             </div>
             <div class="col-md-4  form-item" *ngIf="datosXML.cod_moneda === 'USD'">
                 <div class="form-group mb-0">
                     <label for="plazo">Tipo de cambio:</label>
-                    <input type="text" class="form-control" id="cambio" placeholder="" name="cambio" [(ngModel)]="datosXML.tipo_cambio" readonly>
+                    <input type="text" class="form-control" id="cambio" placeholder="" name="cambio" [(ngModel)]="datosXML.tipo_cambio" aria-label="Tipo de cambio de dolar" aria-describedby="pendiente" readonly>
                 </div>
             </div>
             <div class="col-md-4  form-item" *ngIf="datosXML.cod_moneda === 'USD'">
                 <label for="picker">Fecha:</label><br>
                 <mat-form-field class="" color="#7E57C2" appearance="fill">
                     <mat-label></mat-label>
-                    <input matInput [matDatepicker]="picker" (dateChange)="cambioFecha($event)" [max]="maxDate" disabled>
+                    <input matInput [matDatepicker]="picker" (dateChange)="cambioFecha($event)" [max]="maxDate" disabled aria-label="Seleccionar fecha de tipo de cambio" aria-describedby="pendiente">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker disabled="false"></mat-datepicker>
                 </mat-form-field>
@@ -392,7 +432,7 @@
     </div>
 
     <br>
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de líneas de detalle de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Lineas de detalle</h5>
         </div>
@@ -400,35 +440,40 @@
 
     <div class="card p-3 w-95 m-auto">
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover" aria-label="Tabla de lineas de detalle" aria-describedby="pendiente">
                 <thead class="header">
                     <tr class="text-center">
-                        <th scope="col" class="">Producto</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col" class="mediano">Tipo</th>
-                        <th scope="col">Precio Unitario</th>
-                        <th scope="col">Descuento</th>
-                        <th scope="col" class="">Razón</th>
-                        <th scope="col" class="">Impuestos</th>
-                        <th scope="col" class="px-2">Base</th>
-                        <th scope="col" class="px-2">Factor IVA</th>
-                        <th scope="col" class="px-3">Subtotal</th>
-                        <th scope="col" class="px-3">Total</th>
-                        <th scope="col" class="px-3">Acción</th>
+                        <th scope="col" class="" aria-label="Encabezado Producto en lineas de detalle" aria-describedby="pendiente">Producto</th>
+                        <th scope="col" aria-label="Encabezado Cantidad de producto en lineas de detalle" aria-describedby="pendiente">Cantidad</th>
+                        <th scope="col" class="mediano" aria-label="Encabezado Tipo de producto en lineas de detalle" aria-describedby="pendiente">Tipo</th>
+                        <th scope="col" aria-label="Encabezado Precio unitario de producto en lineas de detalle" aria-describedby="pendiente">Precio Unitario</th>
+                        <th scope="col" aria-label="Encabezado Descuento de producto en lineas de detalle" aria-describedby="pendiente">Descuento</th>
+                        <th scope="col" class="" aria-label="Encabezado Razón de descuento en lineas de detalle" aria-describedby="pendiente">Razón</th>
+                        <th scope="col" class="" aria-label="Encabezado Impuestos de producto en lineas de detalle" aria-describedby="pendiente">Impuestos</th>
+                        <th scope="col" class="px-2" aria-label="Encabezado Base de producto en lineas de detalle" aria-describedby="pendiente">Base</th>
+                        <th scope="col" class="px-2" aria-label="Encabezado Tarifa de producto en lineas de detalle" aria-describedby="pendiente">Tarifa</th>
+                        <th scope="col" class="px-3" aria-label="Encabezado Subtotal de producto en lineas de detalle" aria-describedby="pendiente">Subtotal</th>
+                        <th scope="col" class="px-3" aria-label="Encabezado Total de producto en lineas de detalle" aria-describedby="pendiente">Total</th>
+                        <th scope="col" class="px-3" aria-label="Encabezado Accion borrar linea de detalle" aria-describedby="pendiente">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let linea of lineas; let i = index">
                         <th scope="row">
-                            <input type="text" [(ngModel)]="linea.producto" class="form-control has-search" placeholder="Buscar" [formControl]="linea.control" [matAutocomplete]="auto" required>
+                            <input type="text" #cabys="ngModel" [(ngModel)]="linea.producto" [name]="'cabys'+i" class="form-control has-search" placeholder="Buscar" (ngModelChange)="filtroCabys($event, linea)" [matAutocomplete]="auto" required aria-label="Buscar producto para agregar a linea de detalle"
+                                aria-describedby="pendiente" />
+                            <span class="text-danger" *ngIf="!cabys.valid">
+                                    <span class="font-weight-normal">Dato inválido.</span>
+                            </span>
+
                             <mat-autocomplete [panelWidth]="800" #auto="matAutocomplete">
-                                <mat-option *ngFor="let cabys of linea.filtro | async" [value]="cabys.descripcion" (click)="setImpuesto(linea, cabys);">
+                                <mat-option *ngFor="let cabys of linea.filtro" [value]="cabys.descripcion" (click)="setCabys(linea, cabys);">
                                     {{cabys.descripcion}}
                                 </mat-option>
                             </mat-autocomplete>
                         </th>
                         <td><input type="number" min="1" class="form-control" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}" required></td>
-                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}" (change)="calcularTotalesLinea(linea)">
+                        <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}" (change)="calcularTotalesLinea(linea)" aria-label="Tipo de producto en linea de detalle" aria-describedby="pendiente">
                                 <option value="Al">Alquiler de uso habitacional</option>
                                 <option value="Alc">Alquiler de uso comercial</option>
                                 <option value="Cm">Comisiones</option>
@@ -450,14 +495,15 @@
                                 <option value="Os">Otro tipo de servicio</option>
                                 <option value="Otros">Otros</option>
                             </select></td>
-                        <td><input type="number" min="5" class="form-control" (change)="calcularTotalesLinea(linea)" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}"></td>
+                        <td><input type="number" min="5" class="form-control" (change)="calcularTotalesLinea(linea)" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}" aria-label="Precio unitario de producto en linea de detalle"
+                                aria-describedby="pendiente"></td>
                         <td>
                             <div class="input-group">
-                                <input type="number" min="0" class="form-control w-50" placeholder="1" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}" required>
+                                <input type="number" min="0" class="form-control w-50" placeholder="1" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}" required aria-label="Descuento de producto en linea de detalle" aria-describedby="pendiente">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentaje' + i" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);">
+                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentaje' + i" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);" aria-label="Checkbox para descuento en porcentaje" aria-describedby="pendiente">
                                             <label class="custom-control-label" [attr.for]="'porcentaje' + i">%</label>
                                         </div>
                                     </div>
@@ -466,8 +512,8 @@
                         </td>
 
 
-                        <td><input *ngIf="linea.descuento > 0" type="text" class="form-control" [(ngModel)]="linea.razon" [ngModelOptions]="{standalone: true}"></td>
-                        <td><select class="form-control custom-select" (change)="actualizarTarifaLinea(linea);" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}" required>
+                        <td><input *ngIf="linea.descuento > 0" type="text" class="form-control" [(ngModel)]="linea.razon" [ngModelOptions]="{standalone: true}" aria-label="Razón de descuento en producto en linea de detalle" aria-describedby="pendiente"></td>
+                        <td><select class="form-control custom-select" (change)="actualizarTarifaLinea(linea);" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}" required aria-label="Impuesto de producto en linea de detalle" aria-describedby="pendiente">
                                 <option value="01-01">IVA exento</option>
                                 <option value="01-02">IVA reducido 1%</option>
                                 <option value="01-03">IVA reducido 2%</option>
@@ -485,25 +531,27 @@
                                 <option value="07-08">IVA 13% especial</option>
                                 <option value="08">IVA Régimen de Bienes Usados (Factor)</option>
                             </select></td>
-                        <td><input *ngIf="linea.impuesto.slice(0,2) === '07'" (change)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}"></td>
-                        <td><input *ngIf="linea.impuesto === '08'" (ngModelChange)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1.13" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}"></td>
-                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{linea.subtotal | number : '1.2-2' }}
+                        <td><input *ngIf="linea.impuesto.slice(0,2) === '07'" (change)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}" aria-label="Base imponible de impuesto en linea de detalle"
+                                aria-describedby="pendiente"></td>
+                        <td><input *ngIf="linea.impuesto === '08'" (ngModelChange)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1.13" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}" aria-label="Tarifa de impuesto en linea de detalle"
+                                aria-describedby="pendiente"></td>
+                        <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Subtotal de linea de detalle" aria-describedby="pendiente">₡{{linea.subtotal | number : '1.2-2' }}
                         </td>
-                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{linea.total | number : '1.2-2' }}
+                        <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Total de linea de detalle" aria-describedby="pendiente">₡{{linea.total | number : '1.2-2' }}
                         </td>
-                        <td><button type="button" class="btn" (click)="borrarLinea(i);"><i
+                        <td><button *ngIf="i>0" type="button" class="btn" (click)="borrarLinea(i);" aria-label="Boton para eliminar linea de detalle" aria-describedby="pendiente"><i
                                     class="fa fa-trash"></i></button></td>
                     </tr>
                 </tbody>
             </table>
 
         </div>
-        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevaLinea();">
+        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevaLinea();" aria-label="Boton para agregar nueva linea de detalle" aria-describedby="pendiente">
             AGREGAR
         </button>
     </div>
     <br>
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de otros cargos de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Otros cargos</h5>
         </div>
@@ -511,42 +559,46 @@
 
     <div class="card p-3 w-95 m-auto">
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover" aria-label="Tabla de otros cargos" aria-describedby="pendiente">
                 <thead class="header">
                     <tr class="text-center">
-                        <th scope="col" class="grande">Tipo de documento</th>
-                        <th scope="col">Detalle</th>
-                        <th scope="col" class="mediano">Porcentaje</th>
-                        <th scope="col">Tipo de identificación</th>
-                        <th scope="col">Identificación</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col" class="mediano">Monto</th>
-                        <th scope="col" class="px-3">Acción</th>
+                        <th scope="col" class="grande" aria-label="Encabezado Tipo de documento de otros cargos" aria-describedby="pendiente">Tipo de documento</th>
+                        <th scope="col" aria-label="Encabezado Detalle de otros cargos" aria-describedby="pendiente">Detalle</th>
+                        <th scope="col" class="mediano" aria-label="Encabezado Porcentaje de otros cargos" aria-describedby="pendiente">Porcentaje</th>
+                        <th scope="col" aria-label="Encabezado Tipo de identificación de otros cargos" aria-describedby="pendiente">Tipo de identificación</th>
+                        <th scope="col" aria-label="Encabezado Identificación de otros cargos" aria-describedby="pendiente">Identificación</th>
+                        <th scope="col" aria-label="Encabezado Nombre de otros cargos" aria-describedby="pendiente">Nombre</th>
+                        <th scope="col" class="mediano" aria-label="Encabezado Monto de otros cargos" aria-describedby="pendiente">Monto</th>
+                        <th scope="col" class="px-3" aria-label="Encabezado Acción borrar otro cargo" aria-describedby="pendiente">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let cargo of otrosCargos; let i = index">
-                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)">
+                        <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)" aria-label="Tipo de documento de otro cargo" aria-describedby="pendiente">
                                 <option value="04">Cobro de un tercero</option>
                                 <option value="06">Impuesto de servicio 10%</option>
                                 <option value="99">Otros cargos</option>
                             </select></th>
-                        <td><input type="text" class="form-control" [(ngModel)]="cargo.detalle" placeholder="" [ngModelOptions]="{standalone: true}" required></td>
+                        <td><input type="text" class="form-control" #detalleCargo="ngModel" [(ngModel)]="cargo.detalle" placeholder="" [name]="'detalleCargo'+i" required aria-label="Detalle de otro cargo" aria-describedby="pendiente">
+                            <span class="text-danger" *ngIf="!detalleCargo.valid">
+                                <span>Dato inválido.</span>
+                            </span>
+                        </td>
                         <td>
                             <div class="input-group">
-                                <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required>
+                                <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required aria-label="Monto de otro cargo" aria-describedby="pendiente">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
 
-                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)">
+                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)" aria-label="Checkbox para monto en porcentaje de otro cargo" aria-describedby="pendiente">
                                             <label class="custom-control-label" [attr.for]="'porcentajeCargo' + i">%</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td *ngIf="cargo.tipoDocumento === '04'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}">
+                        <td *ngIf="cargo.tipoDocumento === '04'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}" aria-label="Tipo de identificación de otro cargo" aria-describedby="pendiente">
                                 <option value="01">Cédula Física</option>
                                 <option value="02">Cédula Jurídica</option>
                                 <option value=03>Pasaporte</option>
@@ -554,26 +606,26 @@
                                 <option value=05>DIDI</option>
                                 <option value=06>NITE</option>
                             </select></td>
-                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
-                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}"></td>
+                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}" aria-label="Identificación de otro cargo" aria-describedby="pendiente"></td>
+                        <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}" aria-label="Nombre de tercero de otro cargo" aria-describedby="pendiente"></td>
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                         <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
-                        <td class="pt-3 text-center" (change)="calcularTotales()">₡{{cargo.total | number : '1.2-2' }}
+                        <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Monto total de otro cargo" aria-describedby="pendiente">₡{{cargo.total | number : '1.2-2' }}
                         </td>
-                        <td><button type="button" (click)="borrarCargo(i);" class="btn"><i
+                        <td><button type="button" (click)="borrarCargo(i);" class="btn" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
                                     class="fa fa-trash"></i></button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevoCargo();">
+        <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevoCargo();" aria-label="Boton para agregar un cargo nuevo" aria-describedby="pendiente">
             AGREGAR
         </button>
     </div>
 
     <br>
-    <div class="header-title">
+    <div class="header-title" aria-label="Sección de resumen de factura" aria-describedby="pendiente">
         <div class="divider">
             <h5>Resumen</h5>
         </div>
@@ -581,26 +633,26 @@
 
     <div class="container">
         <div class="card p-3">
-            <table id="resumenTabla" mat-table [dataSource]="dataSourceResumen" class="mat-elevation-z8">
+            <table id="resumenTabla" mat-table [dataSource]="dataSourceResumen" class="mat-elevation-z8" aria-label="Tabla resumen de lineas de factura" aria-describedby="pendiente">
 
                 <!-- Position Column -->
 
                 <!-- Name Column -->
                 <ng-container matColumnDef="productoLinea">
-                    <th class="header" mat-header-cell *matHeaderCellDef> Producto </th>
-                    <td mat-cell *matCellDef="let element"> {{element.producto}} </td>
+                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Producto" aria-describedby="pendiente"> Producto </th>
+                    <td mat-cell *matCellDef="let element" aria-label="Producto" aria-describedby="pendiente"> {{element.producto}} </td>
                 </ng-container>
 
                 <!-- Weight Column -->
                 <ng-container matColumnDef="cantidadProductoLinea">
-                    <th class="header" mat-header-cell *matHeaderCellDef> Cantidad </th>
-                    <td mat-cell *matCellDef="let element"> {{element.cantidad}} </td>
+                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Cantidad" aria-describedby="pendiente"> Cantidad </th>
+                    <td mat-cell *matCellDef="let element" aria-label="Cantidad" aria-describedby="pendiente"> {{element.cantidad}} </td>
                 </ng-container>
 
                 <!-- Symbol Column -->
                 <ng-container matColumnDef="totalLinea">
-                    <th class="header" mat-header-cell *matHeaderCellDef> Total </th>
-                    <td mat-cell *matCellDef="let element"> {{element.total | number : '1.2-2' }} </td>
+                    <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Total" aria-describedby="pendiente"> Total </th>
+                    <td mat-cell *matCellDef="let element" aria-label="Total" aria-describedby="pendiente"> {{element.total | number : '1.2-2' }} </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumnsResumen"></tr>
@@ -615,14 +667,14 @@
         </div>
     </div>
 
-    <div class="container" id="tablaResumenFactura">
+    <div class="container" id="tablaResumenFactura" aria-label="Resumen de totales de factura" aria-describedby="pendiente">
         <div class="card p-5 mt-3">
             <div class="row pb-2">
                 <div class="col-md-6 text-left">
                     <h4>Subtotal</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h5>₡ {{datosXML.total_ventas | number : '1.2-2' }}</h5>
+                    <h5 aria-label="Subtotal" aria-describedby="pendiente">₡ {{datosXML.total_ventas | number : '1.2-2' }}</h5>
                 </div>
             </div>
             <div class="row pb-2">
@@ -630,7 +682,7 @@
                     <h4>Impuestos</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h5>₡ {{datosXML.total_impuestos | number : '1.2-2' }}</h5>
+                    <h5 aria-label="Impuestos" aria-describedby="pendiente">₡ {{datosXML.total_impuestos | number : '1.2-2' }}</h5>
                 </div>
             </div>
             <div class="row pb-2">
@@ -638,12 +690,12 @@
                     <h4>Otros cargos</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h5>₡{{total_OtrosCargos}}</h5>
+                    <h5 aria-label="Otros cargos" aria-describedby="pendiente">₡{{total_OtrosCargos}}</h5>
                 </div>
             </div>
 
             <div class="pb-3">
-                <button type="button" class="btn btn-outline-secondary" (click)="toggleResumen()">
+                <button type="button" class="btn btn-outline-secondary" (click)="toggleResumen()" aria-label="Botón ver detalles de totales" aria-describedby="pendiente">
                     VER DETALLES
                 </button>
             </div>
@@ -666,7 +718,7 @@
                                     <p class="mb-1">Mercadería gravada</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡{{datosXML.total_merc_gravada | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Mercadería gravada" aria-describedby="pendiente">₡{{datosXML.total_merc_gravada | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -675,7 +727,7 @@
                                     <p class="mb-1">Mercadería exenta</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_merc_exenta | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Mercadería exenta" aria-describedby="pendiente">₡ {{datosXML.total_merc_exenta | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -684,7 +736,7 @@
                                     <p class="mb-1">Mercadería exonerada</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ 123456789</p>
+                                    <p class="mb-1" aria-label="Mercadería exonerada" aria-describedby="pendiente">₡ 123456789</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -693,7 +745,7 @@
                                     <p class="mb-1">Servicios gravados</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_serv_gravados | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Servicios gravados" aria-describedby="pendiente">₡ {{datosXML.total_serv_gravados | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -702,7 +754,7 @@
                                     <p class="mb-1">Servicios exentos</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_serv_exentos | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Servicios exentos" aria-describedby="pendiente">₡ {{datosXML.total_serv_exentos | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -711,7 +763,7 @@
                                     <p class="mb-1">Servicios exonerados</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ 123456789</p>
+                                    <p class="mb-1" aria-label="Servicios exonerados" aria-describedby="pendiente">₡ 123456789</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -720,7 +772,7 @@
                                     <p class="mb-1">Total gravado</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_gravados | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Total gravado" aria-describedby="pendiente">₡ {{datosXML.total_gravados | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -729,7 +781,7 @@
                                     <p class="mb-1">Total exento</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ {{datosXML.total_exentos | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Total exento" aria-describedby="pendiente">₡ {{datosXML.total_exentos | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -738,7 +790,7 @@
                                     <p class="mb-1">Total exonerado</p>
                                 </div>
                                 <div class="col-md-6 text-md-right">
-                                    <p class="mb-1">₡ 123456789</p>
+                                    <p class="mb-1" aria-label="Total exonerado" aria-describedby="pendiente">₡ 123456789</p>
                                 </div>
                             </div>
                             <hr class="m-0 p-1">
@@ -747,13 +799,13 @@
                                     <h6 class="mb-1">Descuento: </h6>
                                 </div>
                                 <div class="col-md-3 text-left">
-                                    <p class="mb-1">₡ {{datosXML.total_descuentos | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Descuento" aria-describedby="pendiente">₡ {{datosXML.total_descuentos | number : '1.2-2' }}</p>
                                 </div>
                                 <div class="col-md-3 text-md-right">
                                     <h6 class="mb-1">Venta neta: </h6>
                                 </div>
                                 <div class="col-md-3 text-left">
-                                    <p class="mb-1">₡ {{datosXML.total_ventas_neta | number : '1.2-2' }}</p>
+                                    <p class="mb-1" aria-label="Venta neta" aria-describedby="pendiente">₡ {{datosXML.total_ventas_neta | number : '1.2-2' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -766,12 +818,12 @@
                     <h2>Total</h2>
                 </div>
                 <div class="col-md-6 text-right">
-                    <h2>₡ {{datosXML.total_comprobante | number : '1.2-2' }}</h2>
+                    <h2 aria-label="Total general de la factura" aria-describedby="pendiente">₡ {{datosXML.total_comprobante | number : '1.2-2' }}</h2>
                 </div>
             </div>
             <div class="row pt-4">
                 <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)">
+                    <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)" aria-label="Botón enviar factura" aria-describedby="pendiente" [disabled]="myForm.invalid || (!clienteSeleccionado || !clienteRegistrado)">
                         <h5>ENVIAR</h5>
                     </button>
                 </div>
