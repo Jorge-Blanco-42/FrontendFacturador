@@ -132,7 +132,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getTipoCambio(dia: string = "", mes: string = "", año: string = ""){
+  getTipoCambio(dia: string = "", mes: string = "", año: string = ""): any{
     
     this.tipoCambio.dia = dia;
     this.tipoCambio.mes = mes;
@@ -140,6 +140,7 @@ export class AppComponent implements OnInit {
     this._exchangeRateService.getTipoCambio(this.tipoCambio).subscribe(
       result => {
         console.log("Tipo de cambio: ", <any> result);
+        return result;
       },
       error => {
         console.log(<any> error);
