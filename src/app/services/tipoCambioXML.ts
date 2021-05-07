@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TipoCambio } from '../models/tipoCambio';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Global } from './global'
 import { FormBuilder} from "@angular/forms";
 
