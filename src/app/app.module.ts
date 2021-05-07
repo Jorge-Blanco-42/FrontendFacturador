@@ -21,6 +21,7 @@ import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { ConsultarComponent, DialogResumen } from './components/consultar/consultar.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { CrearNotaComponent } from './components/crear-nota/crear-nota.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +29,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     ErrorComponent,
     HomeComponent,
     ConsultarComponent,
-    DialogResumen
+    DialogResumen,
+    CrearNotaComponent
   ],
   imports: [
     BrowserModule,

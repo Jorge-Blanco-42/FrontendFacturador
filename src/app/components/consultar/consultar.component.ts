@@ -106,10 +106,6 @@ export class ConsultarComponent implements OnInit {
     this.setPaginator();
   }
 
-  // @ViewChild('tablaFacturas') set matSort(sort:MatSort){
-  //   this.sorter = sort; 
-  // }
-
   @ViewChild(MatSort) set matSort(ms: MatSort) {
     this.sorter = ms;
     this.setSorter();
