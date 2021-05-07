@@ -121,31 +121,31 @@
         </div>
     </div>
 
-
-    <div class="row mt-4 mb-5 justify-content-end display-inline" *ngIf="!anular">
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="checkEmisor" value="Emisor" [(ngModel)]="checkEmisor" aria-label="Seleccionar al emisor para el envío del correo" aria-describedby="pendiente">
-            <label class="form-check-label" for="checkEmisor"> Emisor </label>
+    <form class="" action="">
+        <div class="row mt-4 mb-5 justify-content-end" *ngIf="!anular">
+            <div class="custom-control custom-checkbox">
+                <input class="custom-control-input" type="checkbox" id="checkEmisor" value="Emisor" [(ngModel)]="checkEmisor" aria-label="Seleccionar al emisor para el envío del correo" aria-describedby="pendiente">
+                <label class="custom-control-label" for="checkEmisor"> Emisor </label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input class="custom-control-input" type="checkbox" id="checkReceptor" value="Receptor" [(ngModel)]="checkReceptor" aria-label="Seleccionar al receptor para el envío del correo" aria-describedby="pendiente">
+                <label class="custom-control-label" for="checkReceptor"> Receptor </label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input class="custom-control-input" type="checkbox" id="checkOtro" value="Otro" [(ngModel)]="checkOtro" aria-label="Seleccionar otra dirección para el envío del correo" aria-describedby="pendiente">
+                <label class="custom-control-label mr-2" for="checkOtro"> Otro </label>
+                <input type="email" class="form-control" id="otroCorreo" name="otroCorreo" #otroCorreo="ngModel" [(ngModel)]="otraDireccion" aria-label="Otra direccón de correo" aria-describedby="pendiente" />
+            </div>
         </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="checkReceptor" value="Receptor" [(ngModel)]="checkReceptor" aria-label="Seleccionar al receptor para el envío del correo" aria-describedby="pendiente">
-            <label class="form-check-label" for="checkReceptor"> Receptor </label>
+
+        <div class="row mt-4 mb-5 justify-content-end display-inline" *ngIf="!anular">
+            <div class="col-auto">
+
+                <button mat-button class="btn btn-outline-secondary" (click)="onNoClick()">Cancelar</button>
+
+                <button mat-button class="btn btn-outline-secondary ml-3" (click)="enviarCorreo()">Enviar</button>
+
+            </div>
         </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="checkOtro" value="Otro" [(ngModel)]="checkOtro" aria-label="Seleccionar otra dirección para el envío del correo" aria-describedby="pendiente">
-            <label class="form-check-label mr-2" for="checkOtro"> Otro </label>
-            <input type="email" class="form-control" id="otroCorreo" name="otroCorreo" #otroCorreo="ngModel" [(ngModel)]="otraDireccion" aria-label="Otra direccón de correo" aria-describedby="pendiente" />
-        </div>
-    </div>
-
-    <div class="row mt-4 mb-5 justify-content-end display-inline" *ngIf="!anular">
-        <div class="col-auto">
-
-            <button mat-button class="btn btn-outline-secondary" (click)="onNoClick()">Cancelar</button>
-
-            <button mat-button class="btn btn-outline-secondary ml-3" (click)="enviarCorreo()">Enviar</button>
-
-        </div>
-    </div>
-
+    </form>
 </div>
