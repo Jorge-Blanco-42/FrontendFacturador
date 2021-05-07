@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Global } from './global'
 
 @Injectable()
-export class ServicioNotaDebitoCredito{
+export class ServicioClaveDebitoCredito{
 
     public url: string;
 
