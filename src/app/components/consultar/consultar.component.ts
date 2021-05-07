@@ -7,6 +7,7 @@ import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
 import { ServicioCorreo } from 'src/app/services/correo';
 import { Correo } from 'src/app/models/correo';
+import { CrearNotaComponent } from '../crear-nota/crear-nota.component';
 
 export interface PeriodicElement {
   name: string;
@@ -151,17 +152,29 @@ export class ConsultarComponent implements OnInit {
     });
   }
 
+  openDialogNota(tipoNota: string): void {
+    const dialogRef = this.dialog.open(CrearNotaComponent, {
+      width: '80%',
+      height: '80%',
+      data: tipoNota
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.datosFacturas.filter = filterValue.trim().toLowerCase();
   }
 
   crearNotaCredito(element: any) {
-
+    this.openDialogNota("NC");
   }
 
   crearNotaDebito(element: any) {
-
+    this.openDialogNota("ND");
   }
 
   EnviarCorreo(element: any) {
