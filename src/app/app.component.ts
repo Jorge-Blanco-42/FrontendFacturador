@@ -6,7 +6,7 @@ import { FirmadoXML } from './models/firmadoXML';
 import { CreacionXML } from './models/creacionXML';
 import { ServicioUsuario } from './services/usuario';
 import { ServicioEnvioXML } from './services/envioXML';
-import { ServicioNotaDebitoCredito} from './services/notaDebitoCredito';
+import { ServicioClaveDebitoCredito} from './services/claveNotaDebitoCredito';
 import { ServicioFirmadoXMLNDNC } from './services/firmadoXMLNDNC';
 import { Usuario } from './models/usuario';
 import { ServicioCertificado } from './services/certificado';
@@ -23,7 +23,7 @@ import { firmadoXMLNDNC } from './models/firmadoXMLNDNC';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ServicioFirmadoXML, ServicioCreacionXML, ServicioUsuario, ServicioCertificado, ServicioEnvioXML, ServicioClaveXML, ServicioTipoCambio, ServicioNotaDebitoCredito, ServicioFirmadoXMLNDNC]
+  providers: [ServicioFirmadoXML, ServicioCreacionXML, ServicioUsuario, ServicioCertificado, ServicioEnvioXML, ServicioClaveXML, ServicioTipoCambio, ServicioClaveDebitoCredito, ServicioFirmadoXMLNDNC]
 })
 export class AppComponent implements OnInit {
   title = 'Facturador';
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
 
   constructor(private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _userService: ServicioUsuario, private _certificateService: ServicioCertificado, private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,
-    private _exchangeRateService: ServicioTipoCambio, private _devCredNoteService: ServicioNotaDebitoCredito, private _signXMLCNDCService: ServicioFirmadoXMLNDNC) {
+    private _exchangeRateService: ServicioTipoCambio, private _devCredNoteService: ServicioClaveDebitoCredito, private _signXMLCNDCService: ServicioFirmadoXMLNDNC) {
 
     this.signXML = new FirmadoXML("signXML", "signFE",
       "b337c43a00ec8b0ed9882375d56b270f", "pendiente",
