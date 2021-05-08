@@ -13,12 +13,19 @@ describe('ConsultarComponent', () => {
   let component: ConsultarComponent;
   let fixture: ComponentFixture<ConsultarComponent>;
   let dialogComponent : DialogAnular;
+  let service: ServicioCorreo;
   let injector: TestBed;
+
+  let dummyEmails = [
+    {email: 'josedmg2011@hotmail.com'}, 
+    {email: 'kdaskii@gmail.com'},
+    {email: 'garay9@estudiantec.cr'}
+  ]
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ ConsultarComponent, DialogAnular],
-      imports : [HttpClientTestingModule],
+      imports : [HttpClientModule],
       providers: [
         {provide: DialogAnular, useClass: DialogAnular},
         {provide: MatDialogRef, useValue: 'open'},
@@ -31,6 +38,7 @@ describe('ConsultarComponent', () => {
     .compileComponents();
     injector = getTestBed();
     dialogComponent = injector.inject(DialogAnular);
+    service = injector.inject(ServicioCorreo);
     
   });
 
@@ -40,16 +48,18 @@ describe('ConsultarComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
-  it('Send email',  async (done) => {
+  it('Send email', async (done) => {
     spyOn(dialogComponent, 'enviarCorreo').and.callThrough();
     dialogComponent.checkOtro = true;
-    dialogComponent.otraDireccion = 'josedmg2011@hotmail.com';
-    dialogComponent.enviarCorreo();
+    dummyEmails.forEach(async element => {
+      dialogComponent.otraDireccion = element.email;
+      await dialogComponent.enviarCorreo();
+    })
+    
     expect(dialogComponent.enviarCorreo).toHaveBeenCalled();
     done();
-  })
+  });
+
+
 });

@@ -260,10 +260,11 @@ export class DialogAnular implements OnInit {
   enviar(correo:Correo){
     this._servicioCorreo.enviarCorreo(correo).subscribe(
       res => {
+        
         console.log("correo enviado");
       },
       error => {
-        console.log("No se pudo enviar el correo");
+        console.log("No se pudo enviar el correo", error);
       }
     );
   }
