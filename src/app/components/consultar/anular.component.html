@@ -121,20 +121,30 @@
         </div>
     </div>
 
-    <form class="" action="">
-        <div class="row mt-4 mb-5 justify-content-end" *ngIf="!anular">
-            <div class="custom-control custom-checkbox">
-                <input class="custom-control-input" type="checkbox" id="checkEmisor" value="Emisor" [(ngModel)]="checkEmisor" aria-label="Seleccionar al emisor para el envío del correo" aria-describedby="pendiente">
-                <label class="custom-control-label" for="checkEmisor"> Emisor </label>
+   
+        <div class="form-group row mt-4 mb-5 justify-content-end" *ngIf="!anular">
+            <div class="col-md-3">
+
             </div>
-            <div class="custom-control custom-checkbox">
-                <input class="custom-control-input" type="checkbox" id="checkReceptor" value="Receptor" [(ngModel)]="checkReceptor" aria-label="Seleccionar al receptor para el envío del correo" aria-describedby="pendiente">
-                <label class="custom-control-label" for="checkReceptor"> Receptor </label>
+            <div class="col-md-5 form-check-inline  justify-content-end mr-0 pr-0">
+                <div class="custom-control custom-checkbox px-4">
+                    <input class="custom-control-input" type="checkbox" id="checkEmisor" value="Emisor" [(ngModel)]="checkEmisor" aria-label="Seleccionar al emisor para el envío del correo" aria-describedby="pendiente">
+                    <label class="custom-control-label text-right" for="checkEmisor"> Emisor </label>
+                </div>
+  
+                <div class="custom-control custom-checkbox px-4">
+                    <input class="custom-control-input" type="checkbox" id="checkReceptor" value="Receptor" [(ngModel)]="checkReceptor" aria-label="Seleccionar al receptor para el envío del correo" aria-describedby="pendiente">
+                    <label class="custom-control-label text-right" for="checkReceptor"> Receptor </label>
+                </div>
+
+                <div class="custom-control custom-checkbox px-3">
+                    <input class="custom-control-input d-inline" type="checkbox" id="checkOtro" value="Otro" [(ngModel)]="checkOtro" aria-label="Seleccionar otra dirección para el envío del correo" aria-describedby="pendiente">
+                    <label class="custom-control-label mr-2 d-inline text-right" for="checkOtro"> Otro </label>
+                </div>
             </div>
-            <div class="custom-control custom-checkbox">
-                <input class="custom-control-input" type="checkbox" id="checkOtro" value="Otro" [(ngModel)]="checkOtro" aria-label="Seleccionar otra dirección para el envío del correo" aria-describedby="pendiente">
-                <label class="custom-control-label mr-2" for="checkOtro"> Otro </label>
-                <input type="email" class="form-control" id="otroCorreo" name="otroCorreo" #otroCorreo="ngModel" [(ngModel)]="otraDireccion" aria-label="Otra direccón de correo" aria-describedby="pendiente" />
+
+            <div class="col-md-3 p-0">
+                <input type="email" class="form-control d-inline" id="otroCorreo" name="otroCorreo" #otroCorreo="ngModel" [(ngModel)]="otraDireccion" aria-label="Otra direccón de correo" aria-describedby="pendiente" />
             </div>
         </div>
 
@@ -147,5 +157,5 @@
 
             </div>
         </div>
-    </form>
+ 
 </div>
