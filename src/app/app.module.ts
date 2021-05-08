@@ -21,6 +21,7 @@ import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { ConsultarComponent, DialogAnular } from './components/consultar/consultar.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { OverlayModule } from '@angular/cdk/overlay';
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +49,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatSortModule,
     IvyCarouselModule,
     MDBBootstrapModule.forRoot(),
-    MatDialogModule
+    MatDialogModule, 
+    
 
   ],
   providers: [],
