@@ -142,19 +142,19 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012373",
-      "98762259", "FE");
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012374",
+      "98762260", "FE");
 
     this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
-      "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "117510169", "Jorge Luis Blanco Cordero",
+      "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "113160737", "Jorge Luis Blanco Cordero",
       "6", "02", "03", "01", "En la jungla", "506", "86153313", "506", "00000000", "jorge.luis1999@hotmail.com", "Walner Borbon",
       "01", "702320717", "6", "02", "03", "01", "506", "84922891", "506", "00000000", "walner.borbon@hotmail.com",
       "01", "0", "01", "CRC", "569.48", "0", "10000", "10000", "0", "10000", "10000", "20000", "100", "19900", "1170", "21070",
       "Jiji", "Bichota", "", 'False')
 
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
-      "Rodolfo de Jesus Mora Zamora", "01", "113160737", "n/a",
-      "1", "10", "04", "04", "Mi casa", "506", "86153313",
+      "Rodolfo de Jesus Mora Zamora", "01", "113160737", "Rodolfo de Jesus Mora Zamora",
+      "1", "01", "01", "01", "Mi casa", "506", "86153313",
       "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "",
       "", "", "", "", "506", "", "506", "", "", "01", "0", "01", "CRC",
       "", "", "", "", "", "", "", "", "", "", "", "", "nada", "nada", "", "False");
@@ -352,6 +352,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                 this.sendXML.fecha = this.datosXML.fecha_emision;
 
                                 this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
+                                console.log(this.sendXML.comprobanteXml);
                                 this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
                                   result4 => {
                                     console.log(<any>result4);

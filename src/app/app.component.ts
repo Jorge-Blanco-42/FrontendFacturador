@@ -73,7 +73,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     localStorage.removeItem("token");
     localStorage.removeItem("refresh");
-    this._certificateService.getCertificado("1").subscribe(
+    this._certificateService.getCertificado("2").subscribe(
       result => {
         this.certificate = result;
         this.getToken(this.certificate);
