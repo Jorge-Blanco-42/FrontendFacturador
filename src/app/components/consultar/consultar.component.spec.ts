@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, getTestBed } from '@angular/core/testing';
 
-import { ConsultarComponent } from './consultar.component';
+import { ConsultarComponent, XML } from './consultar.component';
 import {DialogAnular} from './consultar.component';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -48,8 +48,8 @@ describe('ConsultarComponent', () => {
     fixture.detectChanges();
   });
 
-
-  it('Send email', async (done) => {
+/*
+  it('SE001 - Enviar correo', async (done) => {
     spyOn(dialogComponent, 'enviarCorreo').and.callThrough();
     dialogComponent.checkOtro = true;
     dummyEmails.forEach(async element => {
@@ -59,6 +59,20 @@ describe('ConsultarComponent', () => {
     
     expect(dialogComponent.enviarCorreo).toHaveBeenCalled();
     done();
+  });*/
+
+  it('SE001 - Enviar correo2', async (done) => {
+    let correo: Correo = new Correo("","Factura electrónica Garay", "Se adjunta factura eléctronica",
+    "Factura.xml", XML, "base64" );
+    correo.to = 'josedmg2011@hotmail.com';
+    await dialogComponent.enviarCorreo2(correo).then( ans =>{
+      expect(ans).toBeNull();
+    },
+    err => {
+      expect(err).toBeNull();
+    });
+    done();
+     
   });
 
 
