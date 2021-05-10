@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { notaDebitoCredito } from '../models/notaDebitoCredito';
+import { claveNotaDebitoCredito } from '../models/claveNota';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
@@ -15,7 +15,7 @@ export class ServicioClaveDebitoCredito{
         this.url = Global.url;
     }
 
-    crearNotaDebitoCredito(notaDevCred: notaDebitoCredito) : Observable<any>{
+    crearClaveNota(notaDevCred: claveNotaDebitoCredito) : Observable<any>{
         let form = new FormData();
         form.append('w', notaDevCred.w); 
         form.append('r', notaDevCred.r);
