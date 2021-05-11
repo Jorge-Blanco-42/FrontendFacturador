@@ -19,9 +19,9 @@ import { ErrorComponent } from './components/error/error.component';
 import { HomeComponent } from './components/home/home.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
-import { ConsultarComponent, DialogAnular } from './components/consultar/consultar.component';
+import { ConsultarComponent, DialogResumen } from './components/consultar/consultar.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { OverlayModule } from '@angular/cdk/overlay';
+import { CrearNotaComponent } from './components/crear-nota/crear-nota.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,7 +29,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     ErrorComponent,
     HomeComponent,
     ConsultarComponent,
-    DialogAnular
+    DialogResumen,
+    CrearNotaComponent
   ],
   imports: [
     BrowserModule,
@@ -49,12 +50,11 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatSortModule,
     IvyCarouselModule,
     MDBBootstrapModule.forRoot(),
-    MatDialogModule, 
-    
+    MatDialogModule
 
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DialogAnular]
+  entryComponents: [DialogResumen]
 })
 export class AppModule { }

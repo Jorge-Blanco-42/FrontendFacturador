@@ -1,4 +1,4 @@
-export class notaDebitoCredito{
+export class claveNotaDebitoCredito{
 
     constructor(
         public w: string, 

@@ -30,7 +30,7 @@ export class ServicioCertificado {
         form.append("grant_type","password");
         form.append("client_id","api-stag");
         form.append("username",certificate.usuario);
-        form.append("password", certificate.contraseña);
+        form.append("password", certificate.password);
         return this._http.post(this.url,form);
     }
 

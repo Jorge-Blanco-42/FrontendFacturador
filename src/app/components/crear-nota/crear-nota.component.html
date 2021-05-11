@@ -1,0 +1,420 @@
+<div class="container">
+    <div class="row">
+        <div class="card col-md-5">
+            <h4 class="text-center">Emisor</h4>
+            <h6>{{nombreEmisor}}</h6>
+            <h6>{{cedulaEmisor}}</h6>
+            <h6>{{correoEmisor}}</h6>
+            <h6>{{telefonoEmisor}}</h6>
+        </div>
+        <div class="col-md-2">
+        </div>
+        <div class="card col-md-5 mt-4 mt-md-0">
+            <h4 class="text-center">Receptor</h4>
+            <h6>{{nombreReceptor}}</h6>
+            <h6>{{cedulaReceptor}}</h6>
+            <h6>{{correoReceptor}}</h6>
+            <h6>{{telefonoReceptor}}</h6>
+        </div>
+    </div>
+</div>
+<br>
+<div class="header-title" aria-label="Sección de líneas de detalle de factura" aria-describedby="pendiente">
+    <div class="divider">
+        <h5>Lineas de detalle</h5>
+    </div>
+</div>
+
+<div class="card border-0 w-100 m-auto">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover border" aria-label="Tabla de lineas de detalle" aria-describedby="pendiente">
+            <thead class="header">
+                <tr class="text-center">
+                    <th scope="col" class="" aria-label="Encabezado Producto en lineas de detalle" aria-describedby="pendiente">Producto</th>
+                    <th scope="col" aria-label="Encabezado Cantidad de producto en lineas de detalle" aria-describedby="pendiente">Cantidad</th>
+                    <th scope="col" class="mediano" aria-label="Encabezado Tipo de producto en lineas de detalle" aria-describedby="pendiente">Tipo</th>
+                    <th scope="col" aria-label="Encabezado Precio unitario de producto en lineas de detalle" aria-describedby="pendiente">Precio Unitario</th>
+                    <th scope="col" aria-label="Encabezado Descuento de producto en lineas de detalle" aria-describedby="pendiente">Descuento</th>
+                    <th scope="col" class="" aria-label="Encabezado Razón de descuento en lineas de detalle" aria-describedby="pendiente">Razón</th>
+                    <th scope="col" class="" aria-label="Encabezado Impuestos de producto en lineas de detalle" aria-describedby="pendiente">Impuestos</th>
+                    <th scope="col" class="px-2" aria-label="Encabezado Base de producto en lineas de detalle" aria-describedby="pendiente">Base</th>
+                    <th scope="col" class="px-2" aria-label="Encabezado Tarifa de producto en lineas de detalle" aria-describedby="pendiente">Tarifa</th>
+                    <th scope="col" class="px-3" aria-label="Encabezado Subtotal de producto en lineas de detalle" aria-describedby="pendiente">Subtotal</th>
+                    <th scope="col" class="px-3" aria-label="Encabezado Total de producto en lineas de detalle" aria-describedby="pendiente">Total</th>
+                    <th scope="col" class="px-3" aria-label="Encabezado Accion borrar linea de detalle" aria-describedby="pendiente">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let linea of lineas; let i = index">
+                    <th scope="row">
+                        <input type="text" #cabys="ngModel" [(ngModel)]="linea.producto" [name]="'cabys'+i" class="form-control has-search" placeholder="Buscar" (ngModelChange)="filtroCabys($event, linea)" [matAutocomplete]="auto" required aria-label="Buscar producto para agregar a linea de detalle"
+                            aria-describedby="pendiente" />
+                        <span class="text-danger" *ngIf="!cabys.valid">
+                                    <span class="font-weight-normal">Dato inválido.</span>
+                        </span>
+
+                        <mat-autocomplete [panelWidth]="800" #auto="matAutocomplete">
+                            <mat-option *ngFor="let cabys of linea.filtro" [value]="cabys.descripcion" (click)="setCabys(linea, cabys);">
+                                {{cabys.descripcion}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </th>
+                    <td><input type="number" min="1" class="form-control" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.cantidad" placeholder="1" [ngModelOptions]="{standalone: true}" required></td>
+                    <td><select class="form-control custom-select" [(ngModel)]="linea.tipo" [ngModelOptions]="{standalone: true}" (change)="calcularTotalesLinea(linea)" aria-label="Tipo de producto en linea de detalle" aria-describedby="pendiente">
+                                <option value="Al">Alquiler de uso habitacional</option>
+                                <option value="Alc">Alquiler de uso comercial</option>
+                                <option value="Cm">Comisiones</option>
+                                <option value="g">Gramo</option>
+                                <option value="I">Intereses</option>
+                                <option value="Kg">Kilogramo</option>
+                                <option value="L">Litro</option>
+                                <option value="m">Metro</option>
+                                <option value="m2">Metro cuadrado</option>
+                                <option value="mL">Mililitro</option>
+                                <option value="mm">Milímetro</option>
+                                <option value="Oz">Onzas</option>
+                                <option value="ln">Pulgada</option>
+                                <option value="Sp" selected>Servicios Profesionales</option>
+                                <option value="St">Servicios técnicos</option>
+                                <option value="t">Tonelada</option>
+                                <option value="Unid">Unidad</option>
+                                <option value="W">Watt</option>
+                                <option value="Os">Otro tipo de servicio</option>
+                                <option value="Otros">Otros</option>
+                            </select></td>
+                    <td><input type="number" min="5" class="form-control" (change)="calcularTotalesLinea(linea)" placeholder="1" [(ngModel)]="linea.precioUnitario" [ngModelOptions]="{standalone: true}" aria-label="Precio unitario de producto en linea de detalle"
+                            aria-describedby="pendiente"></td>
+                    <td>
+                        <div class="input-group">
+                            <input type="number" min="0" class="form-control w-50" placeholder="1" (change)="calcularTotalesLinea(linea)" [(ngModel)]="linea.descuento" [ngModelOptions]="{standalone: true}" required aria-label="Descuento de producto en linea de detalle" aria-describedby="pendiente">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" [attr.id]="'porcentaje' + i" [checked]="linea.porcentaje" (change)=" linea.porcentaje = !linea.porcentaje; calcularTotalesLinea(linea);" aria-label="Checkbox para descuento en porcentaje" aria-describedby="pendiente">
+                                        <label class="custom-control-label" [attr.for]="'porcentaje' + i">%</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+
+                    <td><input *ngIf="linea.descuento > 0" type="text" class="form-control" [(ngModel)]="linea.razon" [ngModelOptions]="{standalone: true}" aria-label="Razón de descuento en producto en linea de detalle" aria-describedby="pendiente"></td>
+                    <td><select class="form-control custom-select" (change)="actualizarTarifaLinea(linea);" [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}" required aria-label="Impuesto de producto en linea de detalle" aria-describedby="pendiente">
+                                <option value="01-01">IVA exento</option>
+                                <option value="01-02">IVA reducido 1%</option>
+                                <option value="01-03">IVA reducido 2%</option>
+                                <option value="01-04">IVA reducido 4%</option>
+                                <option value="01-05">IVA transitorio 0%</option>
+                                <option value="01-06">IVA transitorio 2%</option>
+                                <option value="01-07">IVA transitorio 4%</option>
+                                <option value="01-08" selected>IVA 13%</option>
+                                <option value="07-02">IVA reducido 1% especial</option>
+                                <option value="07-03">IVA reducido 2% especial</option>
+                                <option value="07-04">IVA reducido 4% especial</option>
+                                <option value="07-05">IVA transitorio 0% especial</option>
+                                <option value="07-06">IVA transitorio 2% especial</option>
+                                <option value="07-07">IVA transitorio 4% especial</option>
+                                <option value="07-08">IVA 13% especial</option>
+                                <option value="08">IVA Régimen de Bienes Usados (Factor)</option>
+                            </select></td>
+                    <td><input *ngIf="linea.impuesto.slice(0,2) === '07'" (change)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1" [(ngModel)]="linea.base" [ngModelOptions]="{standalone: true}" aria-label="Base imponible de impuesto en linea de detalle"
+                            aria-describedby="pendiente"></td>
+                    <td><input *ngIf="linea.impuesto === '08'" (ngModelChange)="calcularTotalesLinea(linea)" min="1" type="number" class="form-control" placeholder="1.13" [(ngModel)]="linea.tarifa" [ngModelOptions]="{standalone: true}" aria-label="Tarifa de impuesto en linea de detalle"
+                            aria-describedby="pendiente"></td>
+                    <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Subtotal de linea de detalle" aria-describedby="pendiente">₡{{linea.subtotal | number : '1.2-2' }}
+                    </td>
+                    <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Total de linea de detalle" aria-describedby="pendiente">₡{{linea.total | number : '1.2-2' }}
+                    </td>
+                    <td><button *ngIf="i>0" type="button" class="btn" (click)="borrarLinea(i);" aria-label="Boton para eliminar linea de detalle" aria-describedby="pendiente"><i
+                                    class="fa fa-trash"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevaLinea();" aria-label="Boton para agregar nueva linea de detalle" aria-describedby="pendiente">
+            AGREGAR
+        </button>
+</div>
+<br>
+<div class="header-title" aria-label="Sección de otros cargos de factura" aria-describedby="pendiente">
+    <div class="divider">
+        <h5>Otros cargos</h5>
+    </div>
+</div>
+
+<div class="card border-0 py-3 w-100 m-auto">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover border" aria-label="Tabla de otros cargos" aria-describedby="pendiente">
+            <thead class="header">
+                <tr class="text-center">
+                    <th scope="col" class="grande" aria-label="Encabezado Tipo de documento de otros cargos" aria-describedby="pendiente">Tipo de documento</th>
+                    <th scope="col" aria-label="Encabezado Detalle de otros cargos" aria-describedby="pendiente">Detalle</th>
+                    <th scope="col" class="mediano" aria-label="Encabezado Porcentaje de otros cargos" aria-describedby="pendiente">Porcentaje</th>
+                    <th scope="col" aria-label="Encabezado Tipo de identificación de otros cargos" aria-describedby="pendiente">Tipo de identificación</th>
+                    <th scope="col" aria-label="Encabezado Identificación de otros cargos" aria-describedby="pendiente">Identificación</th>
+                    <th scope="col" aria-label="Encabezado Nombre de otros cargos" aria-describedby="pendiente">Nombre</th>
+                    <th scope="col" class="mediano" aria-label="Encabezado Monto de otros cargos" aria-describedby="pendiente">Monto</th>
+                    <th scope="col" class="px-3" aria-label="Encabezado Acción borrar otro cargo" aria-describedby="pendiente">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cargo of otrosCargos; let i = index">
+                    <th scope="row"><select class="form-control custom-select" [(ngModel)]="cargo.tipoDocumento" [ngModelOptions]="{standalone: true}" (change)="setMontoCargo(cargo)" aria-label="Tipo de documento de otro cargo" aria-describedby="pendiente">
+                                <option value="04">Cobro de un tercero</option>
+                                <option value="06">Impuesto de servicio 10%</option>
+                                <option value="99">Otros cargos</option>
+                            </select></th>
+                    <td><input type="text" class="form-control" #detalleCargo="ngModel" [(ngModel)]="cargo.detalle" placeholder="" [name]="'detalleCargo'+i" required aria-label="Detalle de otro cargo" aria-describedby="pendiente">
+                        <span class="text-danger" *ngIf="!detalleCargo.valid">
+                                <span>Dato inválido.</span>
+                        </span>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required aria-label="Monto de otro cargo" aria-describedby="pendiente">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <div class="custom-control custom-checkbox">
+
+                                        <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)" aria-label="Checkbox para monto en porcentaje de otro cargo" aria-describedby="pendiente">
+                                        <label class="custom-control-label" [attr.for]="'porcentajeCargo' + i">%</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td *ngIf="cargo.tipoDocumento === '04'"><select class="form-control custom-select" [(ngModel)]="cargo.tipoIdentificacion" [ngModelOptions]="{standalone: true}" aria-label="Tipo de identificación de otro cargo" aria-describedby="pendiente">
+                                <option value="01">Cédula Física</option>
+                                <option value="02">Cédula Jurídica</option>
+                                <option value=03>Pasaporte</option>
+                                <option value=04>Dimex</option>
+                                <option value=05>DIDI</option>
+                                <option value=06>NITE</option>
+                            </select></td>
+                    <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}" aria-label="Identificación de otro cargo" aria-describedby="pendiente"></td>
+                    <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}" aria-label="Nombre de tercero de otro cargo" aria-describedby="pendiente"></td>
+                    <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
+                    <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
+                    <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
+                    <td class="pt-3 text-center" (change)="calcularTotales()" aria-label="Monto total de otro cargo" aria-describedby="pendiente">₡{{cargo.total | number : '1.2-2' }}
+                    </td>
+                    <td><button type="button" (click)="borrarCargo(i);" class="btn" aria-label="Boton para eliminar otro cargo" aria-describedby="pendiente"><i
+                                    class="fa fa-trash"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <button type="button" class="btn btn-outline-secondary m-auto" (click)="nuevoCargo();" aria-label="Boton para agregar un cargo nuevo" aria-describedby="pendiente">
+            AGREGAR
+        </button>
+
+</div>
+<div class="header-title" aria-label="Sección de resumen de factura" aria-describedby="pendiente">
+    <div class="divider">
+        <h5>Resumen</h5>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card p-3">
+        <table id="resumenTabla" mat-table [dataSource]="dataSourceResumen" class="mat-elevation-z8" aria-label="Tabla resumen de lineas de factura" aria-describedby="pendiente">
+
+            <!-- Position Column -->
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="productoLinea">
+                <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Producto" aria-describedby="pendiente"> Producto </th>
+                <td mat-cell *matCellDef="let element" aria-label="Producto" aria-describedby="pendiente"> {{element.producto}} </td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="cantidadProductoLinea">
+                <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Cantidad" aria-describedby="pendiente"> Cantidad </th>
+                <td mat-cell *matCellDef="let element" aria-label="Cantidad" aria-describedby="pendiente"> {{element.cantidad}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="totalLinea">
+                <th class="header" mat-header-cell *matHeaderCellDef aria-label="Encabezado Total" aria-describedby="pendiente"> Total </th>
+                <td mat-cell *matCellDef="let element" aria-label="Total" aria-describedby="pendiente"> {{element.total | number : '1.2-2' }} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsResumen"></tr>
+
+            <!-- <mat-row  *matRowDef="let row; columns: displayedColumns;" (click)="getRecord(row)"></mat-row> -->
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsResumen;"></tr>
+
+            <!-- Row shown when there is no matching data. -->
+
+        </table>
+        <mat-paginator #resumenPaginator class="searchBar mt-2" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+</div>
+
+<div class="container" id="tablaResumenFactura" aria-label="Resumen de totales de factura" aria-describedby="pendiente">
+    <div class="card p-5 mt-3">
+        <div class="row pb-2">
+            <div class="col-md-6 text-left">
+                <h4>Subtotal</h4>
+            </div>
+            <div class="col-md-6 text-right">
+                <h5 aria-label="Subtotal" aria-describedby="pendiente">₡ {{datosXML.total_ventas | number : '1.2-2' }}</h5>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-md-6 text-left">
+                <h4>Impuestos</h4>
+            </div>
+            <div class="col-md-6 text-right">
+                <h5 aria-label="Impuestos" aria-describedby="pendiente">₡ {{datosXML.total_impuestos | number : '1.2-2' }}</h5>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-md-6 text-left">
+                <h4>Otros cargos</h4>
+            </div>
+            <div class="col-md-6 text-right">
+                <h5 aria-label="Otros cargos" aria-describedby="pendiente">₡{{total_OtrosCargos}}</h5>
+            </div>
+        </div>
+
+        <div class="pb-3">
+            <button type="button" class="btn btn-outline-secondary" (click)="toggleResumen()" aria-label="Botón ver detalles de totales" aria-describedby="pendiente">
+                VER DETALLES
+            </button>
+        </div>
+
+        <div>
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedResumenData">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 text-left">
+                                <h6>Descripción</h6>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <h6>Monto</h6>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Mercadería gravada</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Mercadería gravada" aria-describedby="pendiente">₡{{datosXML.total_merc_gravada | number : '1.2-2' }}</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row ">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Mercadería exenta</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Mercadería exenta" aria-describedby="pendiente">₡ {{datosXML.total_merc_exenta | number : '1.2-2' }}</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row ">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Mercadería exonerada</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Mercadería exonerada" aria-describedby="pendiente">₡ 123456789</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row ">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Servicios gravados</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Servicios gravados" aria-describedby="pendiente">₡ {{datosXML.total_serv_gravados | number : '1.2-2' }}</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row ">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Servicios exentos</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Servicios exentos" aria-describedby="pendiente">₡ {{datosXML.total_serv_exentos | number : '1.2-2' }}</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row ">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Servicios exonerados</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Servicios exonerados" aria-describedby="pendiente">₡ 123456789</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row ">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Total gravado</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Total gravado" aria-describedby="pendiente">₡ {{datosXML.total_gravados | number : '1.2-2' }}</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row ">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Total exento</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Total exento" aria-describedby="pendiente">₡ {{datosXML.total_exentos | number : '1.2-2' }}</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row ">
+                            <div class="col-md-6 text-left">
+                                <p class="mb-1">Total exonerado</p>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <p class="mb-1" aria-label="Total exonerado" aria-describedby="pendiente">₡ 123456789</p>
+                            </div>
+                        </div>
+                        <hr class="m-0 p-1">
+                        <div class="row pt-3">
+                            <div class="col-md-3 text-md-right">
+                                <h6 class="mb-1">Descuento: </h6>
+                            </div>
+                            <div class="col-md-3 text-left">
+                                <p class="mb-1" aria-label="Descuento" aria-describedby="pendiente">₡ {{datosXML.total_descuentos | number : '1.2-2' }}</p>
+                            </div>
+                            <div class="col-md-3 text-md-right">
+                                <h6 class="mb-1">Venta neta: </h6>
+                            </div>
+                            <div class="col-md-3 text-left">
+                                <p class="mb-1" aria-label="Venta neta" aria-describedby="pendiente">₡ {{datosXML.total_ventas_neta | number : '1.2-2' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row pt-4">
+            <div class="col-md-6 text-left">
+                <h2>Total</h2>
+            </div>
+            <div class="col-md-6 text-right">
+                <h2 aria-label="Total general de la factura" aria-describedby="pendiente">₡ {{datosXML.total_comprobante | number : '1.2-2' }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4 mb-5 justify-content-end display-inline">
+        <div class="col-auto">
+
+            <button mat-button class="btn btn-outline-secondary" (click)="onNoClick()">Cancelar</button>
+
+            <button mat-button class="btn btn-outline-secondary ml-3" (click)="enviarNota()">Enviar</button>
+
+        </div>
+    </div>
+</div>

@@ -142,19 +142,19 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "117510169", "normal", "506", "0100012373",
-      "98762259", "FE");
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012374",
+      "98762260", "FE");
 
     this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
-      "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "117510169", "Jorge Luis Blanco Cordero",
+      "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "113160737", "Jorge Luis Blanco Cordero",
       "6", "02", "03", "01", "En la jungla", "506", "86153313", "506", "00000000", "jorge.luis1999@hotmail.com", "Walner Borbon",
       "01", "702320717", "6", "02", "03", "01", "506", "84922891", "506", "00000000", "walner.borbon@hotmail.com",
       "01", "0", "01", "CRC", "569.48", "0", "10000", "10000", "0", "10000", "10000", "20000", "100", "19900", "1170", "21070",
       "Jiji", "Bichota", "", 'False')
 
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
-      "Rodolfo de Jesus Mora Zamora", "01", "113160737", "n/a",
-      "1", "10", "04", "04", "Mi casa", "506", "86153313",
+      "Rodolfo de Jesus Mora Zamora", "01", "113160737", "Rodolfo de Jesus Mora Zamora",
+      "1", "01", "01", "01", "Mi casa", "506", "86153313",
       "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "",
       "", "", "", "", "506", "", "506", "", "", "01", "0", "01", "CRC",
       "", "", "", "", "", "", "", "", "", "", "", "", "nada", "nada", "", "False");
@@ -292,9 +292,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     });
     otrosCargosStr += ']}';
     //console.log(otrosCargosStr);
-    if (otrosCargosStr !== '{"otrosCargos":[]}') {
-      this.datosXML.otrosType = otrosCargosStr;
-    }
+    this.datosXML.otrosType = otrosCargosStr;
 
     let fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
     if (fecha) this.datosXML.fecha_emision = fecha.toString();
@@ -317,88 +315,88 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                   arreglado => {
                     xml = arreglado.xmlFile;
                     //console.log("arreglos", xml);
-                    if (otrosCargosStr !== '{"otrosCargos":[]}') {
+                      let terminado = false;
                       this._servicioEscritorXML.addOtrosCargos(xml, this.datosXML.otrosType).subscribe(
                         xmlOtrosCargos => {
                           xml = xmlOtrosCargos.xmlFile;
-                          //console.log("otros cargos", xml);
+                          this._servicioEscritorXML.arreglarLineas(xml, JSON.stringify(arregloLineas)).subscribe(
+                            xmlFinal => {
+      
+                              xml = xmlFinal.xmlFile;
+                              //console.log("lineas", xml);
+                              this._servicioDecodificador.codificarXML(xml).subscribe(
+                                encodedXML => {
+                                  xml = encodedXML.xmlencoded;
+                                  // console.log("xml a firmar ",xml);
+                                  this.signXML.inXml = xml;
+                                  this._signXMLService.firmarFEXML(this.signXML).subscribe(
+                                    result3 => {
+                                      let token = localStorage.getItem("token");
+                                      if (token) {
+                                        this.sendXML.token = token;
+                                      } else {
+                                        //console.log("Problemas de token");
+                                      }
+                                      this.sendXML.clave = this.datosXML.clave;
+                                      this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
+                                      this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
+                                      this.sendXML.fecha = this.datosXML.fecha_emision;
+      
+                                      this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
+                                      console.log(this.sendXML.comprobanteXml);
+                                      this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
+                                        result4 => {
+                                          console.log(<any>result4);
+                                          if (result4.resp.Status === 202) {
+                                            let token = localStorage.getItem("token");
+                                            this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
+                                              resp => {
+                                                console.log("",resp);
+                                                let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
+                                                  "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
+                                                  this.sendXML.comprobanteXml, "base64");
+                                                this._servicioCorreo.enviarCorreo(correo).subscribe(
+                                                  res => {
+                                                    console.log("correo enviado", correo);
+                                                  },
+                                                  error => {
+                                                    console.log("No se pudo enviar el correo");
+                                                  }
+                                                );
+                                              },
+                                              error => {
+                                                console.log("error en consulta");
+                                              }
+                                            )
+      
+                                          }
+                                        },
+                                        error4 => {
+                                          //console.log(<any>error4);
+                                        }
+                                      )
+      
+                                    },
+                                    error3 => {
+                                      //console.log(<any>error3);
+                                    }
+                                  )
+                                },
+                                error => {
+                                  console.log(error);
+                                }
+                              );
+                            },
+                            error => {
+                              console.log(error);
+                            }
+                          );
                         },
                         error => {
                           console.log(error);
                         }
                       )
-                    }
-                    this._servicioEscritorXML.arreglarLineas(xml, JSON.stringify(arregloLineas)).subscribe(
-                      xmlFinal => {
-
-                        xml = xmlFinal.xmlFile;
-                        //console.log("lineas", xml);
-                        this._servicioDecodificador.codificarXML(xml).subscribe(
-                          encodedXML => {
-                            xml = encodedXML.xmlencoded;
-                            // console.log("xml a firmar ",xml);
-                            this.signXML.inXml = xml;
-                            this._signXMLService.firmarFEXML(this.signXML).subscribe(
-                              result3 => {
-                                let token = localStorage.getItem("token");
-                                if (token) {
-                                  this.sendXML.token = token;
-                                } else {
-                                  //console.log("Problemas de token");
-                                }
-                                this.sendXML.clave = this.datosXML.clave;
-                                this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
-                                this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
-                                this.sendXML.fecha = this.datosXML.fecha_emision;
-
-                                this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
-                                this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
-                                  result4 => {
-                                    console.log(<any>result4);
-                                    if (result4.resp.Status === 202) {
-                                      let token = localStorage.getItem("token");
-                                      this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
-                                        resp => {
-                                          console.log("",resp);
-                                          let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
-                                            "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
-                                            this.sendXML.comprobanteXml, "base64");
-                                          this._servicioCorreo.enviarCorreo(correo).subscribe(
-                                            res => {
-                                              console.log("correo enviado", correo);
-                                            },
-                                            error => {
-                                              console.log("No se pudo enviar el correo");
-                                            }
-                                          );
-                                        },
-                                        error => {
-                                          console.log("error en consulta");
-                                        }
-                                      )
-
-                                    }
-                                  },
-                                  error4 => {
-                                    //console.log(<any>error4);
-                                  }
-                                )
-
-                              },
-                              error3 => {
-                                //console.log(<any>error3);
-                              }
-                            )
-                          },
-                          error => {
-                            console.log(error);
-                          }
-                        );
-                      },
-                      error => {
-                        console.log(error);
-                      }
-                    );
+                    
                   },
                   error => {
                     console.log(error);
@@ -594,7 +592,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     let cabysS = localStorage.getItem("cabys");
     if (cabysS) {
       this.cabys = JSON.parse(cabysS);
-      let descripcionesS = localStorage.getItem("cabys");
     } else {
       this._servicioCaByS.getCaByS().subscribe(
         result => {
