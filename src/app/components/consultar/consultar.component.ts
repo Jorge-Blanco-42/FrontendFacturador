@@ -57,8 +57,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class ConsultarComponent implements OnInit {
 
   columnasFactura: string[] = ['fecha', 'nombreComercial', 'numeroConsecutivo', 'claveDocumento', 'tipoDocumento', 'notaCredito', 'notaDebito', 'enviarCorreo', 'anular'];
-  facturas : {fecha:string, nombreComercial:string, numeroConsecutivo:string, claveDocumento:string,tipoDocumento:string}[] = [];
-  datosFacturas!: MatTableDataSource<{ fecha: string; nombreComercial: string; numeroConsecutivo: string; claveDocumento: string; tipoDocumento: string; }>;
+  facturas : {fecha:string, nombreComercial:string, numeroConsecutivo:string, claveDocumento:string,tipoDocumento:string, xml:string}[] = [];
+  datosFacturas!: MatTableDataSource<{ fecha: string; nombreComercial: string; numeroConsecutivo: string; claveDocumento: string; tipoDocumento: string; xml:string; }>;
   private paginator!: MatPaginator;
   private sorter!: MatSort;
 
@@ -86,7 +86,7 @@ export class ConsultarComponent implements OnInit {
         else if(doc.IDTipoDocumento === 3) tipoDocumento = "Nota de crébito";
         else if(doc.IDTipoDocumento === 4) tipoDocumento = "Tiquete Electrónico";
         this.facturas.push({fecha: doc.fechaDocumento.substr(0,10), nombreComercial:doc.nombreReceptor,
-         numeroConsecutivo:consecutivo, claveDocumento:clave,tipoDocumento:tipoDocumento});
+         numeroConsecutivo:consecutivo, claveDocumento:clave,tipoDocumento:tipoDocumento, xml:doc.xml});
       });
       this.datosFacturas = new MatTableDataSource(this.facturas);
       this.setPaginator();
@@ -123,11 +123,14 @@ export class ConsultarComponent implements OnInit {
     })
   }
 
-  openDialogAnular(): void {
+  openDialogAnular(xml:string): void {
     const dialogRef = this.dialog.open(DialogResumen, {
       width: '80%',
       height: '70%',
-      data: true
+      data: {
+        anular: true,
+        xml: xml
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -135,11 +138,14 @@ export class ConsultarComponent implements OnInit {
     });
   }
 
-  openDialogCorreo(): void {
+  openDialogCorreo(xml:string): void {
     const dialogRef = this.dialog.open(DialogResumen, {
       width: '80%',
       height: '70%',
-      data: false
+      data: {
+        anular: false,
+        xml: xml
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -173,11 +179,11 @@ export class ConsultarComponent implements OnInit {
   }
 
   EnviarCorreo(element: any) {
-    this.openDialogCorreo();
+    this.openDialogCorreo(element.xml);
   }
 
   anularFactura(element: any) {
-    this.openDialogAnular();
+    this.openDialogAnular(element.xml);
   }
 
 }
@@ -185,7 +191,7 @@ export class ConsultarComponent implements OnInit {
 @Component({
   selector: 'app-anular',
   templateUrl: './anular.component.html',
-  providers: [ServicioCorreo]
+  providers: [ServicioCorreo, ServicioUsuario]
 })
 export class DialogResumen implements OnInit {
 
@@ -199,6 +205,8 @@ export class DialogResumen implements OnInit {
   checkReceptor : boolean = false;
   checkOtro : boolean = false;
   otraDireccion: string = "";
+  xml: string;
+  anular: boolean;
 
   nombreEmisor = "Rodolfo de Jesus Mora Zamora";
   cedulaEmisor = "113160737";
@@ -212,7 +220,17 @@ export class DialogResumen implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogResumen>,
-    @Inject(MAT_DIALOG_DATA) public anular: boolean, private _servicioCorreo: ServicioCorreo) {
+    @Inject(MAT_DIALOG_DATA) public data: {anular:boolean, xml:string}, private _servicioCorreo: ServicioCorreo, 
+    private _servicioUsuario: ServicioUsuario) {
+      this.anular = data.anular;
+      this.xml = data.xml;
+      this.convertirXML()
+        .then((res) =>{
+          console.log(JSON.parse(res));
+        })
+        .catch((err) =>{
+          
+        })
   }
 
   @ViewChild('lineasPaginator') set matPaginatorLineas(mp: MatPaginator) {
@@ -270,6 +288,15 @@ export class DialogResumen implements OnInit {
         console.log("No se pudo enviar el correo");
       }
     );
+  }
+
+  convertirXML(): Promise<string>{
+    return new Promise((resolve, reject) =>{
+      this._servicioUsuario.convertirXML(this.xml).subscribe(
+        result =>{resolve(JSON.stringify(result));},
+        err =>{reject(err);}
+      )
+    })
   }
 
   ngOnInit() {
