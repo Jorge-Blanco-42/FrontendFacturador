@@ -37,6 +37,6 @@ export class ServicioUsuario {
         let headers = new HttpHeaders().set('Content-Type', 'application/form-data');
         var data = new FormData();
         data.append('xml', xml);
-        return this._http.post(this.backend + 'convertirXML/', data, { headers: headers });
+        return this._http.post(this.backend + 'getXMLData/', data);
     }
 }
