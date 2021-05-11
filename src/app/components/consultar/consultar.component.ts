@@ -57,45 +57,49 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class ConsultarComponent implements OnInit {
 
   columnasFactura: string[] = ['fecha', 'nombreComercial', 'numeroConsecutivo', 'claveDocumento', 'tipoDocumento', 'notaCredito', 'notaDebito', 'enviarCorreo', 'anular'];
-  facturas : {fecha:string, nombreComercial:string, numeroConsecutivo:string, claveDocumento:string,tipoDocumento:string}[] = [];
-  datosFacturas!: MatTableDataSource<{ fecha: string; nombreComercial: string; numeroConsecutivo: string; claveDocumento: string; tipoDocumento: string; }>;
+  facturas: { fecha: string, nombreComercial: string, numeroConsecutivo: string, claveDocumento: string, tipoDocumento: string, xml: string }[] = [];
+  datosFacturas!: MatTableDataSource<{ fecha: string; nombreComercial: string; numeroConsecutivo: string; claveDocumento: string; tipoDocumento: string; xml: string; }>;
   private paginator!: MatPaginator;
   private sorter!: MatSort;
 
   @ViewChild('documentosPaginator') set matPaginator(mp: MatPaginator) {
     this.paginator = mp;
-    
+
   }
 
   @ViewChild(MatSort) set matSort(ms: MatSort) {
     this.sorter = ms;
-    
+
   }
 
   constructor(public dialog: MatDialog, private _servicioUsuario: ServicioUsuario) {
     this.cargarDocumentos()
-    .then((res) =>{
-      let documentos = JSON.parse(res);
-      documentos.docs.forEach((doc: { claveDocumento: string; fechaDocumento: string; xml:string, 
-                                      IDTipoDocumento:number, nombreReceptor:string}) => {
-        let clave : string= doc.claveDocumento;
-        let consecutivo = clave.substr(21, 20);
-        let tipoDocumento = "";
-        if(doc.IDTipoDocumento === 1) tipoDocumento = "Factura Electrónica";
-        else if(doc.IDTipoDocumento === 2) tipoDocumento = "Nota de débito";
-        else if(doc.IDTipoDocumento === 3) tipoDocumento = "Nota de crébito";
-        else if(doc.IDTipoDocumento === 4) tipoDocumento = "Tiquete Electrónico";
-        this.facturas.push({fecha: doc.fechaDocumento.substr(0,10), nombreComercial:doc.nombreReceptor,
-         numeroConsecutivo:consecutivo, claveDocumento:clave,tipoDocumento:tipoDocumento});
-      });
-      this.datosFacturas = new MatTableDataSource(this.facturas);
-      this.setPaginator();
-      this.setSorter();
-    })
-    .catch((err) =>{console.error(err)})
+      .then((res) => {
+        let documentos = JSON.parse(res);
+        documentos.docs.forEach((doc: {
+          claveDocumento: string; fechaDocumento: string; xml: string,
+          IDTipoDocumento: number, nombreReceptor: string
+        }) => {
+          let clave: string = doc.claveDocumento;
+          let consecutivo = clave.substr(21, 20);
+          let tipoDocumento = "";
+          if (doc.IDTipoDocumento === 1) tipoDocumento = "Factura Electrónica";
+          else if (doc.IDTipoDocumento === 2) tipoDocumento = "Nota de débito";
+          else if (doc.IDTipoDocumento === 3) tipoDocumento = "Nota de crébito";
+          else if (doc.IDTipoDocumento === 4) tipoDocumento = "Tiquete Electrónico";
+          this.facturas.push({
+            fecha: doc.fechaDocumento.substr(0, 10), nombreComercial: doc.nombreReceptor,
+            numeroConsecutivo: consecutivo, claveDocumento: clave, tipoDocumento: tipoDocumento, xml: doc.xml
+          });
+        });
+        this.datosFacturas = new MatTableDataSource(this.facturas);
+        this.setPaginator();
+        this.setSorter();
+      })
+      .catch((err) => { console.error(err) })
   }
 
-  
+
 
   setPaginator() {
     if (this.paginator) {
@@ -110,24 +114,27 @@ export class ConsultarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
   }
 
 
-  cargarDocumentos(): Promise<string>{
-    return new Promise((resolve, reject) =>{
+  cargarDocumentos(): Promise<string> {
+    return new Promise((resolve, reject) => {
       this._servicioUsuario.getDocumentos("1").subscribe(
-        result =>{resolve(JSON.stringify(result));},
-        err =>{reject(err);}
+        result => { resolve(JSON.stringify(result)); },
+        err => { reject(err); }
       )
     })
   }
 
-  openDialogAnular(): void {
+  openDialogAnular(xml: string): void {
     const dialogRef = this.dialog.open(DialogResumen, {
       width: '80%',
       height: '70%',
-      data: true
+      data: {
+        anular: true,
+        xml: xml
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -135,11 +142,14 @@ export class ConsultarComponent implements OnInit {
     });
   }
 
-  openDialogCorreo(): void {
+  openDialogCorreo(xml: string): void {
     const dialogRef = this.dialog.open(DialogResumen, {
       width: '80%',
       height: '70%',
-      data: false
+      data: {
+        anular: false,
+        xml: xml
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -173,11 +183,11 @@ export class ConsultarComponent implements OnInit {
   }
 
   EnviarCorreo(element: any) {
-    this.openDialogCorreo();
+    this.openDialogCorreo(element.xml);
   }
 
   anularFactura(element: any) {
-    this.openDialogAnular();
+    this.openDialogAnular(element.xml);
   }
 
 }
@@ -185,44 +195,118 @@ export class ConsultarComponent implements OnInit {
 @Component({
   selector: 'app-anular',
   templateUrl: './anular.component.html',
-  providers: [ServicioCorreo]
+  providers: [ServicioCorreo, ServicioUsuario]
 })
 export class DialogResumen implements OnInit {
 
   displayedColumnsLineas: string[] = ['Producto', 'Cantidad', 'PrecioUnitario', 'Descuento', 'Impuestos', 'Subtotal', 'Total'];
   displayedColumnsCargo: string[] = ['TipoDocumento', 'Detalle', 'PorcentajeMonto', 'MontoCargo'];
-  datosFactura: MatTableDataSource<Linea> = new MatTableDataSource(LINEAS);
-  datosCargo: MatTableDataSource<OtroCargo> = new MatTableDataSource(OTROS_CARGOS);
+  datosFactura!: MatTableDataSource<Linea>;
+  datosCargo!: MatTableDataSource<OtroCargo>;
   private paginatorLineas!: MatPaginator;
   private paginatorCargos!: MatPaginator;
-  checkEmisor : boolean = false;
-  checkReceptor : boolean = false;
-  checkOtro : boolean = false;
+  checkEmisor: boolean = false;
+  checkReceptor: boolean = false;
+  checkOtro: boolean = false;
   otraDireccion: string = "";
+  xml: string;
+  anular: boolean;
 
-  nombreEmisor = "Rodolfo de Jesus Mora Zamora";
-  cedulaEmisor = "113160737";
-  correoEmisor = "jorge.luis1999@hotmail.com";
-  telefonoEmisor = "8888-8888";
+  nombreEmisor = "";
+  cedulaEmisor = "";
+  correoEmisor = "";
+  telefonoEmisor = "";
 
-  nombreReceptor = "María Fernanda Niño";
-  cedulaReceptor = "117170242";
-  correoReceptor = "maf.nino7@gmail.com";
-  telefonoReceptor = "8888-8888";
+  nombreReceptor = "";
+  cedulaReceptor = "";
+  correoReceptor = "";
+  telefonoReceptor = "";
 
   constructor(
     public dialogRef: MatDialogRef<DialogResumen>,
-    @Inject(MAT_DIALOG_DATA) public anular: boolean, private _servicioCorreo: ServicioCorreo) {
+    @Inject(MAT_DIALOG_DATA) public data: { anular: boolean, xml: string }, private _servicioCorreo: ServicioCorreo,
+    private _servicioUsuario: ServicioUsuario) {
+    this.anular = data.anular;
+    this.xml = data.xml;
+    this.convertirXML()
+      .then((res) => {
+        var datos = JSON.parse(res);
+        this.nombreEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Nombre;
+        this.cedulaEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Numero;
+        this.correoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].CorreoElectronico;
+        this.telefonoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Telefono[0].NumTelefono;
+        this.nombreReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Nombre;
+        this.cedulaReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Numero;
+        this.correoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].CorreoElectronico;
+        this.telefonoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Telefono[0].NumTelefono;
+        var lineas: Linea[] = [];
+        var lineasJSON = datos.jsonData.FacturaElectronica.DetalleServicio;
+
+        for (let index = 0; index < lineasJSON.length; index++) {
+          const lineaJson = lineasJSON[index];
+          //
+          let linea = new Linea("", "", [{ descripcion: "", impuesto: "", codigoBienServicio: "" }], 0, "", 0, 0, "", "", false, 0, 0, 0, 0);
+          linea.producto = lineaJson.LineaDetalle[0].Detalle;
+          linea.codigo = lineaJson.LineaDetalle[0].Codigo;
+          linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle;
+          linea.filtro[0].impuesto = lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0];
+          linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo;
+          linea.cantidad = Number(lineaJson.LineaDetalle[0].Cantidad);
+          linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida;
+          linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario);
+          if (lineaJson.LineaDetalle[0].Descuento) {
+            linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento);
+            linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento;
+          }
+          linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible);
+          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa);
+          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal);
+          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea); //no se estan usando todos los campos del xml
+          //
+          lineas.push(linea);
+        }
+
+        var cargos: OtroCargo[] = [];
+        var cargosJSON = datos.jsonData.FacturaElectronica.OtrosCargos;
+        if (cargosJSON) {
+          for (let index = 0; index < cargosJSON.length; index++) {
+            const cargoJSON = cargosJSON[index];
+
+            let cargo = new OtroCargo("", "", 0, false, "", "", "", 0);
+            cargo.tipoDocumento = cargoJSON.TipoDocumento;
+            cargo.detalle = cargoJSON.Detalle;
+            cargo.monto = cargoJSON.Porcentaje;
+            cargo.total = cargoJSON.MontoCargo;
+            if(cargo.total === cargo.monto){
+              cargo.porcentaje = true;
+            }
+            if (cargo.tipoDocumento === "04") {
+              cargo.tipoIdentificacion = "01";
+              cargo.identificacion = cargoJSON.NumeroIdentidadTercero;
+              cargo.nombre = cargoJSON.NombreTercero;
+              
+            }
+            cargos.push(cargo);
+          }
+        }
+
+        this.datosCargo = new MatTableDataSource(cargos);
+        this.datosFactura = new MatTableDataSource(lineas);
+        this.setPaginatorLineas();
+        this.setPaginatorCargos();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   }
 
   @ViewChild('lineasPaginator') set matPaginatorLineas(mp: MatPaginator) {
     this.paginatorLineas = mp;
-    this.setPaginatorLineas();
   }
 
   @ViewChild('cargosPaginator') set matPaginatorCargos(mp: MatPaginator) {
     this.paginatorCargos = mp;
-    this.setPaginatorCargos();
+
   }
 
   onNoClick(): void {
@@ -241,27 +325,27 @@ export class DialogResumen implements OnInit {
     }
   }
 
-  enviarCorreo(){
-    let correo: Correo = new Correo("","Factura electrónica " + this.nombreEmisor, "Se adjunta factura eléctronica",
-    "Factura.xml", XML, "base64" );
-    if(this.checkEmisor){
+  enviarCorreo() {
+    let correo: Correo = new Correo("", "Factura electrónica " + this.nombreEmisor, "Se adjunta factura eléctronica",
+      "Factura.xml", XML, "base64");
+    if (this.checkEmisor) {
       correo.to = this.correoEmisor;
       console.log(correo);
       this.enviar(correo);
     }
-    if(this.checkReceptor){
+    if (this.checkReceptor) {
       correo.to = this.correoReceptor;
       console.log(correo);
       this.enviar(correo);
     }
-    if(this.checkOtro){
+    if (this.checkOtro) {
       correo.to = this.otraDireccion;
       console.log(correo);
       this.enviar(correo);
     }
   }
 
-  enviar(correo:Correo){
+  enviar(correo: Correo) {
     this._servicioCorreo.enviarCorreo(correo).subscribe(
       res => {
         console.log("correo enviado");
@@ -270,6 +354,15 @@ export class DialogResumen implements OnInit {
         console.log("No se pudo enviar el correo");
       }
     );
+  }
+
+  convertirXML(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._servicioUsuario.convertirXML(this.xml).subscribe(
+        result => { resolve(JSON.stringify(result)); },
+        err => { reject(err); }
+      )
+    })
   }
 
   ngOnInit() {
