@@ -292,9 +292,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     });
     otrosCargosStr += ']}';
     //console.log(otrosCargosStr);
-    if (otrosCargosStr !== '{"otrosCargos":[]}') {
-      this.datosXML.otrosType = otrosCargosStr;
-    }
+    this.datosXML.otrosType = otrosCargosStr;
 
     let fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
     if (fecha) this.datosXML.fecha_emision = fecha.toString();
