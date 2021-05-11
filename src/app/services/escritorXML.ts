@@ -37,4 +37,13 @@ export class ServicioEscritorXML {
         console.log(cargos);
         return this._http.post(this.backendUrl + 'agregarCargosXML', datos);
     }
+
+    crearNota(xml: string, tipoNota: string, data: object): Observable<any> {
+        let datos =  new FormData();
+        
+        datos.append('data', JSON.stringify(data));
+        datos.append('xmlDecoded', xml);
+        datos.append('tipoNota', tipoNota);
+        return this._http.post(this.backendUrl + 'crearNota', datos);
+    }
 }
