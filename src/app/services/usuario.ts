@@ -34,7 +34,6 @@ export class ServicioUsuario {
     }
 
     convertirXML(xml: string): Observable<any> {
-        let headers = new HttpHeaders().set('Content-Type', 'application/form-data');
         var data = new FormData();
         data.append('xml', xml);
         return this._http.post(this.backend + 'getXMLData/', data);

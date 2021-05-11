@@ -197,7 +197,7 @@ export class DialogResumen implements OnInit {
 
   displayedColumnsLineas: string[] = ['Producto', 'Cantidad', 'PrecioUnitario', 'Descuento', 'Impuestos', 'Subtotal', 'Total'];
   displayedColumnsCargo: string[] = ['TipoDocumento', 'Detalle', 'PorcentajeMonto', 'MontoCargo'];
-  datosFactura: MatTableDataSource<Linea> = new MatTableDataSource(LINEAS);
+  datosFactura!: MatTableDataSource<Linea>;;
   datosCargo: MatTableDataSource<OtroCargo> = new MatTableDataSource(OTROS_CARGOS);
   private paginatorLineas!: MatPaginator;
   private paginatorCargos!: MatPaginator;
@@ -208,15 +208,15 @@ export class DialogResumen implements OnInit {
   xml: string;
   anular: boolean;
 
-  nombreEmisor = "Rodolfo de Jesus Mora Zamora";
-  cedulaEmisor = "113160737";
-  correoEmisor = "jorge.luis1999@hotmail.com";
-  telefonoEmisor = "8888-8888";
+  nombreEmisor = "";
+  cedulaEmisor = "";
+  correoEmisor = "";
+  telefonoEmisor = "";
 
-  nombreReceptor = "María Fernanda Niño";
-  cedulaReceptor = "117170242";
-  correoReceptor = "maf.nino7@gmail.com";
-  telefonoReceptor = "8888-8888";
+  nombreReceptor = "";
+  cedulaReceptor = "";
+  correoReceptor = "";
+  telefonoReceptor = "";
 
   constructor(
     public dialogRef: MatDialogRef<DialogResumen>,
@@ -226,16 +226,54 @@ export class DialogResumen implements OnInit {
       this.xml = data.xml;
       this.convertirXML()
         .then((res) =>{
-          console.log(JSON.parse(res));
+          var datos = JSON.parse(res);
+          this.nombreEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Nombre;
+          this.cedulaEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Numero;
+          this.correoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].CorreoElectronico;
+          this.telefonoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Telefono[0].NumTelefono;
+          this.nombreReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Nombre;
+          this.cedulaReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Numero;
+          this.correoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].CorreoElectronico;
+          this.telefonoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Telefono[0].NumTelefono;
+          var lineas : Linea [] = [];
+          var lineasJSON = datos.jsonData.FacturaElectronica.DetalleServicio;
+          
+        for (let index = 0; index < lineasJSON.length; index++) {
+          const lineaJson = lineasJSON[index];
+          //
+          var linea = new Linea("","",[{descripcion: "", impuesto: "", codigoBienServicio: ""}],0,"",0,0,"","",false,0,0,0,0);
+          linea.producto = lineaJson.LineaDetalle[0].Detalle;
+          linea.codigo = lineaJson.LineaDetalle[0].Codigo;
+          linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle;
+          linea.filtro[0].impuesto = lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0];
+          linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo;
+          linea.cantidad = Number(lineaJson.LineaDetalle[0].Cantidad);
+          linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida;
+          linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario);
+          if(lineaJson.LineaDetalle[0].Descuento){
+            linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento);
+            linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento;
+          }
+          linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible);
+          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa);
+          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal);
+          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea); //no se estan usando todos los campos del xml
+        //
+          lineas.push(linea);
+        }
+
+        console.log(lineas)
+        this.datosFactura = new MatTableDataSource(lineas);
+        this.setPaginatorLineas();
+          
         })
         .catch((err) =>{
-          
+          console.log(err);
         })
   }
 
   @ViewChild('lineasPaginator') set matPaginatorLineas(mp: MatPaginator) {
     this.paginatorLineas = mp;
-    this.setPaginatorLineas();
   }
 
   @ViewChild('cargosPaginator') set matPaginatorCargos(mp: MatPaginator) {
@@ -290,7 +328,7 @@ export class DialogResumen implements OnInit {
     );
   }
 
-  convertirXML(): Promise<string>{
+  convertirXML(): Promise<any>{
     return new Promise((resolve, reject) =>{
       this._servicioUsuario.convertirXML(this.xml).subscribe(
         result =>{resolve(JSON.stringify(result));},
