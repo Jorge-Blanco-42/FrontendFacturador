@@ -8,6 +8,7 @@ import { OtroCargo } from 'src/app/models/otroCargo';
 import { ServicioCorreo } from 'src/app/services/correo';
 import { Correo } from 'src/app/models/correo';
 import { CrearNotaComponent } from '../crear-nota/crear-nota.component';
+import { ServicioUsuario } from 'src/app/services/usuario';
 
 export interface PeriodicElement {
   name: string;
@@ -46,71 +47,55 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 
-const facturas = [
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012357",
-    claveDocumento: "50621042100011751016900100001010100012357198762243", tipoDocumento: "Factura electrónica"
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012358",
-    claveDocumento: "50621042100011751016900100001010100012358198762244", tipoDocumento: "Nota de crédito"
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012359",
-    claveDocumento: "50621042100011751016900100001010100012359198762244", tipoDocumento: "Nota de débito"
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012357",
-    claveDocumento: "50621042100011751016900100001010100012357198762243", tipoDocumento: "Factura electrónica"
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012358",
-    claveDocumento: "50621042100011751016900100001010100012358198762244", tipoDocumento: "Nota de crédito"
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012359",
-    claveDocumento: "50621042100011751016900100001010100012359198762244", tipoDocumento: "Nota de débito"
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012357",
-    claveDocumento: "50621042100011751016900100001010100012357198762243", tipoDocumento: "Factura electrónica"
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012358",
-    claveDocumento: "50621042100011751016900100001010100012358198762244", tipoDocumento: "Nota de crédito"
-  },
-  {
-    fecha: "05/05/2021", nombreComercial: "Jorge Blanco", numeroConsecutivo: "00100001010100012359",
-    claveDocumento: "50621042100011751016900100001010100012359198762244", tipoDocumento: "Nota de débito"
-  },
-
-]
 //(click)="openDialog()"
 @Component({
   selector: 'app-consultar',
   templateUrl: './consultar.component.html',
-  styleUrls: ['./consultar.component.css']
+  styleUrls: ['./consultar.component.css'],
+  providers: [ServicioUsuario]
 })
 export class ConsultarComponent implements OnInit {
 
   columnasFactura: string[] = ['fecha', 'nombreComercial', 'numeroConsecutivo', 'claveDocumento', 'tipoDocumento', 'notaCredito', 'notaDebito', 'enviarCorreo', 'anular'];
-  datosFacturas = new MatTableDataSource(facturas);
+  facturas : {fecha:string, nombreComercial:string, numeroConsecutivo:string, claveDocumento:string,tipoDocumento:string}[] = [];
+  datosFacturas!: MatTableDataSource<{ fecha: string; nombreComercial: string; numeroConsecutivo: string; claveDocumento: string; tipoDocumento: string; }>;
   private paginator!: MatPaginator;
   private sorter!: MatSort;
 
-  constructor(public dialog: MatDialog) {
-
-  }
-
   @ViewChild('documentosPaginator') set matPaginator(mp: MatPaginator) {
     this.paginator = mp;
-    this.setPaginator();
+    
   }
 
   @ViewChild(MatSort) set matSort(ms: MatSort) {
     this.sorter = ms;
-    this.setSorter();
+    
   }
+
+  constructor(public dialog: MatDialog, private _servicioUsuario: ServicioUsuario) {
+    this.cargarDocumentos()
+    .then((res) =>{
+      let documentos = JSON.parse(res);
+      documentos.docs.forEach((doc: { claveDocumento: string; fechaDocumento: string; xml:string, 
+                                      IDTipoDocumento:number, nombreReceptor:string}) => {
+        let clave : string= doc.claveDocumento;
+        let consecutivo = clave.substr(21, 20);
+        let tipoDocumento = "";
+        if(doc.IDTipoDocumento === 1) tipoDocumento = "Factura Electrónica";
+        else if(doc.IDTipoDocumento === 2) tipoDocumento = "Nota de débito";
+        else if(doc.IDTipoDocumento === 3) tipoDocumento = "Nota de crébito";
+        else if(doc.IDTipoDocumento === 4) tipoDocumento = "Tiquete Electrónico";
+        this.facturas.push({fecha: doc.fechaDocumento.substr(0,10), nombreComercial:doc.nombreReceptor,
+         numeroConsecutivo:consecutivo, claveDocumento:clave,tipoDocumento:tipoDocumento});
+      });
+      this.datosFacturas = new MatTableDataSource(this.facturas);
+      this.setPaginator();
+      this.setSorter();
+    })
+    .catch((err) =>{console.error(err)})
+  }
+
+  
 
   setPaginator() {
     if (this.paginator) {
@@ -125,7 +110,17 @@ export class ConsultarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(OTROS_CARGOS);
+    
+  }
+
+
+  cargarDocumentos(): Promise<string>{
+    return new Promise((resolve, reject) =>{
+      this._servicioUsuario.getDocumentos("1").subscribe(
+        result =>{resolve(JSON.stringify(result));},
+        err =>{reject(err);}
+      )
+    })
   }
 
   openDialogAnular(): void {
