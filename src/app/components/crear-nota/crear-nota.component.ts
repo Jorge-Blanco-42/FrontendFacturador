@@ -7,6 +7,7 @@ import { CreacionXML } from 'src/app/models/creacionXML';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
 import { ServicioCaByS } from 'src/app/services/cabys';
+import { ServicioUsuario } from 'src/app/services/usuario';
 
 const replacer = new RegExp('\"', 'g');
 
@@ -14,19 +15,21 @@ const replacer = new RegExp('\"', 'g');
   selector: 'app-crear-nota',
   templateUrl: './crear-nota.component.html',
   styleUrls: ['./crear-nota.component.css'],
-  providers: [ServicioCaByS]
+  providers: [ServicioCaByS, ServicioUsuario]
 })
 export class CrearNotaComponent implements OnInit {
 
-  nombreEmisor = "Rodolfo de Jesus Mora Zamora";
-  cedulaEmisor = "113160737";
-  correoEmisor = "jorge.luis1999@hotmail.com";
-  telefonoEmisor = "8888-8888";
+  nombreEmisor = "";
+  cedulaEmisor = "";
+  correoEmisor = "";
+  telefonoEmisor = "";
 
-  nombreReceptor = "María Fernanda Niño";
-  cedulaReceptor = "117170242";
-  correoReceptor = "maf.nino7@gmail.com";
-  telefonoReceptor = "8888-8888";
+  nombreReceptor = "";
+  cedulaReceptor = "";
+  correoReceptor = "";
+  telefonoReceptor = "";
+
+  xml: string;
 
   public total_OtrosCargos: number;
   public impuestoTarifa: Map<string, number>;
@@ -38,12 +41,13 @@ export class CrearNotaComponent implements OnInit {
   public isCollapsedResumenData: boolean = true;
 
   cabys: { impuesto: string, descripcion: string, codigoBienServicio: string }[] = [];
-  dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
+  dataSourceResumen!: MatTableDataSource<Linea>; 
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
 
   constructor(
     public dialogRef: MatDialogRef<CrearNotaComponent>,
-    @Inject(MAT_DIALOG_DATA) public tipoNota: string, private _servicioCaByS: ServicioCaByS) {
+    @Inject(MAT_DIALOG_DATA) public data: {tipoNota:string, xml:string}, private _servicioCaByS: ServicioCaByS,
+    private _servicioUsuario: ServicioUsuario) {
       this.total_OtrosCargos = 0;
       this.impuestoTarifa = new Map();
       this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
@@ -52,6 +56,76 @@ export class CrearNotaComponent implements OnInit {
       "506", "00000000", this.correoEmisor, this.nombreReceptor, "", this.cedulaReceptor,
       "", "", "", "", "506", this.telefonoReceptor, "506", "", this.correoReceptor, "01", "0", "01", "CRC",
       "", "", "", "", "", "", "", "", "", "", "", "", "nada", "nada", "", "False");
+      this.xml = data.xml;
+      this.convertirXML()
+      .then((res) => {
+        var datos = JSON.parse(res);
+        this.nombreEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Nombre;
+        this.cedulaEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Numero;
+        this.correoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].CorreoElectronico;
+        this.telefonoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Telefono[0].NumTelefono;
+        this.nombreReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Nombre;
+        this.cedulaReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Numero;
+        this.correoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].CorreoElectronico;
+        this.telefonoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Telefono[0].NumTelefono;
+        this.lineas = [];
+        var lineasJSON = datos.jsonData.FacturaElectronica.DetalleServicio;
+
+        for (let index = 0; index < lineasJSON.length; index++) {
+          const lineaJson = lineasJSON[index];
+          //
+          let linea = new Linea("", "", [{ descripcion: "", impuesto: "", codigoBienServicio: "" }], 0, "", 0, 0, "", "", false, 0, 0, 0, 0);
+          linea.producto = lineaJson.LineaDetalle[0].Detalle[0];
+          linea.codigo = lineaJson.LineaDetalle[0].Codigo[0];
+          linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle;
+          linea.filtro[0].impuesto = lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0];
+          linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo;
+          linea.cantidad = Number(lineaJson.LineaDetalle[0].Cantidad);
+          linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida[0];
+          linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario);
+          if (lineaJson.LineaDetalle[0].Descuento) {
+            linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento);
+            linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento;
+          }
+          linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible);
+          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa);
+          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal);
+          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea); //no se estan usando todos los campos del xml
+          //
+          console.log(linea)
+          this.lineas.push(linea);
+        }
+        this.dataSourceResumen = new MatTableDataSource(this.lineas);
+        
+        this.otrosCargos = [];
+        var cargosJSON = datos.jsonData.FacturaElectronica.OtrosCargos;
+        if (cargosJSON) {
+          for (let index = 0; index < cargosJSON.length; index++) {
+            const cargoJSON = cargosJSON[index];
+
+            let cargo = new OtroCargo("", "", 0, false, "", "", "", 0);
+            cargo.tipoDocumento = cargoJSON.TipoDocumento[0];
+            cargo.detalle = cargoJSON.Detalle[0];
+            cargo.monto = Number(cargoJSON.Porcentaje[0]);
+            cargo.total = Number(cargoJSON.MontoCargo[0]);
+            if(cargo.total === cargo.monto){
+              cargo.porcentaje = true;
+            }
+            if (cargo.tipoDocumento === "04") {
+              cargo.tipoIdentificacion = "01";
+              cargo.identificacion = cargoJSON.NumeroIdentidadTercero[0];
+              cargo.nombre = cargoJSON.NombreTercero[0];
+              
+            }
+            this.otrosCargos.push(cargo);
+            
+          }
+        }
+        this.calcularTotales();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
      }
 
   @ViewChild('resumenPaginator')
@@ -220,6 +294,7 @@ export class CrearNotaComponent implements OnInit {
     });
     total_ventas_neta = total_ventas - total_descuentos;
     total_comprobante = total_ventas_neta + total_impuestos + this.total_OtrosCargos;
+    //console.log(this.total_OtrosCargos)
     this.datosXML.total_comprobante = total_comprobante.toString();
     this.datosXML.total_serv_gravados = total_serv_gravados.toString();
     this.datosXML.total_serv_exentos = total_serv_exentos.toString();
@@ -276,13 +351,15 @@ export class CrearNotaComponent implements OnInit {
       cargo.total = cargo.monto;
     }
     this.total_OtrosCargos = 0;
+    
     this.otrosCargos.forEach(cargo => {
+      console.log(cargo)
       this.total_OtrosCargos += cargo.total;
+      console.log(this.total_OtrosCargos);
     });
   }
 
   nuevaLinea() {
-    var control = new FormControl();
     var filtro = this._filter("");
     this.lineas.push(new Linea("", "", filtro, 1, "Sp", 5, 0, "", "01-08", false, 0, 1.13, 0, 0));
     this.dataSourceResumen.data = this.lineas;
@@ -341,6 +418,15 @@ export class CrearNotaComponent implements OnInit {
         '","monto":"' + Math.round((linea.tarifa - 1) * linea.subtotal * 100) / 100 + '"}}';
     }
     return lineaStr;
+  }
+
+  convertirXML(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._servicioUsuario.convertirXML(this.xml).subscribe(
+        result => { resolve(JSON.stringify(result)); },
+        err => { reject(err); }
+      )
+    })
   }
 
 }
