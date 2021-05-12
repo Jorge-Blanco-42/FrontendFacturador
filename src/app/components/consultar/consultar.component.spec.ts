@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, getTestBed } from '@angular/core/testing';
 
-import { ConsultarComponent} from './consultar.component';
+import { ConsultarComponent, XML} from './consultar.component';
 import {DialogResumen} from './consultar.component';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -11,7 +11,7 @@ import {HttpClientModule} from '@angular/common/http';
 import { ServicioUsuario } from '../../services/usuario'; 
 
 describe('ConsultarComponent', () => {
-  let component: ConsultarComponent;
+  let consultarComponent: ConsultarComponent;
   let fixture: ComponentFixture<ConsultarComponent>;
   let dialogComponent : DialogResumen;
   let service: ServicioCorreo;
@@ -46,7 +46,7 @@ describe('ConsultarComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ConsultarComponent);
-    component = fixture.componentInstance;
+    consultarComponent = fixture.componentInstance;
     fixture.detectChanges();
   });
 /*
@@ -79,11 +79,14 @@ este Si
   });*/
 
   it('SE002 - Convertir XML - Traer desde la BD', (done) => {
+    dialogComponent.xml = XML;
     dialogComponent.convertirXML().then(async (result) => {
       expect(result).toBeTruthy();
       done();
     }).catch( error => {
       fail(error);
     })
-  })
+  });
+
+  
 });

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ServicioFirmadoXML } from '../../services/firmadoXML';
-import { ServicioClaveXML } from '../../services/claveXML'
+import { ServicioClaveXML } from '../../services/claveXML';
 import { ServicioCreacionXML } from '../../services/creacionXML';
 import { ServicioCaByS } from '../../services/cabys';
 import { ServicioDecodificador } from '../../services/decodificador';
