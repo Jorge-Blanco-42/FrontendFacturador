@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, getTestBed } from '@angular/core/testing';
 
 import { ConsultarComponent, XML} from './consultar.component';
+//import { CrearNotaComponent, servicio } from '../crear-nota/crear-nota.component'
 import {DialogResumen} from './consultar.component';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -15,6 +16,7 @@ describe('ConsultarComponent', () => {
   let fixture: ComponentFixture<ConsultarComponent>;
   let dialogComponent : DialogResumen;
   let service: ServicioCorreo;
+  //let crearNota: CrearNotaComponent;
   let injector: TestBed;
 
   let dummyEmails = [
@@ -25,7 +27,7 @@ describe('ConsultarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ConsultarComponent, DialogResumen],
+      declarations: [ ConsultarComponent, DialogResumen/*, CrearNotaComponent*/],
       imports : [HttpClientModule],
       providers: [
         {provide: DialogResumen, useClass: DialogResumen},
@@ -34,13 +36,14 @@ describe('ConsultarComponent', () => {
         {provide: MatDialog, useValue: 'open'},
         {provide: ServicioCorreo, useClass: ServicioCorreo},
         {provide: ServicioUsuario, useClass: ServicioUsuario},
-
+       // {provide: CrearNotaComponent, useClass: CrearNotaComponent}
       ]
     })
     .compileComponents();
     injector = getTestBed();
     dialogComponent = injector.inject(DialogResumen);
     service = injector.inject(ServicioCorreo);
+    //crearNota = injector.inject(CrearNotaComponent);
     
   });
 
@@ -76,8 +79,8 @@ este Si
     });
     done();
      
-  });*/
-
+  });
+  
   it('SE002 - Convertir XML - Traer desde la BD', (done) => {
     dialogComponent.xml = XML;
     dialogComponent.convertirXML().then(async (result) => {
@@ -88,5 +91,25 @@ este Si
     })
   });
 
+  it('SE003 - Cargar Documentos', (done) =>{
+    //consultarComponent.
+    consultarComponent.cargarDocumentos().then( async (result) =>{
+      expect(result).toBeTruthy();
+      done();
+    }).catch( error => {
+      fail(error);
+    })
+  });
+/*
+  it('SE004 - Crear Nota', (done) => {
+    crearNota.setCabys = servicio;
+    crearNota.enviar().then( async (result) => {
+      expect(result).toBeTruthy();
+      done();
+    }).catch( error => {
+      fail(error);
+    })
+  });
+*/
   
 });
