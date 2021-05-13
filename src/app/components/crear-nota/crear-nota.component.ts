@@ -1,12 +1,23 @@
+import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Certificado } from 'src/app/models/certificado';
+import { ClaveXML } from 'src/app/models/claveXML';
 import { CreacionXML } from 'src/app/models/creacionXML';
+import { EnvioXML } from 'src/app/models/envioXML';
+import { FirmadoXML } from 'src/app/models/firmadoXML';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
 import { ServicioCaByS } from 'src/app/services/cabys';
+import { ServicioCertificado } from 'src/app/services/certificado';
+import { ServicioClaveXML } from 'src/app/services/claveXML';
+import { ServicioDecodificador } from 'src/app/services/decodificador';
+import { ServicioEnvioXML } from 'src/app/services/envioXML';
+import { ServicioEscritorXML } from 'src/app/services/escritorXML';
+import { ServicioFirmadoXML } from 'src/app/services/firmadoXML';
 import { ServicioUsuario } from 'src/app/services/usuario';
 
 const replacer = new RegExp('\"', 'g');
@@ -15,19 +26,25 @@ const replacer = new RegExp('\"', 'g');
   selector: 'app-crear-nota',
   templateUrl: './crear-nota.component.html',
   styleUrls: ['./crear-nota.component.css'],
-  providers: [ServicioCaByS, ServicioUsuario]
+  providers: [ServicioCaByS, ServicioUsuario, ServicioEscritorXML, ServicioDecodificador,
+    ServicioEnvioXML, ServicioCertificado, ServicioFirmadoXML, ServicioClaveXML, DatePipe]
 })
 export class CrearNotaComponent implements OnInit {
 
   nombreEmisor = "";
+  tipoIdentEmisor = "";
   cedulaEmisor = "";
   correoEmisor = "";
   telefonoEmisor = "";
 
   nombreReceptor = "";
+  tipoIdentReceptor = "";
   cedulaReceptor = "";
   correoReceptor = "";
   telefonoReceptor = "";
+  claveNueva = "";
+  clave = "";
+  fechaEmision = "";
 
   xml: string;
 
@@ -41,25 +58,32 @@ export class CrearNotaComponent implements OnInit {
   public isCollapsedResumenData: boolean = true;
 
   cabys: { impuesto: string, descripcion: string, codigoBienServicio: string }[] = [];
-  dataSourceResumen!: MatTableDataSource<Linea>; 
+  dataSourceResumen!: MatTableDataSource<Linea>;
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
 
   constructor(
     public dialogRef: MatDialogRef<CrearNotaComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {tipoNota:string, xml:string}, private _servicioCaByS: ServicioCaByS,
-    private _servicioUsuario: ServicioUsuario) {
-      this.total_OtrosCargos = 0;
-      this.impuestoTarifa = new Map();
-      this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
+    @Inject(MAT_DIALOG_DATA) public data: { tipoNota: string, xml: string }, private _servicioCaByS: ServicioCaByS,
+    private _servicioUsuario: ServicioUsuario, private _servicioEscritorXML: ServicioEscritorXML,
+    private _servicioDecodificador: ServicioDecodificador, private _servicioEnvio: ServicioEnvioXML,
+    private _servicioFirma: ServicioFirmadoXML, private _servicioCertificado: ServicioCertificado,
+    public datepipe: DatePipe, private _servicioClave: ServicioClaveXML) {
+    this.total_OtrosCargos = 0;
+    this.impuestoTarifa = new Map();
+    this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
       this.nombreEmisor, "01", this.cedulaEmisor, "n/a",
       "1", "10", "04", "04", "Mi casa", "506", this.telefonoEmisor,
       "506", "00000000", this.correoEmisor, this.nombreReceptor, "", this.cedulaReceptor,
       "", "", "", "", "506", this.telefonoReceptor, "506", "", this.correoReceptor, "01", "0", "01", "CRC",
       "", "", "", "", "", "", "", "", "", "", "", "", "nada", "nada", "", "False");
-      this.xml = data.xml;
-      this.convertirXML()
+    this.xml = data.xml;
+    this.convertirXML()
       .then((res) => {
         var datos = JSON.parse(res);
+        this.tipoIdentEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Tipo[0]
+        this.tipoIdentReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Tipo[0]
+        this.clave = datos.jsonData.FacturaElectronica.Clave[0]
+        this.fechaEmision = datos.jsonData.FacturaElectronica.FechaEmision[0];
         this.nombreEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Nombre;
         this.cedulaEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Numero;
         this.correoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].CorreoElectronico;
@@ -96,7 +120,7 @@ export class CrearNotaComponent implements OnInit {
           this.lineas.push(linea);
         }
         this.dataSourceResumen = new MatTableDataSource(this.lineas);
-        
+
         this.otrosCargos = [];
         var cargosJSON = datos.jsonData.FacturaElectronica.OtrosCargos;
         if (cargosJSON) {
@@ -108,17 +132,17 @@ export class CrearNotaComponent implements OnInit {
             cargo.detalle = cargoJSON.Detalle[0];
             cargo.monto = Number(cargoJSON.Porcentaje[0]);
             cargo.total = Number(cargoJSON.MontoCargo[0]);
-            if(cargo.total === cargo.monto){
+            if (cargo.total === cargo.monto) {
               cargo.porcentaje = true;
             }
             if (cargo.tipoDocumento === "04") {
               cargo.tipoIdentificacion = "01";
               cargo.identificacion = cargoJSON.NumeroIdentidadTercero[0];
               cargo.nombre = cargoJSON.NombreTercero[0];
-              
+
             }
             this.otrosCargos.push(cargo);
-            
+
           }
         }
         this.calcularTotales();
@@ -126,7 +150,7 @@ export class CrearNotaComponent implements OnInit {
       .catch((err) => {
         console.log(err);
       })
-     }
+  }
 
   @ViewChild('resumenPaginator')
   paginatorResumen!: MatPaginator;
@@ -160,9 +184,31 @@ export class CrearNotaComponent implements OnInit {
     // this.emisorDeshabilitado = true;
   }
 
-  enviarNota(){
-
+  enviarNota() {
+    this.crearClave()
+    .then((res) => {
+      console.log(res.resp)
+      this.claveNueva = res.resp.clave;
+      this.crearNota()
+      .then((res) => {
+        this.xml = res.xmlencoded;
+        this.firmar()
+          .then((res) => {
+            this.xml = res;
+            this.enviar()
+              .then((res) => { console.log(res) })
+              .catch((err) => { console.error(err) })
+          })
+          .catch((err) => { console.error(err) })
+      })
+      .catch((err) => { console.error(err) })
+    })
+    .catch((err) => { console.error(err) })
+    
+    
   }
+
+
 
   filtroCabys(evt: string, linea: Linea) {
     linea.filtro = this._filter(evt);
@@ -351,7 +397,7 @@ export class CrearNotaComponent implements OnInit {
       cargo.total = cargo.monto;
     }
     this.total_OtrosCargos = 0;
-    
+
     this.otrosCargos.forEach(cargo => {
       console.log(cargo)
       this.total_OtrosCargos += cargo.total;
@@ -427,6 +473,71 @@ export class CrearNotaComponent implements OnInit {
         err => { reject(err); }
       )
     })
+  }
+
+  crearClave(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let clave = new ClaveXML("clave","clave",this.tipoIdentEmisor,this.cedulaEmisor,
+      "normal","506","010002375","98862261",this.data.tipoNota);
+      this._servicioClave.crearClaveXML(clave).subscribe(
+        result => { resolve(result); },
+        err => { reject(err); }
+      )
+    })
+  }
+
+  crearNota(): Promise<any> {
+    let data = { tipoDoc: '01', numero: this.clave, fechaEmision: this.fechaEmision, codigo: '02', razon: "Corrige Monto" }
+    return new Promise((resolve, reject) => {
+      this._servicioDecodificador.decodificarXML(this.xml).subscribe(
+        result1 => {
+          let fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
+          
+          this._servicioEscritorXML.crearNota(result1.xmlDecoded, this.data.tipoNota, data, this.claveNueva , fecha?fecha:"").subscribe(
+            result2 => {
+              this._servicioDecodificador.codificarXML(result2.xmlFile).subscribe(
+                res => { resolve(res); },
+                err => { reject(err); }
+              )
+            },
+            err => { reject(err); }
+          )
+        },
+        err => { reject(err); }
+      )
+
+    })
+  }
+
+  firmar(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._servicioCertificado.getCertificado("2").subscribe(
+        result => {
+          let certificado: Certificado = result;
+          let firma = new FirmadoXML("signXML", "signFE", certificado.archivo, this.xml, certificado.pin, this.data.tipoNota)
+          this._servicioFirma.firmarFEXML(firma).subscribe(
+            res => { resolve(res.resp.xmlFirmado); },
+            err => { reject(err); }
+          )
+        },
+        error => { reject(error); });
+    });
+
+  }
+
+  enviar(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let token = localStorage.getItem("token")
+      let envio = new EnvioXML("send", "json", token ? token : "", this.claveNueva, this.fechaEmision,
+        this.tipoIdentEmisor, this.cedulaEmisor, this.tipoIdentReceptor,
+        this.cedulaReceptor, this.xml, "api-stag");
+      console.log(envio);
+      this._servicioEnvio.enviarFEXML(envio).subscribe(
+        res => { resolve(res); },
+        err => { reject(err); }
+      )
+    });
+
   }
 
 }
