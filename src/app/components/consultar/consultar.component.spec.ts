@@ -9,6 +9,7 @@ import { Correo } from 'src/app/models/correo';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import {HttpClientModule} from '@angular/common/http';
 import { ServicioUsuario } from '../../services/usuario'; 
+import { from } from 'rxjs';
 
 describe('ConsultarComponent', () => {
   let consultarComponent: ConsultarComponent;
@@ -78,6 +79,7 @@ este Si
      
   });*/
 
+  /*
   it('SE002 - Convertir XML - Traer desde la BD', (done) => {
     dialogComponent.xml = XML;
     dialogComponent.convertirXML().then(async (result) => {
@@ -87,6 +89,18 @@ este Si
       fail(error);
     })
   });
+*/
 
+it('SE003 - Cargar Documentos', async () =>{
+
+  //consultarComponent.
+  var res = from(await consultarComponent.cargarDocumentos());
+  res.subscribe( result => {
+    expect(result).toBeTruthy();
+  },
+  error => {
+    fail(error);
+  });
+});
   
 });
