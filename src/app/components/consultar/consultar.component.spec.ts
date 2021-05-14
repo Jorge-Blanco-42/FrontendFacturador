@@ -79,7 +79,6 @@ este Si
      
   });*/
 
-  /*
   it('SE002 - Convertir XML - Traer desde la BD', (done) => {
     dialogComponent.xml = XML;
     dialogComponent.convertirXML().then(async (result) => {
@@ -89,11 +88,9 @@ este Si
       fail(error);
     })
   });
-*/
+
 
 it('SE003 - Cargar Documentos', async () =>{
-
-  //consultarComponent.
   var res = from(await consultarComponent.cargarDocumentos());
   res.subscribe( result => {
     expect(result).toBeTruthy();
