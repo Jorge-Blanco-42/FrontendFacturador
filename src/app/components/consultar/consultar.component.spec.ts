@@ -78,7 +78,7 @@ este Si
      
   });*/
 
-  it('SE002 - Convertir XML a JSON', (done) => {
+  it('SE002 - Convertir XML - Traer desde la BD', (done) => {
     dialogComponent.xml = XML;
     dialogComponent.convertirXML().then(async (result) => {
       expect(result).toBeTruthy();
