@@ -38,14 +38,12 @@ export class ServicioEscritorXML {
         return this._http.post(this.backendUrl + 'agregarCargosXML', datos);
     }
 
-    crearNota(xml: string, tipoNota: string, data: object, clave: string, fecha:string): Observable<any> {
+    crearNota(xml: string, tipoNota: string, data: object): Observable<any> {
         let datos =  new FormData();
         
         datos.append('data', JSON.stringify(data));
         datos.append('xmlDecoded', xml);
         datos.append('tipoNota', tipoNota);
-        datos.append('clave', clave);
-        datos.append('fecha', fecha);
         return this._http.post(this.backendUrl + 'crearNota', datos);
     }
 }
