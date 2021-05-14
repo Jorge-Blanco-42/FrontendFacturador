@@ -194,7 +194,7 @@
                                 <option value=06>NITE</option>
                             </select></td>
                     <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.identificacion" placeholder="1" [ngModelOptions]="{standalone: true}" aria-label="Identificación de otro cargo" aria-describedby="pendiente"></td>
-                    <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="1" [ngModelOptions]="{standalone: true}" aria-label="Nombre de tercero de otro cargo" aria-describedby="pendiente"></td>
+                    <td *ngIf="cargo.tipoDocumento === '04'"><input type="text" class="form-control" [(ngModel)]="cargo.nombre" placeholder="John Doe" [ngModelOptions]="{standalone: true}" aria-label="Nombre de tercero de otro cargo" aria-describedby="pendiente"></td>
                     <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                     <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
                     <td *ngIf="cargo.tipoDocumento != '04'"><input type="text" class="form-control invisible"></td>
