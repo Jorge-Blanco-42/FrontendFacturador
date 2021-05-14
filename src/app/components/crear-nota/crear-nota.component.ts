@@ -22,6 +22,8 @@ import { ServicioUsuario } from 'src/app/services/usuario';
 
 const replacer = new RegExp('\"', 'g');
 
+//export const servicio 
+
 @Component({
   selector: 'app-crear-nota',
   templateUrl: './crear-nota.component.html',

@@ -80,11 +80,12 @@ este Si
     done();
      
   });
-  
+  */
   it('SE002 - Convertir XML - Traer desde la BD', (done) => {
     dialogComponent.xml = XML;
     dialogComponent.convertirXML().then(async (result) => {
       expect(result).toBeTruthy();
+      //console.log(result);
       done();
     }).catch( error => {
       fail(error);
@@ -98,6 +99,7 @@ este Si
       done();
     }).catch( error => {
       fail(error);
+      done();
     })
   });
 /*
