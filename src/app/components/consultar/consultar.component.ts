@@ -157,11 +157,14 @@ export class ConsultarComponent implements OnInit {
     });
   }
 
-  openDialogNota(tipoNota: string): void {
+  openDialogNota(tipoNota: string, xml:string): void {
     const dialogRef = this.dialog.open(CrearNotaComponent, {
       width: '80%',
       height: '80%',
-      data: tipoNota
+      data: {
+        tipoNota: tipoNota,
+        xml: xml
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -175,11 +178,11 @@ export class ConsultarComponent implements OnInit {
   }
 
   crearNotaCredito(element: any) {
-    this.openDialogNota("NC");
+    this.openDialogNota("NC", element.xml);
   }
 
   crearNotaDebito(element: any) {
-    this.openDialogNota("ND");
+    this.openDialogNota("ND", element.xml);
   }
 
   EnviarCorreo(element: any) {
@@ -273,17 +276,17 @@ export class DialogResumen implements OnInit {
             const cargoJSON = cargosJSON[index];
 
             let cargo = new OtroCargo("", "", 0, false, "", "", "", 0);
-            cargo.tipoDocumento = cargoJSON.TipoDocumento;
-            cargo.detalle = cargoJSON.Detalle;
-            cargo.monto = cargoJSON.Porcentaje;
-            cargo.total = cargoJSON.MontoCargo;
+            cargo.tipoDocumento = cargoJSON.TipoDocumento[0];
+            cargo.detalle = cargoJSON.Detalle[0];
+            cargo.monto = cargoJSON.Porcentaje[0];
+            cargo.total = cargoJSON.MontoCargo[0];
             if(cargo.total === cargo.monto){
               cargo.porcentaje = true;
             }
             if (cargo.tipoDocumento === "04") {
               cargo.tipoIdentificacion = "01";
-              cargo.identificacion = cargoJSON.NumeroIdentidadTercero;
-              cargo.nombre = cargoJSON.NombreTercero;
+              cargo.identificacion = cargoJSON.NumeroIdentidadTercero;[0]
+              cargo.nombre = cargoJSON.NombreTercero[0];
               
             }
             cargos.push(cargo);
@@ -363,6 +366,16 @@ export class DialogResumen implements OnInit {
         err => { reject(err); }
       )
     })
+  }
+
+  tipoDocumento(tipo: string): string{
+    if(tipo === "06"){
+      return "Impuesto de servicio 10%"
+    }else if(tipo === "04"){
+      return "Cobro a terceros"
+    }else{
+      return "Otros"
+    }
   }
 
   ngOnInit() {
