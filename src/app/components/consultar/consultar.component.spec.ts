@@ -77,7 +77,7 @@ este Si
     });
     done();
      
-  });*/
+  });
 
   it('SE002 - Convertir XML - Traer desde la BD', (done) => {
     dialogComponent.xml = XML;
@@ -89,15 +89,15 @@ este Si
     })
   });
 
-
 it('SE003 - Cargar Documentos', async () =>{
   var res = from(await consultarComponent.cargarDocumentos());
   res.subscribe( result => {
-    expect(result).toBeTruthy();
+    let json = JSON.parse(result);
+    expect(json).toBeTruthy();
   },
   error => {
     fail(error);
   });
 });
-  
+*/
 });

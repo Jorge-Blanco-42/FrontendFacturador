@@ -3,13 +3,16 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { CrearNotaComponent } from './crear-nota.component';
 import {HttpClientModule} from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { from } from 'rxjs';
+
+
 describe('CrearNotaComponent', () => {
   let component: CrearNotaComponent;
   let fixture: ComponentFixture<CrearNotaComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CrearNotaComponent],
+      declarations: [ CrearNotaComponent ],
       imports: [HttpClientModule, NgbModule],
       providers : [
         {provide: MatDialogRef, useValue: 'open'},
@@ -27,7 +30,14 @@ describe('CrearNotaComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('SE004 - Crear Nota', async () => {
+    var res = from(await component.enviar2());
+    res.subscribe( result => {
+      expect(result).toBeNull();
+    },
+    error => {
+      fail(error);
+    });
   });
+
 });
