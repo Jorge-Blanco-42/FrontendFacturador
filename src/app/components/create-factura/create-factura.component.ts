@@ -142,8 +142,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012374",
-      "98762260", "FE");
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012379",
+      "98762262", "FE");
 
     this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
       "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "113160737", "Jorge Luis Blanco Cordero",
@@ -191,14 +191,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     let token = localStorage.getItem("token");
-    this._servicioConsultas.consultarFacturas(token?token:"").subscribe(
-      resp =>{
-        console.log("ok",resp);
-      },
-      error =>{
-        console.log("error",error);
-      }
-    )
     this.actualizarTipoCambio(this.maxDate);
     this.getCabys();
     this.impuestoTarifa.set("01-01", 1.0);
@@ -315,43 +307,45 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                   arreglado => {
                     xml = arreglado.xmlFile;
                     //console.log("arreglos", xml);
-                      let terminado = false;
-                      this._servicioEscritorXML.addOtrosCargos(xml, this.datosXML.otrosType).subscribe(
-                        xmlOtrosCargos => {
-                          xml = xmlOtrosCargos.xmlFile;
-                          this._servicioEscritorXML.arreglarLineas(xml, JSON.stringify(arregloLineas)).subscribe(
-                            xmlFinal => {
-      
-                              xml = xmlFinal.xmlFile;
-                              //console.log("lineas", xml);
-                              this._servicioDecodificador.codificarXML(xml).subscribe(
-                                encodedXML => {
-                                  xml = encodedXML.xmlencoded;
-                                  // console.log("xml a firmar ",xml);
-                                  this.signXML.inXml = xml;
-                                  this._signXMLService.firmarFEXML(this.signXML).subscribe(
-                                    result3 => {
-                                      let token = localStorage.getItem("token");
-                                      if (token) {
-                                        this.sendXML.token = token;
-                                      } else {
-                                        //console.log("Problemas de token");
-                                      }
-                                      this.sendXML.clave = this.datosXML.clave;
-                                      this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
-                                      this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
-                                      this.sendXML.fecha = this.datosXML.fecha_emision;
-      
-                                      this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
-                                      console.log(this.sendXML.comprobanteXml);
-                                      this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
-                                        result4 => {
-                                          console.log(<any>result4);
-                                          if (result4.resp.Status === 202) {
+                    let terminado = false;
+                    this._servicioEscritorXML.addOtrosCargos(xml, this.datosXML.otrosType).subscribe(
+                      xmlOtrosCargos => {
+                        xml = xmlOtrosCargos.xmlFile;
+                        this._servicioEscritorXML.arreglarLineas(xml, JSON.stringify(arregloLineas)).subscribe(
+                          xmlFinal => {
+
+                            xml = xmlFinal.xmlFile;
+                            //console.log("lineas", xml);
+                            this._servicioDecodificador.codificarXML(xml).subscribe(
+                              encodedXML => {
+                                xml = encodedXML.xmlencoded;
+                                // console.log("xml a firmar ",xml);
+                                this.signXML.inXml = xml;
+                                this._signXMLService.firmarFEXML(this.signXML).subscribe(
+                                  result3 => {
+                                    let token = localStorage.getItem("token");
+                                    if (token) {
+                                      this.sendXML.token = token;
+                                    } else {
+                                      //console.log("Problemas de token");
+                                    }
+                                    this.sendXML.clave = this.datosXML.clave;
+                                    this.sendXML.recp_tipoIdentificacion = this.datosXML.receptor_tipo_identif;
+                                    this.sendXML.recp_numeroIdentificacion = this.datosXML.receptor_num_identif;
+                                    this.sendXML.fecha = this.datosXML.fecha_emision;
+
+                                    this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
+                                    console.log(this.sendXML.comprobanteXml);
+                                    this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
+                                      result4 => {
+                                        console.log(<any>result4);
+                                        if (result4.resp.Status === 202) {
+                                          console.log("esperar");
+                                          setTimeout(() => {
                                             let token = localStorage.getItem("token");
                                             this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
                                               resp => {
-                                                console.log("",resp);
+                                                console.log("", resp);
                                                 let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
                                                   "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
                                                   this.sendXML.comprobanteXml, "base64");
@@ -368,35 +362,35 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                                 console.log("error en consulta");
                                               }
                                             )
-      
-                                          }
-                                        },
-                                        error4 => {
-                                          //console.log(<any>error4);
+                                          }, 30000);
                                         }
-                                      )
-      
-                                    },
-                                    error3 => {
-                                      //console.log(<any>error3);
-                                    }
-                                  )
-                                },
-                                error => {
-                                  console.log(error);
-                                }
-                              );
-                            },
-                            error => {
-                              console.log(error);
-                            }
-                          );
-                        },
-                        error => {
-                          console.log(error);
-                        }
-                      )
-                    
+                                      },
+                                      error4 => {
+                                        //console.log(<any>error4);
+                                      }
+                                    )
+
+                                  },
+                                  error3 => {
+                                    //console.log(<any>error3);
+                                  }
+                                )
+                              },
+                              error => {
+                                console.log(error);
+                              }
+                            );
+                          },
+                          error => {
+                            console.log(error);
+                          }
+                        );
+                      },
+                      error => {
+                        console.log(error);
+                      }
+                    )
+
                   },
                   error => {
                     console.log(error);
