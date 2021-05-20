@@ -5,7 +5,8 @@ export class Correo{
         public subject: string,
         public text: string,
         public filename: string,
-        public attachmentContent: string,
+        public document: string,
+        public message: string,
         public base: string,
         ){
     }

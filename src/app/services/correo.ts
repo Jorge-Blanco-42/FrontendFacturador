@@ -20,7 +20,8 @@ export class ServicioCorreo {
         datos.append("text", correo.text);
         datos.append("subject", correo.subject);
         datos.append("filename", correo.filename);
-        datos.append("attachmentContent", correo.attachmentContent);
+        datos.append("document", correo.document);
+        datos.append("message", correo.message);
         datos.append("base", correo.base);
         return this._http.post(this.backendUrl + 'sendEmail', datos);
     }

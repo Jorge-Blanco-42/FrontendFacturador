@@ -13,9 +13,7 @@ import { TipoCambio } from '../../models/tipoCambio';
 import { ServicioTipoCambio } from '../../services/tipoCambioXML';
 import { DatePipe } from '@angular/common';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { FormBuilder, FormControl, NgForm } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { FormControl} from '@angular/forms';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
 import { MatTableDataSource } from '@angular/material/table';
@@ -142,8 +140,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
-    this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012379",
-      "98762262", "FE");
+    this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012385",
+      "98762268", "FE");
 
     this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
       "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "113160737", "Jorge Luis Blanco Cordero",
@@ -348,7 +346,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                                 console.log("", resp);
                                                 let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
                                                   "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
-                                                  this.sendXML.comprobanteXml, "base64");
+                                                  this.sendXML.comprobanteXml, resp.resp["respuesta-xml"], "base64");
+                                                console.log(correo);
                                                 this._servicioCorreo.enviarCorreo(correo).subscribe(
                                                   res => {
                                                     console.log("correo enviado", correo);

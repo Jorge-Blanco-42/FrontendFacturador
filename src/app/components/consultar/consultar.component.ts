@@ -330,7 +330,7 @@ export class DialogResumen implements OnInit {
 
   enviarCorreo() {
     let correo: Correo = new Correo("", "Factura electrónica " + this.nombreEmisor, "Se adjunta factura eléctronica",
-      "Factura.xml", XML, "base64");
+      "Factura.xml", this.xml, "", "base64");//PONER EL XML DEL MENSAJE DE ACEPTACION
     if (this.checkEmisor) {
       correo.to = this.correoEmisor;
       console.log(correo);
