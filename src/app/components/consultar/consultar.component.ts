@@ -346,6 +346,7 @@ export class DialogResumen implements OnInit {
       console.log(correo);
       this.enviar(correo);
     }
+    this.dialogRef.close();
   }
 
   enviar(correo: Correo) {
