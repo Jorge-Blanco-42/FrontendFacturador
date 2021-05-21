@@ -9,6 +9,17 @@ import { ServicioCorreo } from 'src/app/services/correo';
 import { Correo } from 'src/app/models/correo';
 import { CrearNotaComponent } from '../crear-nota/crear-nota.component';
 import { ServicioUsuario } from 'src/app/services/usuario';
+import { ClaveXML } from 'src/app/models/claveXML';
+import { Certificado } from 'src/app/models/certificado';
+import { FirmadoXML } from 'src/app/models/firmadoXML';
+import { EnvioXML } from 'src/app/models/envioXML';
+import { ServicioEscritorXML } from 'src/app/services/escritorXML';
+import { ServicioDecodificador } from 'src/app/services/decodificador';
+import { ServicioEnvioXML } from 'src/app/services/envioXML';
+import { DatePipe } from '@angular/common';
+import { ServicioCertificado } from 'src/app/services/certificado';
+import { ServicioClaveXML } from 'src/app/services/claveXML';
+import { ServicioFirmadoXML } from 'src/app/services/firmadoXML';
 
 export interface PeriodicElement {
   name: string;
@@ -198,7 +209,9 @@ export class ConsultarComponent implements OnInit {
 @Component({
   selector: 'app-anular',
   templateUrl: './anular.component.html',
-  providers: [ServicioCorreo, ServicioUsuario]
+  providers: [ServicioUsuario, ServicioEscritorXML, ServicioDecodificador,
+    ServicioEnvioXML, ServicioCertificado, ServicioFirmadoXML, ServicioClaveXML, DatePipe,
+    ServicioCorreo, ServicioUsuario]
 })
 export class DialogResumen implements OnInit {
 
@@ -216,32 +229,44 @@ export class DialogResumen implements OnInit {
   anular: boolean;
 
   nombreEmisor = "";
+  tipoIdentEmisor = "";
   cedulaEmisor = "";
   correoEmisor = "";
   telefonoEmisor = "";
 
   nombreReceptor = "";
+  tipoIdentReceptor = "";
   cedulaReceptor = "";
   correoReceptor = "";
   telefonoReceptor = "";
+  claveNueva = "";
+  clave = "";
+  fechaEmision = "";
+  fecha: string | null = "";
 
   constructor(
     public dialogRef: MatDialogRef<DialogResumen>,
     @Inject(MAT_DIALOG_DATA) public data: { anular: boolean, xml: string }, private _servicioCorreo: ServicioCorreo,
-    private _servicioUsuario: ServicioUsuario) {
+    private _servicioUsuario: ServicioUsuario, private _servicioEscritorXML: ServicioEscritorXML,
+    private _servicioDecodificador: ServicioDecodificador, private _servicioEnvio: ServicioEnvioXML,
+    private _servicioFirma: ServicioFirmadoXML, private _servicioCertificado: ServicioCertificado,
+    public datepipe: DatePipe, private _servicioClave: ServicioClaveXML) {
     this.anular = data.anular;
     this.xml = data.xml;
     this.convertirXML()
       .then((res) => {
         var datos = JSON.parse(res);
-        this.nombreEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Nombre;
-        this.cedulaEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Numero;
-        this.correoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].CorreoElectronico;
-        this.telefonoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Telefono[0].NumTelefono;
-        this.nombreReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Nombre;
-        this.cedulaReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Numero;
-        this.correoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].CorreoElectronico;
-        this.telefonoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Telefono[0].NumTelefono;
+        this.tipoIdentEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Tipo[0];
+        this.tipoIdentReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Tipo[0];
+        this.clave = datos.jsonData.FacturaElectronica.Clave[0];
+        this.nombreEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Nombre[0];
+        this.cedulaEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Numero[0];
+        this.correoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].CorreoElectronico[0];
+        this.telefonoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Telefono[0].NumTelefono[0];
+        this.nombreReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Nombre[0];
+        this.cedulaReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Numero[0];
+        this.correoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].CorreoElectronico[0];
+        this.telefonoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Telefono[0].NumTelefono[0];
         var lineas: Linea[] = [];
         var lineasJSON = datos.jsonData.FacturaElectronica.DetalleServicio;
 
@@ -249,22 +274,23 @@ export class DialogResumen implements OnInit {
           const lineaJson = lineasJSON[index];
           //
           let linea = new Linea("", "", [{ descripcion: "", impuesto: "", codigoBienServicio: "" }], 0, "", 0, 0, "", "", false, 0, 0, 0, 0);
-          linea.producto = lineaJson.LineaDetalle[0].Detalle;
-          linea.codigo = lineaJson.LineaDetalle[0].Codigo;
-          linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle;
+          linea.producto = lineaJson.LineaDetalle[0].Detalle[0];
+          linea.codigo = lineaJson.LineaDetalle[0].Codigo[0];
+          linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle[0];
           linea.filtro[0].impuesto = lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0];
-          linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo;
+          linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo[0];
           linea.cantidad = Number(lineaJson.LineaDetalle[0].Cantidad);
-          linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida;
-          linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario);
+          linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida[0];
+          linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario[0]);
           if (lineaJson.LineaDetalle[0].Descuento) {
-            linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento);
-            linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento;
+            linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento[0]);
+            linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento[0];
           }
-          linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible);
-          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa);
-          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal);
-          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea); //no se estan usando todos los campos del xml
+          if(lineaJson.LineaDetalle[0].BaseImponible)
+            linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible[0]);
+          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0]);
+          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal[0]);
+          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea[0]); //no se estan usando todos los campos del xml
           //
           lineas.push(linea);
         }
@@ -327,6 +353,32 @@ export class DialogResumen implements OnInit {
       this.datosCargo.paginator = this.paginatorCargos;
     }
   }
+  
+  AnularDocumento(){
+    this.crearClave()
+    .then((res) => {
+      console.log(res.resp)
+      this.claveNueva = res.resp.clave;
+      this.crearNota()
+      .then((res) => {
+        this.xml = res.xmlencoded;
+        this.firmar()
+          .then((res) => {
+            this.xml = res;
+            this.enviar()
+              .then((res) => { 
+                this.dialogRef.close();
+                console.log(res) })
+              .catch((err) => { console.error(err) })
+          })
+          .catch((err) => { console.error(err) })
+      })
+      .catch((err) => { console.error(err) })
+    })
+    .catch((err) => { console.error(err) })
+    
+    
+  }
 
   enviarCorreo() {
     let correo: Correo = new Correo("", "Factura electrónica " + this.nombreEmisor, "Se adjunta factura eléctronica",
@@ -334,22 +386,22 @@ export class DialogResumen implements OnInit {
     if (this.checkEmisor) {
       correo.to = this.correoEmisor;
       console.log(correo);
-      this.enviar(correo);
+      this.enviarC(correo);
     }
     if (this.checkReceptor) {
       correo.to = this.correoReceptor;
       console.log(correo);
-      this.enviar(correo);
+      this.enviarC(correo);
     }
     if (this.checkOtro) {
       correo.to = this.otraDireccion;
       console.log(correo);
-      this.enviar(correo);
+      this.enviarC(correo);
     }
     this.dialogRef.close();
   }
 
-  enviar(correo: Correo) {
+  enviarC(correo: Correo) {
     this._servicioCorreo.enviarCorreo(correo).subscribe(
       res => {
         console.log("correo enviado");
@@ -377,6 +429,72 @@ export class DialogResumen implements OnInit {
     }else{
       return "Otros"
     }
+  }
+
+  crearClave(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let clave = new ClaveXML("clave","clave",this.tipoIdentEmisor,this.cedulaEmisor,
+      "normal","506","010012376","99862262","ND");
+      this._servicioClave.crearClaveXML(clave).subscribe(
+        result => { resolve(result); },
+        err => { reject(err); }
+      )
+    })
+  }
+
+  crearNota(): Promise<any> {
+    let data = { tipoDoc: '01', numero: this.clave, fechaEmision: this.fechaEmision, codigo: '01', razon: "Anula Documento de Referencia" }
+    return new Promise((resolve, reject) => {
+      this._servicioDecodificador.decodificarXML(this.xml).subscribe(
+        result1 => {
+          this.fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
+          console.log(this.fecha);
+          this._servicioEscritorXML.crearNotaAnular(result1.xmlDecoded, "ND", data, this.claveNueva , this.fecha?this.fecha:"").subscribe(
+            result2 => {
+              
+              this._servicioDecodificador.codificarXML(result2.xmlFile).subscribe(
+                res => { console.log(res); resolve(res); },
+                err => { reject(err); }
+              )
+            },
+            err => { reject(err); }
+          )
+        },
+        err => { reject(err); }
+      )
+
+    })
+  }
+
+  firmar(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._servicioCertificado.getCertificado("2").subscribe(
+        result => {
+          let certificado: Certificado = result;
+          let firma = new FirmadoXML("signXML", "signFE", certificado.archivo, this.xml, certificado.pin, "ND")
+          this._servicioFirma.firmarFEXML(firma).subscribe(
+            res => { resolve(res.resp.xmlFirmado); },
+            err => { reject(err); }
+          )
+        },
+        error => { reject(error); });
+    });
+
+  }
+
+  enviar(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let token = localStorage.getItem("token")
+      let envio = new EnvioXML("send", "json", token ? token : "", this.claveNueva, this.fecha?this.fecha:"",
+        this.tipoIdentEmisor, this.cedulaEmisor, this.tipoIdentReceptor,
+        this.cedulaReceptor, this.xml, "api-stag");
+      console.log(envio);
+      this._servicioEnvio.enviarFEXML(envio).subscribe(
+        res => { resolve(res); },
+        err => { reject(err); }
+      )
+    });
+
   }
 
   ngOnInit() {

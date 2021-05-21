@@ -80,9 +80,9 @@ export class CrearNotaComponent implements OnInit {
     this.convertirXML()
       .then((res) => {
         var datos = JSON.parse(res);
-        this.tipoIdentEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Tipo[0]
-        this.tipoIdentReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Tipo[0]
-        this.clave = datos.jsonData.FacturaElectronica.Clave[0]
+        this.tipoIdentEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Tipo[0];
+        this.tipoIdentReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Tipo[0];
+        this.clave = datos.jsonData.FacturaElectronica.Clave[0];
         this.fechaEmision = datos.jsonData.FacturaElectronica.FechaEmision[0];
         this.nombreEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Nombre;
         this.cedulaEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Numero;
@@ -111,10 +111,11 @@ export class CrearNotaComponent implements OnInit {
             linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento);
             linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento;
           }
-          linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible);
-          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa);
-          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal);
-          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea); //no se estan usando todos los campos del xml
+          if(lineaJson.LineaDetalle[0].BaseImponible)
+            linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible[0]);
+          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0]);
+          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal[0]);
+          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea[0]); //no se estan usando todos los campos del xml
           //
           console.log(linea)
           this.lineas.push(linea);
