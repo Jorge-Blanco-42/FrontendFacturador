@@ -24,21 +24,21 @@
                 </ng-container>
 
                 <!-- Weight Column -->
-                <ng-container matColumnDef="nombreComercial">
-                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado nombre comercial" aria-describedby="pendiente" mat-sort-header> Nombre comercial </th>
-                    <td mat-cell *matCellDef="let element" aria-label="nombre comercial" aria-describedby="pendiente">
+                <ng-container matColumnDef="receptor">
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado nombre del receptor" aria-describedby="pendiente" mat-sort-header> Receptor </th>
+                    <td mat-cell *matCellDef="let element" aria-label="nombre del receptor" aria-describedby="pendiente">
                         {{element.nombreComercial}} </td>
                 </ng-container>
 
                 <!-- Symbol Column -->
                 <ng-container matColumnDef="numeroConsecutivo">
-                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado consecutivo del documento" aria-describedby="pendiente"> Número consecutivo </th>
-                    <td mat-cell *matCellDef="let element" aria-label="consecutivo" aria-describedby="pendiente">
+                    <th class="header text-center"  mat-header-cell *matHeaderCellDef aria-label="Encabezado consecutivo del documento" aria-describedby="pendiente"> Número consecutivo </th>
+                    <td mat-cell *matCellDef="let element" class="pr-2" aria-label="consecutivo" aria-describedby="pendiente">
                         {{element.numeroConsecutivo}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="claveDocumento">
-                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado clave del documento" aria-describedby="pendiente"> Clave del documento
+                    <th class="header text-center" mat-header-cell *matHeaderCellDef aria-label="Encabezado clave del documento" aria-describedby="pendiente">     Clave del documento
                     </th>
                     <td mat-cell *matCellDef="let element" aria-label="clave" aria-describedby="pendiente">
                         {{element.claveDocumento}} </td>

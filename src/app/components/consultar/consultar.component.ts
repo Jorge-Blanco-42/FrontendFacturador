@@ -67,7 +67,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class ConsultarComponent implements OnInit {
 
-  columnasFactura: string[] = ['fecha', 'nombreComercial', 'numeroConsecutivo', 'claveDocumento', 'tipoDocumento', 'notaCredito', 'notaDebito', 'enviarCorreo', 'anular'];
+  columnasFactura: string[] = ['fecha', 'receptor', 'numeroConsecutivo', 'claveDocumento', 'tipoDocumento', 'notaCredito', 'notaDebito', 'enviarCorreo', 'anular'];
   facturas: { fecha: string, nombreComercial: string, numeroConsecutivo: string, claveDocumento: string, tipoDocumento: string, xml: string }[] = [];
   datosFacturas!: MatTableDataSource<{ fecha: string; nombreComercial: string; numeroConsecutivo: string; claveDocumento: string; tipoDocumento: string; xml: string; }>;
   private paginator!: MatPaginator;
