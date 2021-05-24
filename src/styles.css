@@ -294,3 +294,25 @@
     .producto-columna{
         max-width: 20rem;
     }
+
+    .fondo-morado{
+        background-image: -moz-linear-gradient(0deg, #18227C 0%, #514aac 100%);
+        background-image: -webkit-linear-gradient(0deg, #18227C 0%, #514aac 100%);
+        color: white;
+        width: 100%;
+        height: fit-content;
+        top: 0;
+        bottom: 0;
+        position: absolute;
+    }
+
+    .custom-border{
+        border-radius: 3%;
+    }
+
+    .custom-center{
+        position: absolute;
+        top: 20%;
+        text-align: center;
+        width: 100%;
+    }

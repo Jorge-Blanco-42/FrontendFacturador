@@ -18,6 +18,8 @@ import { ServicioTipoCambio } from './services/tipoCambioXML';
 import { claveNotaDebitoCredito } from './models/claveNota';
 import { ServicioEscritorXML } from './services/escritorXML';
 import { ServicioDecodificador } from './services/decodificador';
+import { LoginComponent } from "./components/login/login.component";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +48,7 @@ export class AppComponent implements OnInit {
   constructor(private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _userService: ServicioUsuario, private _certificateService: ServicioCertificado, private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,
     private _exchangeRateService: ServicioTipoCambio, private _devCredNoteService: ServicioClaveDebitoCredito,
-    private _decoderService: ServicioDecodificador, private _writerXML: ServicioEscritorXML) {
+    private _decoderService: ServicioDecodificador, private _writerXML: ServicioEscritorXML, public dialog: MatDialog) {
 
     this.signXML = new FirmadoXML("signXML", "signFE",
       "b337c43a00ec8b0ed9882375d56b270f", "pendiente",
@@ -160,6 +162,18 @@ export class AppComponent implements OnInit {
     )
 
   }
+
+  openLogin(): void {
+    const dialogRef = this.dialog.open(LoginComponent, {
+      width: '80%',
+      height: '70%'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
 
 
 }

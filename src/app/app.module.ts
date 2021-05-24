@@ -22,6 +22,7 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { ConsultarComponent, DialogResumen } from './components/consultar/consultar.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CrearNotaComponent } from './components/crear-nota/crear-nota.component';
+import { LoginComponent } from './components/login/login.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +31,8 @@ import { CrearNotaComponent } from './components/crear-nota/crear-nota.component
     HomeComponent,
     ConsultarComponent,
     DialogResumen,
-    CrearNotaComponent
+    CrearNotaComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
