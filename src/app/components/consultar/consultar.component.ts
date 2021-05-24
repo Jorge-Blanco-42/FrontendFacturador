@@ -8,7 +8,7 @@ import { OtroCargo } from 'src/app/models/otroCargo';
 import { ServicioCorreo } from 'src/app/services/correo';
 import { Correo } from 'src/app/models/correo';
 import { CrearNotaComponent } from '../crear-nota/crear-nota.component';
-import { ServicioUsuario } from 'src/app/services/usuario';
+import { ServicioUsuario } from 'src/app/services/usuarioCRLibre';
 import { ClaveXML } from 'src/app/models/claveXML';
 import { Certificado } from 'src/app/models/certificado';
 import { FirmadoXML } from 'src/app/models/firmadoXML';

@@ -4,10 +4,10 @@ import { ServicioClaveXML } from './services/claveXML'
 import { ServicioCreacionXML } from './services/creacionXML';
 import { FirmadoXML } from './models/firmadoXML';
 import { CreacionXML } from './models/creacionXML';
-import { ServicioUsuario } from './services/usuario';
+import { ServicioUsuario } from './services/usuarioCRLibre';
 import { ServicioEnvioXML } from './services/envioXML';
 import { ServicioClaveDebitoCredito } from './services/claveNota';
-import { Usuario } from './models/usuario';
+import { UsuarioCRLibre } from './models/usuario';
 import { ServicioCertificado } from './services/certificado';
 import { Certificado } from './models/certificado';
 import { Token } from './models/token';
@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
 
   public signXML: FirmadoXML;
   public createXML: CreacionXML;
-  public user: Usuario;
+  public user: UsuarioCRLibre;
   public certificate: Certificado;
   public token: Token;
   public refresh_token: string;
@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
       "01", "0", "01", "CRC", "569.48", "0", "10000", "10000", "0", "10000", "10000", "20000", "100", "19900", "1170", "21070",
       "Jiji", "Bichota", lineaStr, 'False')
 
-    this.user = new Usuario("users", "users_log_me_in", "jorgeBlanco", "426819357");
+    this.user = new UsuarioCRLibre("users", "users_log_me_in", "jorgeBlanco", "426819357");
     this.certificate = new Certificado("", "", "", "", "");
     this.refresh_token = "";
     this.token = new Token("", "", "", "", "", "", "", "");

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Usuario } from '../models/usuario';
+import { UsuarioCRLibre } from '../models/usuario';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
@@ -17,7 +17,7 @@ export class ServicioUsuario {
         this.backend = environment.backendUrl;
     }
 
-    iniciarSesion(user: Usuario): Observable<any> {
+    iniciarSesion(user: UsuarioCRLibre): Observable<any> {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         var params = "w=" + user.w + "&r=" + user.r + "&userName=" + user.userName + "&pwd=" + user.pwd;
         return this._http.post(this.url, params, { headers: headers });
@@ -38,4 +38,6 @@ export class ServicioUsuario {
         data.append('xml', xml);
         return this._http.post(this.backend + 'getXMLData/', data);
     }
+
+
 }
