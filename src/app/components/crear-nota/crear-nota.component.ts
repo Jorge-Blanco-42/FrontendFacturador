@@ -18,7 +18,7 @@ import { ServicioDecodificador } from 'src/app/services/decodificador';
 import { ServicioEnvioXML } from 'src/app/services/envioXML';
 import { ServicioEscritorXML } from 'src/app/services/escritorXML';
 import { ServicioFirmadoXML } from 'src/app/services/firmadoXML';
-import { ServicioUsuario } from 'src/app/services/usuarioCRLibre';
+import { ServicioUsuario } from 'src/app/services/usuario';
 
 const replacer = new RegExp('\"', 'g');
 
