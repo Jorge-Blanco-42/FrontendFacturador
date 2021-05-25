@@ -173,12 +173,12 @@
                     </td>
                     <td>
                         <div class="input-group">
-                            <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required aria-label="Monto de otro cargo" aria-describedby="pendiente">
+                            <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="calcularTotales()" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required aria-label="Monto de otro cargo" aria-describedby="pendiente">
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <div class="custom-control custom-checkbox">
 
-                                        <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)" aria-label="Checkbox para monto en porcentaje de otro cargo" aria-describedby="pendiente">
+                                        <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; calcularTotales()" aria-label="Checkbox para monto en porcentaje de otro cargo" aria-describedby="pendiente">
                                         <label class="custom-control-label" [attr.for]="'porcentajeCargo' + i">%</label>
                                     </div>
                                 </div>
@@ -322,7 +322,7 @@
                                 <p class="mb-1">Mercadería exonerada</p>
                             </div>
                             <div class="col-md-6 text-md-right">
-                                <p class="mb-1" aria-label="Mercadería exonerada" aria-describedby="pendiente">₡ 123456789</p>
+                                <p class="mb-1" aria-label="Mercadería exonerada" aria-describedby="pendiente">₡ 0.00</p>
                             </div>
                         </div>
                         <hr class="m-0 p-1">
@@ -349,7 +349,7 @@
                                 <p class="mb-1">Servicios exonerados</p>
                             </div>
                             <div class="col-md-6 text-md-right">
-                                <p class="mb-1" aria-label="Servicios exonerados" aria-describedby="pendiente">₡ 123456789</p>
+                                <p class="mb-1" aria-label="Servicios exonerados" aria-describedby="pendiente">₡ 0.00</p>
                             </div>
                         </div>
                         <hr class="m-0 p-1">
@@ -376,7 +376,7 @@
                                 <p class="mb-1">Total exonerado</p>
                             </div>
                             <div class="col-md-6 text-md-right">
-                                <p class="mb-1" aria-label="Total exonerado" aria-describedby="pendiente">₡ 123456789</p>
+                                <p class="mb-1" aria-label="Total exonerado" aria-describedby="pendiente">₡ 0.00</p>
                             </div>
                         </div>
                         <hr class="m-0 p-1">
