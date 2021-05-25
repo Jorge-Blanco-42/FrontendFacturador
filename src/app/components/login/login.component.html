@@ -1,12 +1,27 @@
-<div class="container m-0 h-100">
-    <div class="row h-100" >
+<div class="container h-100">
+    <div class="row h-100 w-100" >
         <div class="col-md-6">
-            <div class="text-center">
+            <div class="text-center py-5">
                 <h4 class="mb-5">¡Bienvenido!</h4>
                 <p>Inicie sesión aquí</p>
+                <form #myForm="ngForm" >
+                    <div class="row form-item">
+                        <label for="CorreoElectronico">Correo electrónico</label>
+                        <input type="text" class="form-control" id="CorreoElectronico" name="correoElectronico" aria-label="Correo Electronico" aria-describedby="pendiente"
+                            required/>
+                    </div>
+                    <div class="row form-item mb-3">
+                        <label for="Contrasena">Contraseña</label>
+                        <input type="text" class="form-control" id="Contrasena" name="contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                            required/>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary" aria-label="Botón iniciar sesion" aria-describedby="pendiente">
+                        INGRESAR
+                    </button>
+                </form>
             </div>
         </div>
-        <div class="col-md-6 pl-0">
+        <div class="col-md-6">
             <div class="fondo-morado custom-border">
                 <div class="fondo-morado custom-border text-center py-5">
                     <h4 class="mb-5">¿Aún no tiene cuenta?</h4>
