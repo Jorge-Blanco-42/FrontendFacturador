@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UsuarioCRLibre } from '../models/usuarioCRLibre';
-import { Usuario } from '../models/Usuario';
+import { Usuario } from '../models/usuario';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'

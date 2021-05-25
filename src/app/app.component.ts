@@ -20,7 +20,7 @@ import { ServicioEscritorXML } from './services/escritorXML';
 import { ServicioDecodificador } from './services/decodificador';
 import { LoginComponent } from "./components/login/login.component";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Usuario } from './models/Usuario';
+import { Usuario } from './models/usuario';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
