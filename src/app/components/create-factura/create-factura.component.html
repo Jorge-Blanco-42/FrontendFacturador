@@ -586,12 +586,12 @@
                         </td>
                         <td>
                             <div class="input-group">
-                                <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="actualizarCargo(cargo)" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required aria-label="Monto de otro cargo" aria-describedby="pendiente">
+                                <input type="number" min="1" class="form-control w-25" placeholder="1" (change)="calcularTotales()" [(ngModel)]="cargo.monto" [ngModelOptions]="{standalone: true}" required aria-label="Monto de otro cargo" aria-describedby="pendiente">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <div class="custom-control custom-checkbox">
 
-                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; actualizarCargo(cargo)" aria-label="Checkbox para monto en porcentaje de otro cargo" aria-describedby="pendiente">
+                                            <input type="checkbox" class="custom-control-input" [attr.id]="'porcentajeCargo' + i" [checked]="cargo.porcentaje" (change)="cargo.porcentaje = !cargo.porcentaje; calcularTotales()" aria-label="Checkbox para monto en porcentaje de otro cargo" aria-describedby="pendiente">
                                             <label class="custom-control-label" [attr.for]="'porcentajeCargo' + i">%</label>
                                         </div>
                                     </div>
