@@ -306,3 +306,8 @@
     .custom-border{
         border-radius: 3%;
     }
+
+    .space{
+        color:#fff;
+        height: 3rem;
+    }

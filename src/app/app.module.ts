@@ -23,6 +23,7 @@ import { ConsultarComponent, DialogResumen } from './components/consultar/consul
 import { MatDialogModule } from '@angular/material/dialog';
 import { CrearNotaComponent } from './components/crear-nota/crear-nota.component';
 import { LoginComponent } from './components/login/login.component';
+import { SignupComponent } from './components/signup/signup.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +33,8 @@ import { LoginComponent } from './components/login/login.component';
     ConsultarComponent,
     DialogResumen,
     CrearNotaComponent,
-    LoginComponent
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
