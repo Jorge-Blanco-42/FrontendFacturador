@@ -55,8 +55,11 @@ export class ConsultarComponent implements OnInit {
   constructor(public dialog: MatDialog, private _servicioUsuario: ServicioUsuario) {
     this.cargarDocumentos()
       .then((res) => {
-        let documentos = JSON.parse(res);
-        documentos.docs.forEach((doc: {
+        let resp = JSON.parse(res);
+        console.log(resp)
+        let documentos = resp.docs;
+        let estados = resp.estados;
+        documentos.forEach((doc: {
           claveDocumento: string; fechaDocumento: string; xml: string,
           IDTipoDocumento: number, nombreReceptor: string, estadoAceptacion:number
         }) => {
@@ -68,9 +71,9 @@ export class ConsultarComponent implements OnInit {
           else if (doc.IDTipoDocumento === 2) tipoDocumento = "Nota de débito";
           else if (doc.IDTipoDocumento === 3) tipoDocumento = "Nota de crébito";
           else if (doc.IDTipoDocumento === 4) tipoDocumento = "Tiquete Electrónico";
-          if (doc.estadoAceptacion === 1) estado = "Aceptado";
-          else if (doc.estadoAceptacion === 2) estado = "Aceptado parcialmente";
-          else if (doc.estadoAceptacion === 3) estado = "Rechazado";
+          estados.forEach((estadoAceptacion: { IDEstadoAceptacion: number; estadoAceptacion: string; }) => {
+            if (doc.estadoAceptacion === estadoAceptacion.IDEstadoAceptacion) estado = estadoAceptacion.estadoAceptacion;
+          });
           this.facturas.push({
             fecha: doc.fechaDocumento.substr(0, 10), nombreComercial: doc.nombreReceptor,
             numeroConsecutivo: consecutivo, claveDocumento: clave, tipoDocumento: tipoDocumento, estado:estado, xml: doc.xml
