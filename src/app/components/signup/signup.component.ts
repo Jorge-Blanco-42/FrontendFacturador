@@ -4,11 +4,12 @@ import { FormControl} from '@angular/forms';
 
 
  export interface Cliente {
-  nombre: string,
-  tipo_identificacion: string, identificacion: string,
+  nombre: string, nombreRazonSocial: string,
+  identificacion: string,
   provincia: string, canton: string,
   distrito: string, barrio: string, otras_senas:string,
-  telefono: string, fax: string, correo: string
+  telefono: string, fax: string, correo: string, contrasena: string, 
+  confirmarContrasena: string
 }
 
 @Component({
@@ -23,14 +24,15 @@ export class SignupComponent implements OnInit {
   @Output() newItemEvent = new EventEmitter<boolean>();
 
   cliente!: Cliente;
+  valido: boolean = true;
 
   constructor() { 
     this.cliente = {
       nombre: "",
-      tipo_identificacion: "", identificacion: "",
+      nombreRazonSocial: "", identificacion: "",
       provincia: "", canton: "",
       distrito: "", barrio: "", otras_senas:"",
-      telefono: "", fax: "", correo: ""
+      telefono: "", fax: "", correo: "", contrasena:"", confirmarContrasena: ""
     }
   }
 
@@ -45,6 +47,14 @@ export class SignupComponent implements OnInit {
 
   registrar(cliente : Cliente){
     console.log(cliente);
+  }
+
+  validarContrasena(){
+    if(this.cliente.contrasena === this.cliente.confirmarContrasena){
+      this.valido = true;
+    }else{
+      this.valido = false;
+    }
   }
 
 }

@@ -176,7 +176,7 @@ export class AppComponent implements OnInit {
   openLogin(): void {
     const dialogRef = this.dialog.open(LoginComponent, {
       width: '80%',
-      height: '70%'
+      height: '80%'
     });
 
     dialogRef.afterClosed().subscribe(result => {
