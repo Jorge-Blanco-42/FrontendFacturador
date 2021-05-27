@@ -1,0 +1,133 @@
+<div class="container h-100">
+    <div class="row h-100 w-100" >
+        <div class="col-md-3">
+            <div class="fondo-morado custom-border">
+                <div class="fondo-morado custom-border text-center py-5">
+                    <h4 class="my-5">¿Ya tiene cuenta?</h4>
+
+                    <button type="button" class="btn btn-outline-light mt-5" (click)="closeSignUp()">INICIE SESIÓN AQUÍ</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <form #myForm="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="registrar(cliente)">
+            <div class="row">
+                <div class="form-item col-md-4">
+                    <label for="Identificacion">Identificación</label>
+                    <input type="text" class="form-control form-control-sm" id="Identificacion" name="identificacion" #identificacion="ngModel" [(ngModel)]="cliente.identificacion" aria-label="Identificación"
+                        aria-describedby="pendiente" required />
+                    <span class="text-danger" *ngIf="identificacion.touched && !identificacion.valid">
+                        <span>Dato inválido.</span>
+                    </span>
+                </div>
+                <div class="form-item col-md-8">
+                    <label for="NombreRazonSocial">Nombre o Razón Social</label>
+                    <input type="text" class="form-control form-control-sm" id="NombreRazonSocial" name="nombreRazonSocial" #nombreRazonSocial="ngModel" [(ngModel)]="cliente.nombreRazonSocial" aria-label="Nombre o Razon Social"
+                        aria-describedby="pendiente" required />
+                    <span class="text-danger"  *ngIf="nombreRazonSocial.touched && !nombreRazonSocial.valid">
+                        <span>Dato inválido.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-item col-md-8">
+                    <label for="NombreComercial">Nombre Comercial</label>
+                    <input type="text" class="form-control form-control-sm" id="NombreComercial" name="nombreComercial" #nombreComercial="ngModel" [(ngModel)]="cliente.nombre" aria-label="Nombre Comercial"
+                        aria-describedby="pendiente" required />
+                    <span class="text-danger"  *ngIf="nombreComercial.touched && !nombreComercial.valid">
+                        <span>Dato inválido.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-item col-md-4">
+                    <label for="Telefono">Teléfono</label>
+                    <input type="text" class="form-control form-control-sm" id="Telefono" name="telefono" #telefono="ngModel" [(ngModel)]="cliente.telefono" aria-label="Teléfono" aria-describedby="pendiente"
+                        required pattern="[0-9]{8}" />
+                    <span class="text-danger" *ngIf="telefono.touched && !telefono.valid">
+                        <span>Dato inválido.</span>
+                    </span>
+                </div>
+                <div class="form-item col-md-4">
+                    <label for="Fax">Fax</label>
+                    <input type="text" class="form-control form-control-sm" id="Fax" name="fax" #fax="ngModel" [(ngModel)]="cliente.fax" aria-label="Fax" aria-describedby="pendiente" required
+                        pattern="[0-9]{8}" />
+                    <span class="text-danger" *ngIf="fax.touched && !fax.valid">
+                        <span>Dato inválido.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-item col-md-4">
+                    <label for="Provincia">Provincia</label>
+                    <select class="form-control form-control-sm" id="Provincia" name="provincia" #provincia="ngModel" [(ngModel)]="cliente.provincia" aria-label="Provincia" aria-describedby="pendiente"
+                        required>
+                        <option value="1">San José</option>
+                    </select>
+                </div>
+                <div class="form-item col-md-4">
+                    <label for="Canton">Cantón</label>
+                    <select class="form-control form-control-sm" id="Canton" name="canton" #canton="ngModel" [(ngModel)]="cliente.canton" aria-label="Canton" aria-describedby="pendiente"
+                        required>
+                        <option value="01">San José</option>
+                    </select>
+                </div>
+                <div class="form-item col-md-4">
+                    <label for="Distrito">Distrito</label>
+                    <select class="form-control form-control-sm" id="Distrito" name="distrito" #distrito="ngModel" [(ngModel)]="cliente.distrito" aria-label="Distrito" aria-describedby="pendiente"
+                        required>
+                        <option value="01">Carmen</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-item col-md-4">
+                    <label for="Barrio">Barrio</label>
+                    <select class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel" [(ngModel)]="cliente.barrio" aria-label="Barrio" aria-describedby="pendiente"
+                        required>
+                        <option value="01">San José (parte)</option>
+                    </select>
+                </div>
+                <div class="form-item col-md-6">
+                    <label for="OtrasSenas">Otras señas</label>
+                    <input type="text" class="form-control form-control-sm" id="OtrasSenas" name="otrasSenas" #otras_senas="ngModel" [(ngModel)]="cliente.otras_senas" aria-label="Otras señas" aria-describedby="pendiente" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-item col-md-4">
+                    <label for="Correo">Correo electrónico</label>
+                    <input type="email" class="form-control form-control-sm" id="Correo" name="correo" #correo="ngModel" [(ngModel)]="cliente.correo" aria-label="Correo electrónico" aria-describedby="pendiente"
+                        required pattern="[\w-\.]+@([\w-]+\.)+[\w-]{2,4}" />
+                    <span class="text-danger" *ngIf="correo.touched && !correo.valid">
+                        <span>Dato inválido.</span>
+                    </span>
+                </div>
+                <div class="form-item col-md-4">
+                    <label for="Contrasena">Contraseña</label>
+                    <input type="password" class="form-control form-control-sm" id="Contrasena" name="contrasena" #contrasena="ngModel" [(ngModel)]="cliente.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                        required />
+                    <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                        <span>Dato inválido.</span>
+                    </span>
+                </div>
+                <div class="form-item col-md-4">
+                    <label for="ConfirmarContrasena">Confirmar Contraseña</label>
+                    <input type="password" class="form-control form-control-sm" id="ConfirmarContrasena" name="confirmarContrasena" 
+                    #confirmarContrasena="ngModel" (change)="validarContrasena()"
+                    [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmara contrasena" aria-describedby="pendiente"
+                        required />
+                    <span class="text-danger" *ngIf="confirmarContrasena.touched && !confirmarContrasena.valid">
+                        <span></span>
+                    </span>
+                    <span class="text-danger" *ngIf="!valido">
+                        <span>Contraseñas no coinciden.</span>
+                    </span>
+                </div>
+            </div>
+            <button type="button" (submit)="registrar(cliente)" [disabled]="myForm.invalid" class="btn btn-outline-secondary" aria-label="Botón registrar" aria-describedby="pendiente">
+                REGISTRAR
+            </button>
+        </form>
+        </div>
+    </div>
+</div>

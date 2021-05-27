@@ -290,7 +290,6 @@ export class CrearNotaComponent implements OnInit {
   }
 
   calcularTotales() {
-    //console.log("suelte la harina, pa");
     this.total_OtrosCargos = 0;
     let total_comprobante = 0;
     let total_serv_gravados = 0;
@@ -340,6 +339,7 @@ export class CrearNotaComponent implements OnInit {
       this.actualizarCargo(cargo);
     });
     total_ventas_neta = total_ventas - total_descuentos;
+    console.log(this.total_OtrosCargos);
     total_comprobante = total_ventas_neta + total_impuestos + this.total_OtrosCargos;
     //console.log(this.total_OtrosCargos)
     this.datosXML.total_comprobante = total_comprobante.toString();
@@ -387,7 +387,7 @@ export class CrearNotaComponent implements OnInit {
       cargo.porcentaje = true;
       cargo.monto = 10;
     }
-    this.actualizarCargo(cargo);
+    this.calcularTotales();
   }
 
   actualizarCargo(cargo: OtroCargo) {
@@ -400,9 +400,7 @@ export class CrearNotaComponent implements OnInit {
     this.total_OtrosCargos = 0;
 
     this.otrosCargos.forEach(cargo => {
-      console.log(cargo)
       this.total_OtrosCargos += cargo.total;
-      console.log(this.total_OtrosCargos);
     });
   }
 

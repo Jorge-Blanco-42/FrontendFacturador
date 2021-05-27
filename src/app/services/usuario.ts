@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UsuarioCRLibre } from '../models/usuarioCRLibre';
 import { Usuario } from '../models/usuario';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -17,10 +18,24 @@ export class ServicioUsuario {
         this.backend = environment.backendUrl;
     }
 
-    iniciarSesion(user: Usuario): Observable<any> {
+
+    convertirXML(xml: string): Observable<any> {
+        var data = new FormData();
+        data.append('xml', xml);
+        return this._http.post(this.backend + 'getXMLData/', data);
+    }
+
+    iniciarSesion(user: UsuarioCRLibre): Observable<any> {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         var params = "w=" + user.w + "&r=" + user.r + "&userName=" + user.userName + "&pwd=" + user.pwd;
         return this._http.post(this.url, params, { headers: headers });
+    }
+
+    insertUsuario(user: Usuario): Observable<any>{
+        let data = new FormData();
+        data.append('password', user.password);
+        data.append('cedula', user.cedula);
+        return this._http.post(this.backend + 'insertUsuario/', data);
     }
 
     getCertificado(id: string): Observable<any>{
@@ -33,14 +48,37 @@ export class ServicioUsuario {
         return this._http.get(this.backend+'getDocumentos/'+id,{headers:headers});
     }
 
-    convertirXML(xml: string): Observable<any> {
-        var data = new FormData();
-        data.append('xml', xml);
-        return this._http.post(this.backend + 'getXMLData/', data);
+    getUsuario(cedula: string): Observable<any>{
+        let headers = new HttpHeaders().set('Content-Type', 'application/json');
+        return this._http.get(this.backend+'getUsuario/'+cedula, {headers: headers});
+    }
+
+    deleteUsuario(cedula: string): Observable<any>{
+        let headers = new HttpHeaders().set('Content-Type', 'application/json');
+        return this._http.delete(this.backend+'deleteUsuario/'+cedula, {headers: headers});
     }
 
     getClientes(id:string): Observable<any>{
         let headers = new HttpHeaders().set('Content-Type', 'aplication/json');
         return this._http.get(this.backend + 'getClientes/' + id, {headers:headers});
     }
+    
+    updateUsuario(cedula: string, newData: any){
+        let data = new FormData();
+        let keys = Object.keys(newData);
+        for(let i = 0; i < keys.length; i++){
+            
+            let key: string = keys[i].toString();
+            data.append(key, newData[key].toString());
+            console.log(key, newData[key]);
+        }
+        console.log('AJÁ ', data);
+        return this._http.put(this.backend+'updateUsuario/'+cedula, data);
+    }
+
+    
+
+    
+
+
 }

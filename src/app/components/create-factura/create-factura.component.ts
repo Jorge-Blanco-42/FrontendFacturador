@@ -614,7 +614,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       cargo.porcentaje = true;
       cargo.monto = 10;
     }
-    this.actualizarCargo(cargo);
+    this.calcularTotales();
   }
 
   actualizarCargo(cargo: OtroCargo) {

@@ -1,23 +1,43 @@
-<div class="container m-0 h-100">
-    <div class="row h-100" >
-        <div class="col-md-6">
-            <div class="text-center">
-                <h4 class="mb-5">¡Bienvenido!</h4>
-                <p>Inicie sesión aquí</p>
+<div *ngIf='login'>
+    <div class="container h-100">
+        <div class="row h-100 w-100" >
+            <div class="col-md-6">
+                <div class="text-center py-5">
+                    <h4 class="mb-5">¡Bienvenido!</h4>
+                    <p>Inicie sesión aquí</p>
+                    <form #myForm="ngForm" >
+                        <div class="row form-item">
+                            <label for="CorreoElectronico">Correo electrónico</label>
+                            <input type="text" class="form-control" id="CorreoElectronico" name="correoElectronico" aria-label="Correo Electronico" aria-describedby="pendiente"
+                                required/>
+                        </div>
+                        <div class="row form-item mb-3">
+                            <label for="Contrasena">Contraseña</label>
+                            <input type="text" class="form-control" id="Contrasena" name="contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                                required/>
+                        </div>
+                        <button type="button" class="btn btn-outline-secondary" aria-label="Botón iniciar sesion" aria-describedby="pendiente">
+                            INGRESAR
+                        </button>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6 pl-0">
-            <div class="fondo-morado custom-border">
-                <div class="fondo-morado custom-border text-center py-5">
-                    <h4 class="mb-5">¿Aún no tiene cuenta?</h4>
-                    <p>Al registrarse en nuestro sistema usted podrá: </p>
-                    <p><i class="fa fa-check-circle-o"></i> Tener un registro de clientes </p>
-                    <p><i class="fa fa-check-circle-o"></i> Crear documentos ilimitados</p>
-                    <p><i class="fa fa-check-circle-o"></i> Cancelar facturas</p>
-                    <p><i class="fa fa-check-circle-o"></i> Enviar facturas por correo electrónico</p>
-                    <button type="button" class="btn btn-outline-light mt-5">REGISTRESE AQUÍ</button>
+            <div class="col-md-6">
+                <div class="fondo-morado custom-border">
+                    <div class="fondo-morado custom-border text-center py-5">
+                        <h4 class="mb-5">¿Aún no tiene cuenta?</h4>
+                        <p>Al registrarse en nuestro sistema usted podrá: </p>
+                        <p><i class="fa fa-check-circle-o"></i> Tener un registro de clientes </p>
+                        <p><i class="fa fa-check-circle-o"></i> Crear documentos ilimitados</p>
+                        <p><i class="fa fa-check-circle-o"></i> Cancelar facturas</p>
+                        <p><i class="fa fa-check-circle-o"></i> Enviar facturas por correo electrónico</p>
+                        <button type="button" class="btn btn-outline-light mt-5" (click)="openSignUp()">REGISTRESE AQUÍ</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<div *ngIf='!login'>
+    <app-signup [login]="login" (newItemEvent)="closeSignUp($event)"></app-signup>
 </div>
