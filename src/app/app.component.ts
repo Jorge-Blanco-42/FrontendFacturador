@@ -87,6 +87,8 @@ export class AppComponent implements OnInit {
         console.log(<any>error)
       });
 
+      this.getClientes('1')
+
   }
 
   getToken(certificate: Certificado) {
@@ -174,7 +176,16 @@ export class AppComponent implements OnInit {
     });
   }
 
-
-
+  getClientes(IDUsuario: string){
+    this._userService.getClientes(IDUsuario).subscribe(
+      
+      res => {
+        console.log('GetClientes was successful ',res);
+      },
+      error => {
+        console.log('Error!!!!', error);
+      }
+    );
+  }
 }
 

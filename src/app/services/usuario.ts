@@ -38,4 +38,9 @@ export class ServicioUsuario {
         data.append('xml', xml);
         return this._http.post(this.backend + 'getXMLData/', data);
     }
+
+    getClientes(id:string): Observable<any>{
+        let headers = new HttpHeaders().set('Content-Type', 'aplication/json');
+        return this._http.get(this.backend + 'getClientes/' + id, {headers:headers});
+    }
 }
