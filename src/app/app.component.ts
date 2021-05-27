@@ -22,13 +22,17 @@ import { LoginComponent } from "./components/login/login.component";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Usuario } from './models/usuario';
 import { ServicioUbicacion } from './services/ubicacion';
+import { ServicioActividadEconomica } from './services/actividadEconomica';
+import { ServicioDocumento } from './services/documento';
+import { ServicioTipoIdentificacion } from './services/tipoIdentificacion';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   providers: [ServicioFirmadoXML, ServicioCreacionXML, ServicioUsuario, ServicioCertificado,
     ServicioEnvioXML, ServicioClaveXML, ServicioTipoCambio, ServicioClaveDebitoCredito,
-    ServicioEscritorXML, ServicioDecodificador, ServicioUbicacion]
+    ServicioEscritorXML, ServicioDecodificador, ServicioUbicacion, ServicioActividadEconomica, 
+  ServicioDocumento, ServicioTipoIdentificacion]
 })
 export class AppComponent implements OnInit {
   title = 'Facturador';
@@ -51,7 +55,8 @@ export class AppComponent implements OnInit {
     private _userService: ServicioUsuario, private _certificateService: ServicioCertificado, private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML,
     private _exchangeRateService: ServicioTipoCambio, private _devCredNoteService: ServicioClaveDebitoCredito,
     private _decoderService: ServicioDecodificador, private _writerXML: ServicioEscritorXML, public dialog: MatDialog,
-    private _locationService: ServicioUbicacion) {
+    private _locationService: ServicioUbicacion, private _actividadService: ServicioActividadEconomica,
+    private _documentoServicio: ServicioDocumento, private _tipoIdentificacionService: ServicioTipoIdentificacion) {
 
     this.signXML = new FirmadoXML("signXML", "signFE",
       "b337c43a00ec8b0ed9882375d56b270f", "pendiente",
@@ -102,7 +107,15 @@ export class AppComponent implements OnInit {
       this.getProvincias();
       this.getCantones();
       this.getDistritos();
+      
+
+      this.getActividadEconomica();
+      
+      this.getDocumentos('1');
       */
+
+      this.getTipoID();
+
   }
 
   getToken(certificate: Certificado) {
@@ -263,6 +276,39 @@ export class AppComponent implements OnInit {
     this._locationService.getDistritos().subscribe(
       res => {
         console.log('GetDistritos was successful ',res);
+      },
+      error => {
+        console.log('Error!!!!', error);
+      }
+    );
+  }
+
+  getActividadEconomica(){
+    this._actividadService.getActividadEconomica().subscribe(
+      res => {
+        console.log('getActividadEconomica was successful ',res);
+      },
+      error => {
+        console.log('Error!!!!', error);
+      }
+    );
+  }
+
+  getDocumentos(id: string){
+    this._documentoServicio.getDocumentos(id).subscribe(
+      res => {
+        console.log('getDocumentos was successful ',res);
+      },
+      error => {
+        console.log('Error!!!!', error);
+      }
+    );
+  }
+
+  getTipoID(){
+    this._tipoIdentificacionService.getTipoID().subscribe(
+      res => {
+        console.log('getTipoID was successful ',res);
       },
       error => {
         console.log('Error!!!!', error);
