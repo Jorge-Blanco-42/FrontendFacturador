@@ -1,0 +1,53 @@
+<div class="container card mt-3">
+    <mat-tab-group mat-align-tabs="center">
+        <!-- Usuario -->
+        <mat-tab label="Usuario"> 
+            Content 1 
+    
+        </mat-tab>
+        <!-- Certificado -->
+        <mat-tab label="Certificado"> 
+            <!-- <div class="card m-4"> -->
+                <div class="m-5">
+                    <form #myForm="ngForm" >
+                        <div class="row justify-content-center form-item">
+                            <div class="col-sm-8">
+                                <label for="UsuarioHacienda">Usuario Hacienda</label>
+                                <input type="text" class="form-control" id="UsuarioHacienda" name="usuarioHacienda" aria-label="Usuario Hacienda" aria-describedby="pendiente"
+                                required/>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center form-item">
+                            <div class="col-sm-8">
+                                <label for="Contrasena">Contraseña</label>
+                                <input type="text" class="form-control" id="Contrasena" name="contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                                    required/>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center form-item">
+                            <div class="col-sm-8">
+                                <label for="Pin">PIN</label>
+                                <input type="text" class="form-control" id="Pin" name="pin" aria-label="PIN" aria-describedby="pendiente"
+                                    required/>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center form-item">
+                            <div class="col-sm-8">
+                                <label for="Archivo">Archivo</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="customFileLang" lang="es">
+                                    <label class="custom-file-label" for="customFileLang">Seleccionar Archivo</label>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center form-item mt-3">
+                            <button type="button" class="btn btn-outline-secondary" aria-label="Botón modificar" aria-describedby="pendiente">
+                                MODIFICAR
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            <!-- </div> -->
+        </mat-tab>
+      </mat-tab-group>
+</div>
