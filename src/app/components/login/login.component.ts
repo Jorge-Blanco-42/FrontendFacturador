@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
 
   closeSignUp(login : boolean):void{
     this.login = login;
+    if(login)this.dialogRef.close(true);
   }
 
 }

@@ -38,6 +38,21 @@ export class ServicioUsuario {
         return this._http.post(this.backend+"/inicioSesion", data);
     }
 
+    registro(user:any){
+        let data = new FormData();
+        data.append("cedula",user.identificacion);
+        data.append("nombre",user.nombreRazonSocial);
+        data.append("email",user.correo);
+        data.append("nombreComercial",user.nombre);
+        data.append("IDDistrito",user.distrito);
+        data.append("barrio",user.barrio);
+        data.append("otrasSenas",user.otras_senas);
+        data.append("telefono",user.telefono);
+        data.append("fax",user.fax);
+        data.append("contrasena",user.contrasena);
+        return this._http.post(this.backend+"/registro", data);
+    }
+
     insertUsuario(user: Usuario): Observable<any>{
         let data = new FormData();
         data.append('password', user.password?user.password:"");

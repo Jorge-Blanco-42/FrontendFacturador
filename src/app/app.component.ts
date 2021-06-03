@@ -32,13 +32,13 @@ import { ServicioAutenticacion } from './services/autenticacion.service';
   styleUrls: ['./app.component.css'],
   providers: [ServicioFirmadoXML, ServicioCreacionXML, ServicioUsuario, ServicioCertificado,
     ServicioEnvioXML, ServicioClaveXML, ServicioTipoCambio, ServicioClaveDebitoCredito,
-    ServicioEscritorXML, ServicioDecodificador, ServicioUbicacion, ServicioActividadEconomica, 
-  ServicioDocumento, ServicioTipoIdentificacion]
+    ServicioEscritorXML, ServicioDecodificador, ServicioUbicacion, ServicioActividadEconomica,
+    ServicioDocumento, ServicioTipoIdentificacion]
 })
 export class AppComponent implements OnInit {
   title = 'Facturador';
 
-  login:boolean = false;
+  login: boolean = false;
   public signXML: FirmadoXML;
   public createXML: CreacionXML;
   public user: UsuarioCRLibre;
@@ -88,35 +88,37 @@ export class AppComponent implements OnInit {
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     localStorage.removeItem("token");
     localStorage.removeItem("refresh");
-    this._certificateService.getCertificado(cedula).subscribe(
-      result => {
-        this.certificate = result[0];
-        this.getToken(this.certificate);
-      },
-      error => {
-        //alert(<any>error);
-        console.log(<any>error)
-      });
+    if (this.login) {
+      this._certificateService.getCertificado(cedula).subscribe(
+        result => {
+          this.certificate = result[0];
+          this.getToken(this.certificate);
+        },
+        error => {
+          //alert(<any>error);
+          console.log(<any>error)
+        });
+    }
 
-      /*
-      this.getUsuario('117310836');
-      this.updateUsuario('117310836', {password : '12345fdfdc678'});
-      this.deleteUsuario('117310836');
-      this.insertUser('holisdsdd', '117310836');
-     
+    /*
+    this.getUsuario('117310836');
+    this.updateUsuario('117310836', {password : '12345fdfdc678'});
+    this.deleteUsuario('117310836');
+    this.insertUser('holisdsdd', '117310836');
+   
 
-      
-      this.getProvincias();
-      this.getCantones();
-      this.getDistritos();
-      
+    
+    this.getProvincias();
+    this.getCantones();
+    this.getDistritos();
+    
 
-      this.getActividadEconomica();
-      
-      this.getDocumentos('1');
-      */
+    this.getActividadEconomica();
+    
+    this.getDocumentos('1');
+    */
 
-      this.getTipoID();
+    this.getTipoID();
 
   }
 
@@ -205,13 +207,13 @@ export class AppComponent implements OnInit {
     });
   }
 
-  cerrarSesion(){
+  cerrarSesion() {
     this.login = false;
     this._servicioAutenticacion.logout()
 
   }
 
-  insertUser(password: string, cedula: string){
+  insertUser(password: string, cedula: string) {
     this.usuarioApp.password = password;
     this.usuarioApp.cedula = cedula;
     this._userService.insertUsuario(this.usuarioApp).subscribe(
@@ -225,10 +227,10 @@ export class AppComponent implements OnInit {
 
   }
 
-  getUsuario(cedula: string){
+  getUsuario(cedula: string) {
     this._userService.getUsuario(cedula).subscribe(
       res => {
-        console.log('Get was successful ',res);
+        console.log('Get was successful ', res);
       },
       error => {
         console.log('Error!!!!', error);
@@ -236,7 +238,7 @@ export class AppComponent implements OnInit {
     )
   }
 
-  updateUsuario(cedula: string, newData: object){
+  updateUsuario(cedula: string, newData: object) {
     this._userService.updateUsuario(cedula, newData).subscribe(
       res => {
         console.log('Update was successful', res);
@@ -247,7 +249,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  deleteUsuario(cedula: string){
+  deleteUsuario(cedula: string) {
     this._userService.deleteUsuario(cedula).subscribe(
       res => {
         console.log('Delete was successful', res);
@@ -258,10 +260,10 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getProvincias(){
+  getProvincias() {
     this._locationService.getProvincias().subscribe(
       res => {
-        console.log('GetProvincias was successful ',res);
+        console.log('GetProvincias was successful ', res);
       },
       error => {
         console.log('Error!!!!', error);
@@ -269,10 +271,10 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getCantones(){
+  getCantones() {
     this._locationService.getCantones().subscribe(
       res => {
-        console.log('GetCantones was successful ',res);
+        console.log('GetCantones was successful ', res);
       },
       error => {
         console.log('Error!!!!', error);
@@ -280,10 +282,10 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getDistritos(){
+  getDistritos() {
     this._locationService.getDistritos().subscribe(
       res => {
-        console.log('GetDistritos was successful ',res);
+        console.log('GetDistritos was successful ', res);
       },
       error => {
         console.log('Error!!!!', error);
@@ -291,10 +293,10 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getActividadEconomica(){
+  getActividadEconomica() {
     this._actividadService.getActividadEconomica().subscribe(
       res => {
-        console.log('getActividadEconomica was successful ',res);
+        console.log('getActividadEconomica was successful ', res);
       },
       error => {
         console.log('Error!!!!', error);
@@ -302,10 +304,10 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getDocumentos(id: string){
+  getDocumentos(id: string) {
     this._documentoServicio.getDocumentos(id).subscribe(
       res => {
-        console.log('getDocumentos was successful ',res);
+        console.log('getDocumentos was successful ', res);
       },
       error => {
         console.log('Error!!!!', error);
@@ -313,10 +315,10 @@ export class AppComponent implements OnInit {
     );
   }
 
-  getTipoID(){
+  getTipoID() {
     this._tipoIdentificacionService.getTipoID().subscribe(
       res => {
-        console.log('getTipoID was successful ',res);
+        console.log('getTipoID was successful ', res);
       },
       error => {
         console.log('Error!!!!', error);
