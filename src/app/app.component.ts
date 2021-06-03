@@ -85,11 +85,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.login = this._servicioAutenticacion.isLoggedIn();
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     localStorage.removeItem("token");
     localStorage.removeItem("refresh");
-    this._certificateService.getCertificado("2").subscribe(
+    this._certificateService.getCertificado(cedula).subscribe(
       result => {
-        this.certificate = result;
+        this.certificate = result[0];
         this.getToken(this.certificate);
       },
       error => {
