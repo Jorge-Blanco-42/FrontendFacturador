@@ -25,15 +25,22 @@ export class ServicioUsuario {
         return this._http.post(this.backend + 'getXMLData/', data);
     }
 
-    iniciarSesion(user: UsuarioCRLibre): Observable<any> {
+    iniciarSesionCR(user: UsuarioCRLibre): Observable<any> {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         var params = "w=" + user.w + "&r=" + user.r + "&userName=" + user.userName + "&pwd=" + user.pwd;
         return this._http.post(this.url, params, { headers: headers });
     }
 
+    iniciarSesion(user: Usuario){
+        let data = new FormData();
+        data.append("cedula", user.cedula);
+        data.append("contrasena", user.password?user.password:"");
+        return this._http.post(this.backend+"/inicioSesion", data);
+    }
+
     insertUsuario(user: Usuario): Observable<any>{
         let data = new FormData();
-        data.append('password', user.password);
+        data.append('password', user.password?user.password:"");
         data.append('cedula', user.cedula);
         return this._http.post(this.backend + 'insertUsuario/', data);
     }
