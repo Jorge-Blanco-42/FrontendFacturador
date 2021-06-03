@@ -282,23 +282,28 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="ProvinciaReceptor">Provincia</label>
-                            <select class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" #provinciaReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente"
+                            <select  class="form-control" id="ProvinciaReceptor" name="provinciaReceptor" #provinciaReceptor="ngModel" 
+                            (change) = "cargarCantones(datosXML.receptor_provincia)" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor" aria-describedby="pendiente"
                                 required>
-                                <option value="1">San José</option>
+                                <option disabled value='1'>-- Seleccione una provincia --</option>
+                                <option [value] = "provincia.codigo_provincia" *ngFor = "let provincia Of provincias;">{{provincia.nombre_provincia}}</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="CantonReceptor">Cantón</label>
-                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" #cantonReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente"
+                            <select class="form-control" id="CantonReceptor" name="cantonReceptor" #cantonReceptor="ngModel" 
+                            (change) = "cargarDistritos(datosXML.receptor_canton)" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor" aria-describedby="pendiente"
                                 required>
-                                <option value="01">San José</option>
+                                <option selected disabled value= '1'>-- Seleccione un cantón --</option>
+                                <option [value] = "canton.codigo_canton" *ngFor = "let canton Of cantonesFiltrados;" >{{canton.nombre_canton}}</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="DistritoReceptor">Distrito</label>
-                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" #distritoReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente"
+                            <select class="form-control" id="DistritoReceptor" name="distritoReceptor" #distritoReceptor="ngModel" 
+                            [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor" aria-describedby="pendiente"
                                 required>
-                                <option value="01">Carmen</option>
+                                <option [value] = "distrito.codigo_distrito" *ngFor = "let distrito Of distritosFiltrados;" >{{distrito.nombre_distrito}}</option>
                             </select>
                         </div>
                     </div>
