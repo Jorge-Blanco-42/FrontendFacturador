@@ -17,12 +17,23 @@
                         </div>
                         <div class="row form-item mb-3">
                             <label for="Contrasena">Contraseña</label>
-                            <input #contrasena="ngModel" type="password" class="form-control" id="Contrasena" name="contrasena"
-                                aria-label="Contraseña" [(ngModel)]="usuario.password" aria-describedby="pendiente"
-                                required />
-                            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
-                                <span>Campo obligatorio.</span>
-                            </span>
+                            <div class="input-group">
+                                <!-- Change input type to be dynamic -->
+                                <input [type]="mostrar ? 'text' : 'password'" #contrasena="ngModel" class="form-control"
+                                    id="Contrasena" name="contrasena" aria-label="Contraseña"
+                                    [(ngModel)]="usuario.password" aria-describedby="pendiente" required />
+                                <div class="input-group-append"  (click)="toggleContrasena()">
+                                    <span class="input-group-text">
+                                        <i class="fa" [ngClass]="{
+                                            'fa-eye-slash': mostrar,
+                                            'fa-eye': !mostrar
+                                          }"></i>
+                                    </span>
+                                </div>
+                                <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                                    <span>Campo obligatorio.</span>
+                                </span>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-outline-secondary" [disabled]="myForm.invalid"
                             aria-label="Botón iniciar sesion" aria-describedby="pendiente">

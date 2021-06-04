@@ -26,6 +26,8 @@ export class SignupComponent implements OnInit {
   @Input() login! : boolean;
   @Output() newItemEvent = new EventEmitter<boolean>();
 
+  mostrar: boolean = false;
+  mostrarConfirmacion: boolean = false;
   cliente!: Cliente;
   valido: boolean = true;
 
@@ -70,6 +72,14 @@ export class SignupComponent implements OnInit {
     }else{
       this.valido = false;
     }
+  }
+
+  toggleContrasena(){
+    this.mostrar = !this.mostrar;
+  }
+
+  toggleContrasenaConfirmacion(){
+    this.mostrarConfirmacion = !this.mostrarConfirmacion;
   }
 
 }

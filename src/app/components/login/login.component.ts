@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
 
   login : boolean = true;
   usuario: Usuario = new Usuario("","",0,"");
+  mostrar: boolean = false;
 
   constructor(private _servicioUsuario: ServicioUsuario, private _servicioAutenticacion: ServicioAutenticacion,
     public dialogRef: MatDialogRef<LoginComponent>,) { }
@@ -38,6 +39,10 @@ export class LoginComponent implements OnInit {
   closeSignUp(login : boolean):void{
     this.login = login;
     if(login)this.dialogRef.close(true);
+  }
+  
+  toggleContrasena(){
+    this.mostrar = !this.mostrar;
   }
 
 }
