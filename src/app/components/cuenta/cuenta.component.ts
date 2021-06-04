@@ -10,6 +10,11 @@ export interface Cliente {
   confirmarContrasena: string
 }
 
+export interface Certificado {
+  usuario: string, contrasena: string,
+  pin: string, archivo: File
+}
+
 @Component({
   selector: 'app-cuenta',
   templateUrl: './cuenta.component.html',
@@ -18,7 +23,16 @@ export interface Cliente {
 export class CuentaComponent implements OnInit {
 
   cliente!: Cliente;
-  valido: boolean = true;
+  contasenaValida: boolean = true;
+
+  certificado!: Certificado;
+
+  selectedFiles!: FileList;
+  currentFile!: File;
+  archivoSeleccionado: boolean = false;
+  currentFileName: string = "Seleccionar archivo";
+
+  modificar:boolean = true;
 
   constructor() { 
     this.cliente = {
@@ -27,6 +41,11 @@ export class CuentaComponent implements OnInit {
       provincia: "", canton: "",
       distrito: "", barrio: "", otras_senas:"",
       telefono: "", fax: "", correo: "", contrasena:"", confirmarContrasena: ""
+    }
+
+    this.certificado = {
+      usuario: "", contrasena: "",
+      pin: "", archivo: this.currentFile
     }
   }
 
@@ -41,4 +60,31 @@ export class CuentaComponent implements OnInit {
     console.log("pendiente")
   }
 
+  modificarCertificado(certificado:Certificado){
+    console.log(certificado);
+  }
+
+  selectFile(event: any): void {
+    this.selectedFiles = event.target.files;
+    const file: File | null = this.selectedFiles.item(0);
+    if (file) {
+      this.currentFile = file;
+      this.certificado.archivo = this.currentFile;
+      this.archivoSeleccionado = true;
+      this.currentFileName = this.currentFile.name;
+      console.log(this.currentFileName)
+    } else{
+      this.currentFileName = "Seleccionar archivo";
+      this.archivoSeleccionado = false;
+    } 
+  }
+
+  modificarCuenta(){
+    this.modificar = false;
+  }
+
+  cancelarModificar(){
+    this.modificar = true;
+  }
+  
 }

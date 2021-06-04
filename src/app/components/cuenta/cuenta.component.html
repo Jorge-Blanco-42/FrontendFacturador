@@ -24,7 +24,7 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="NombreComercial">Nombre Comercial</label>
-                            <input type="text" class="form-control form-control-sm" id="NombreComercial" name="nombreComercial" #nombreComercial="ngModel" [(ngModel)]="cliente.nombre" aria-label="Nombre Comercial"
+                            <input type="text" class="form-control form-control-sm" id="NombreComercial" name="nombreComercial" #nombreComercial="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.nombre" aria-label="Nombre Comercial"
                                 aria-describedby="pendiente" required />
                             <span class="text-danger"  *ngIf="nombreComercial.touched && !nombreComercial.valid">
                                 <span>Dato inválido.</span>
@@ -32,7 +32,7 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Correo">Correo electrónico</label>
-                            <input type="email" class="form-control form-control-sm" id="Correo" name="correo" #correo="ngModel" [(ngModel)]="cliente.correo" aria-label="Correo electrónico" aria-describedby="pendiente"
+                            <input type="email" class="form-control form-control-sm" id="Correo" name="correo" #correo="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.correo" aria-label="Correo electrónico" aria-describedby="pendiente"
                                 required pattern="[\w-\.]+@([\w-]+\.)+[\w-]{2,4}" />
                             <span class="text-danger" *ngIf="correo.touched && !correo.valid">
                                 <span>Dato inválido.</span>
@@ -42,7 +42,7 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Telefono">Teléfono</label>
-                            <input type="text" class="form-control form-control-sm" id="Telefono" name="telefono" #telefono="ngModel" [(ngModel)]="cliente.telefono" aria-label="Teléfono" aria-describedby="pendiente"
+                            <input type="text" class="form-control form-control-sm" id="Telefono" name="telefono" #telefono="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.telefono" aria-label="Teléfono" aria-describedby="pendiente"
                                 required pattern="[0-9]{8}" />
                             <span class="text-danger" *ngIf="telefono.touched && !telefono.valid">
                                 <span>Dato inválido.</span>
@@ -50,7 +50,7 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Fax">Fax</label>
-                            <input type="text" class="form-control form-control-sm" id="Fax" name="fax" #fax="ngModel" [(ngModel)]="cliente.fax" aria-label="Fax" aria-describedby="pendiente" required
+                            <input type="text" class="form-control form-control-sm" id="Fax" name="fax" #fax="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.fax" aria-label="Fax" aria-describedby="pendiente" required
                                 pattern="[0-9]{8}" />
                             <span class="text-danger" *ngIf="fax.touched && !fax.valid">
                                 <span>Dato inválido.</span>
@@ -60,21 +60,21 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Provincia">Provincia</label>
-                            <select class="form-control form-control-sm" id="Provincia" name="provincia" #provincia="ngModel" [(ngModel)]="cliente.provincia" aria-label="Provincia" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" id="Provincia" name="provincia" #provincia="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.provincia" aria-label="Provincia" aria-describedby="pendiente"
                                 required>
                                 <option value="1">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Canton">Cantón</label>
-                            <select class="form-control form-control-sm" id="Canton" name="canton" #canton="ngModel" [(ngModel)]="cliente.canton" aria-label="Canton" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" id="Canton" name="canton" #canton="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.canton" aria-label="Canton" aria-describedby="pendiente"
                                 required>
                                 <option value="01">San José</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Distrito">Distrito</label>
-                            <select class="form-control form-control-sm" id="Distrito" name="distrito" #distrito="ngModel" [(ngModel)]="cliente.distrito" aria-label="Distrito" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" id="Distrito" name="distrito" #distrito="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.distrito" aria-label="Distrito" aria-describedby="pendiente"
                                 required>
                                 <option value="01">Carmen</option>
                             </select>
@@ -83,22 +83,28 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Barrio">Barrio</label>
-                            <select class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel" [(ngModel)]="cliente.barrio" aria-label="Barrio" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel" [disabled]="modificar" [(ngModel)]="cliente.barrio" aria-label="Barrio" aria-describedby="pendiente"
                                 required>
                                 <option value="01">San José (parte)</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="OtrasSenas">Otras señas</label>
-                            <input type="text" class="form-control form-control-sm" id="OtrasSenas" name="otrasSenas" #otras_senas="ngModel" [(ngModel)]="cliente.otras_senas" aria-label="Otras señas" aria-describedby="pendiente" />
+                            <input type="text" class="form-control form-control-sm" id="OtrasSenas" name="otrasSenas" #otras_senas="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.otras_senas" aria-label="Otras señas" aria-describedby="pendiente" />
                         </div>
                         <!-- pendientes ngIf de los botones modificar, gaurdar y cancelar-->
-                        <div class="form-item col-md-2">
-                        <!-- aqui iria el de guardar -->
+                        <div class="form-item col-4 col-md-2 text-right" *ngIf="!modificar">
+                            <button type="button" (click)="cancelarModificar()" class="btn btn-outline-secondary mt-4" aria-label="Botón cancelar" aria-describedby="pendiente">
+                                CANCELAR
+                            </button>
                         </div>
-                        <div class="form-item col-md-2">
-                            <!-- aqui tambien iria el de cancelar -->
-                            <button type="button" class="btn btn-outline-secondary mt-4" aria-label="Botón modificar" aria-describedby="pendiente">
+                        <div class="form-item col-4 col-md-2 text-left" *ngIf="!modificar">
+                            <button type="button" class="btn btn-outline-secondary mt-4" aria-label="Botón guardar" aria-describedby="pendiente">
+                                GUARDAR
+                            </button>
+                        </div>
+                        <div class="form-item col-4 col-md-2 text-right"  *ngIf="modificar">
+                            <button type="button" (click)="modificarCuenta()"  class="btn btn-outline-secondary mt-4" aria-label="Botón modificar" aria-describedby="pendiente">
                                 MODIFICAR
                             </button>
                         </div>
@@ -112,7 +118,7 @@
                     </div>
                 </div>
                 <!-- falta funcion de (ngSubmit)="cambiarContrasena(contrasena)" -->
-                <form #myForm="ngForm" (keydown.enter)="$event.preventDefault()"> 
+                <form #myFormCliente="ngForm" (keydown.enter)="$event.preventDefault()"> 
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Contrasena">Contraseña</label>
@@ -131,20 +137,17 @@
                             <span class="text-danger" *ngIf="confirmarContrasena.touched && !confirmarContrasena.valid">
                                 <span></span>
                             </span>
-                            <span class="text-danger" *ngIf="!valido">
+                            <span class="text-danger" *ngIf="!contasenaValida">
                                 <span>Contraseñas no coinciden.</span>
                             </span>
                         </div>
                         <!-- pendientes ngIf de los botones modificar, gaurdar y cancelar-->
-                        <div class="form-item col-md-2">
-                            <!-- aqui iria el de guardar -->
-                            </div>
-                            <div class="form-item col-md-2">
-                                <!-- aqui tambien iria el de cancelar -->
-                                <button type="button" class="btn btn-outline-secondary mt-4" aria-label="Botón modificar" aria-describedby="pendiente">
-                                    MODIFICAR
-                                </button>
-                            </div>
+                        <div class="form-item col-md-2 text-right">
+                            <!-- aqui tambien iria el de cancelar -->
+                            <button type="button" class="btn btn-outline-secondary mt-4" aria-label="Botón modificar" aria-describedby="pendiente">
+                                MODIFICAR
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -154,43 +157,55 @@
         <mat-tab label="Certificado"> 
             <!-- <div class="card m-4"> -->
                 <div class="m-5">
-                    <form #myForm="ngForm" >
+                    <form #myFormCertificado="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="modificarCertificado(certificado)">
                         <div class="row justify-content-center form-item">
                             <div class="col-sm-8">
                                 <label for="UsuarioHacienda">Usuario Hacienda</label>
-                                <input type="text" class="form-control" id="UsuarioHacienda" name="usuarioHacienda" aria-label="Usuario Hacienda" aria-describedby="pendiente"
+                                <input type="text" class="form-control" id="UsuarioHacienda" name="usuarioHacienda"  #usuarioHacienda="ngModel" [(ngModel)]="certificado.usuario" aria-label="Usuario Hacienda" aria-describedby="pendiente"
                                 required/>
+                                <span class="text-danger" *ngIf="usuarioHacienda.touched && !usuarioHacienda.valid">
+                                    <span>Dato inválido.</span>
+                                </span>
                             </div>
                         </div>
                         <div class="row justify-content-center form-item">
                             <div class="col-sm-8">
                                 <label for="Contrasena">Contraseña</label>
-                                <input type="text" class="form-control" id="Contrasena" name="contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                                <input type="text" class="form-control" id="Contrasena" name="contrasena" #contrasenaCertificado="ngModel" [(ngModel)]="certificado.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
                                     required/>
+                                <span class="text-danger" *ngIf="contrasenaCertificado.touched && !contrasenaCertificado.valid">
+                                    <span>Dato inválido.</span>
+                                </span>
                             </div>
                         </div>
                         <div class="row justify-content-center form-item">
                             <div class="col-sm-8">
                                 <label for="Pin">PIN</label>
-                                <input type="text" class="form-control" id="Pin" name="pin" aria-label="PIN" aria-describedby="pendiente"
+                                <input type="text" class="form-control" id="Pin" name="pin" #pin="ngModel" [(ngModel)]="certificado.pin" aria-label="PIN" aria-describedby="pendiente"
                                     required/>
+                                <span class="text-danger" *ngIf="pin.touched && !pin.valid">
+                                    <span>Dato inválido.</span>
+                                </span>
                             </div>
                         </div>
                         <div class="row justify-content-center form-item">
                             <div class="col-sm-8">
                                 <label for="Archivo">Archivo</label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="customFileLang" lang="es">
-                                    <label class="custom-file-label" for="customFileLang">Seleccionar Archivo</label>
+                                    <input type="file" class="custom-file-input" name="customFileLang" #archivo="ngModel" [(ngModel)]="certificado.archivo" lang="es" (change)="selectFile($event)" required>
+                                    <label class="custom-file-label" for="customFileLang" data-browse="Buscar">{{currentFileName}}</label>
                                   </div>
+                                <span class="text-secondary" *ngIf="(archivo.touched && !archivoSeleccionado) || !archivoSeleccionado">
+                                    <span>El archivo es obligatorio.</span>
+                                </span>
                             </div>
                         </div>
                         <div class="row justify-content-center form-item mt-3">
-                            <button type="button" class="btn btn-outline-secondary" aria-label="Botón modificar" aria-describedby="pendiente">
+                            <button type="submit" [disabled]="myFormCertificado.invalid && !archivoSeleccionado" class="btn btn-outline-secondary" aria-label="Botón modificar" aria-describedby="pendiente">
                                 MODIFICAR
                             </button>
                         </div>
-                    </form>
+                    </form> 
                 </div>
             <!-- </div> -->
         </mat-tab>
