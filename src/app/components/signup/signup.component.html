@@ -149,14 +149,14 @@
                                     'fa-eye': !mostrarConfirmacion
                                   }"></i>
                                 </span>
-                            </div>
-                            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
-                                <span>Campo obligatorio.</span>
-                            </span>
-                            <span class="text-danger" *ngIf="!valido">
-                                <span>Contraseñas no coinciden.</span>
-                            </span>
+                            </div>                            
                         </div>
+                        <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                            <span>Campo obligatorio.</span>
+                        </span>
+                        <span class="text-danger" *ngIf="!valido">
+                            <span>Contraseñas no coinciden.</span>
+                        </span>
                         
                     </div>
                 </div>

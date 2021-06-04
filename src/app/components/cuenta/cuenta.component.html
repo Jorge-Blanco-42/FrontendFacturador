@@ -122,22 +122,43 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Contrasena">Contraseña</label>
-                            <input type="password" class="form-control form-control-sm" id="Contrasena" name="contrasena" #contrasena="ngModel" 
-                            (keyup)="validarContrasena()"
-                            [(ngModel)]="cliente.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
-                            required />
-                            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
-                            <span>Dato inválido.</span>
-                            </span>
+                            <div class="input-group">
+                                <!-- Change input type to be dynamic -->
+                                <input [type]="mostrar ? 'text' : 'password'" class="form-control form-control-sm"
+                                    id="Contrasena" name="contrasena" #contrasena="ngModel" (keyup)="validarContrasena()" [(ngModel)]="cliente.contrasena"
+                                    aria-label="Contrasena" aria-describedby="pendiente" required />
+                                <div class="input-group-append" (click)="toggleContrasena()">
+                                    <span class="input-group-text">
+                                        <i class="fa" [ngClass]="{
+                                        'fa-eye-slash': mostrar,
+                                        'fa-eye': !mostrar
+                                      }"></i>
+                                    </span>
+                                </div>
+                                <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                                    <span>Campo obligatorio.</span>
+                                </span>
+                            </div>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="ConfirmarContrasena">Confirmar Contraseña</label>
-                            <input type="password" class="form-control form-control-sm" id="ConfirmarContrasena" name="confirmarContrasena" 
-                            #confirmarContrasena="ngModel" (keyup)="validarContrasena()"
-                            [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmara contrasena" aria-describedby="pendiente"
-                                required />
-                            <span class="text-danger" *ngIf="confirmarContrasena.touched && !confirmarContrasena.valid">
-                                <span></span>
+                            <div class="input-group">
+                                <!-- Change input type to be dynamic -->
+                                <input [type]="mostrarConfirmacion ? 'text' : 'password'" class="form-control form-control-sm" id="ConfirmarContrasena"
+                                name="confirmarContrasena" #confirmarContrasena="ngModel" (keyup)="validarContrasena()"
+                                [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmara contrasena"
+                                aria-describedby="pendiente" required />
+                                <div class="input-group-append" (click)="toggleContrasenaConfirmacion()">
+                                    <span class="input-group-text">
+                                        <i class="fa" [ngClass]="{
+                                        'fa-eye-slash': mostrarConfirmacion,
+                                        'fa-eye': !mostrarConfirmacion
+                                      }"></i>
+                                    </span>
+                                </div>                            
+                            </div>
+                            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                                <span>Campo obligatorio.</span>
                             </span>
                             <span class="text-danger" *ngIf="!valido">
                                 <span>Contraseñas no coinciden.</span>

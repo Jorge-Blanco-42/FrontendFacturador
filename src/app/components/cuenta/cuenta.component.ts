@@ -41,6 +41,9 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   modificar:boolean = true;
 
+  mostrar: boolean = false;
+  mostrarConfirmacion: boolean = false;
+
   constructor() { 
     this.cliente = {
       nombre: "",
@@ -116,6 +119,14 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.valido = true;
       this.formDatos.resetForm();
     }
+  }
+
+  toggleContrasena(){
+    this.mostrar = !this.mostrar;
+  }
+
+  toggleContrasenaConfirmacion(){
+    this.mostrarConfirmacion = !this.mostrarConfirmacion;
   }
   
 }
