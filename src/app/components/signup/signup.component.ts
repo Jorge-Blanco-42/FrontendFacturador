@@ -26,6 +26,8 @@ export class SignupComponent implements OnInit {
   @Input() login! : boolean;
   @Output() newItemEvent = new EventEmitter<boolean>();
 
+  mostrar: boolean = false;
+  mostrarConfirmacion: boolean = false;
   cliente!: Cliente;
   valido: boolean = true;
 
@@ -44,8 +46,8 @@ export class SignupComponent implements OnInit {
     console.log(this.login)
   }
   
-  closeSignUp(): void {
-    this.newItemEvent.emit(this.login);
+  closeSignUp(close: boolean): void {
+    this.newItemEvent.emit(close);
   }
 
   registrar(cliente : Cliente){
@@ -57,7 +59,7 @@ export class SignupComponent implements OnInit {
         this._servicioAutenticacion.saveToken(res.token);
         this.login = true
         console.log("return true")
-        this.closeSignUp();
+        this.closeSignUp(true);
       },err=>{
         console.log(err)
       })
@@ -70,6 +72,14 @@ export class SignupComponent implements OnInit {
     }else{
       this.valido = false;
     }
+  }
+
+  toggleContrasena(){
+    this.mostrar = !this.mostrar;
+  }
+
+  toggleContrasenaConfirmacion(){
+    this.mostrarConfirmacion = !this.mostrarConfirmacion;
   }
 
 }

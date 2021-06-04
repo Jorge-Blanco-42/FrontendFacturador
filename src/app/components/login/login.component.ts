@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioUsuario } from 'src/app/services/usuario';
@@ -11,11 +12,11 @@ import { ServicioUsuario } from 'src/app/services/usuario';
 })
 export class LoginComponent implements OnInit {
 
-  login : boolean = true;
   usuario: Usuario = new Usuario("","",0,"");
+  mostrar: boolean = false;
 
-  constructor(private _servicioUsuario: ServicioUsuario, private _servicioAutenticacion: ServicioAutenticacion,
-    public dialogRef: MatDialogRef<LoginComponent>,) { }
+  constructor(private router: Router,private _servicioUsuario: ServicioUsuario, private _servicioAutenticacion: ServicioAutenticacion,
+    public dialogRef: MatDialogRef<LoginComponent>, @Inject(MAT_DIALOG_DATA) public login: boolean) { }
 
   ngOnInit(): void {
   }
@@ -25,6 +26,7 @@ export class LoginComponent implements OnInit {
       this._servicioAutenticacion.saveToken(res.token);
       this.login = true
       console.log("return true")
+      this.router.navigate(['/'])
       this.dialogRef.close(true);
     },error =>{
       this.dialogRef.close(false);
@@ -35,9 +37,14 @@ export class LoginComponent implements OnInit {
     this.login  = false;
  }
 
-  closeSignUp(login : boolean):void{
-    this.login = login;
-    if(login)this.dialogRef.close(true);
+  closeSignUp(close : boolean):void{
+    this.login = true;
+    this.router.navigate(['/'])
+    if(close)this.dialogRef.close(true);
+  }
+  
+  toggleContrasena(){
+    this.mostrar = !this.mostrar;
   }
 
 }
