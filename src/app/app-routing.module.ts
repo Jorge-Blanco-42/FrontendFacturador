@@ -15,7 +15,7 @@ const routes: Routes = [
   {path: 'consultar', component: ConsultarComponent, canActivate: [AutenticacionGuard]},
   {path : 'home', component: HomeComponent},
   {path : 'login', component: LoginComponent},
-  {path : 'cuenta', component: CuentaComponent},
+  {path : 'cuenta', component: CuentaComponent, canActivate: [AutenticacionGuard]},
   {path: '**', component: ErrorComponent },
 ];
 

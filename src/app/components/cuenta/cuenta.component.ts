@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 export interface Cliente {
   nombre: string, nombreRazonSocial: string,
@@ -20,10 +22,15 @@ export interface Certificado {
   templateUrl: './cuenta.component.html',
   styleUrls: ['./cuenta.component.css']
 })
-export class CuentaComponent implements OnInit {
+export class CuentaComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('myFormCertificado') public formCertificado!: NgForm;
+  @ViewChild('myForm') public formDatos!: NgForm;
+  @ViewChild('myFormContrasena') public formComtrasena!: NgForm;
 
   cliente!: Cliente;
-  contasenaValida: boolean = true;
+  // contasenaValida: boolean = true;
+  valido: boolean = true;
 
   certificado!: Certificado;
 
@@ -48,6 +55,9 @@ export class CuentaComponent implements OnInit {
       pin: "", archivo: this.currentFile
     }
   }
+  ngAfterViewInit(): void {
+    
+  }
 
   ngOnInit(): void {
   }
@@ -57,7 +67,11 @@ export class CuentaComponent implements OnInit {
   }
 
   validarContrasena(){
-    console.log("pendiente")
+    if(this.cliente.contrasena === this.cliente.confirmarContrasena){
+      this.valido = true;
+    }else{
+      this.valido = false;
+    }
   }
 
   modificarCertificado(certificado:Certificado){
@@ -85,6 +99,23 @@ export class CuentaComponent implements OnInit {
 
   cancelarModificar(){
     this.modificar = true;
+  }
+
+  cambioContrasena(){
+    // guardar cambio
+    this.formComtrasena.resetForm();
+  }
+
+  onTabChanged(event: MatTabChangeEvent) 
+  {
+    if(event.index == 0){
+        this.formCertificado.resetForm();
+    }
+    else{
+      this.formComtrasena.resetForm();
+      this.valido = true;
+      this.formDatos.resetForm();
+    }
   }
   
 }

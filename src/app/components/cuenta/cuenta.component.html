@@ -1,5 +1,5 @@
 <div class="container card mt-3">
-    <mat-tab-group mat-align-tabs="center">
+    <mat-tab-group mat-align-tabs="center" (selectedTabChange)="onTabChanged($event)">
         <!-- Usuario -->
         <mat-tab label="Usuario"> 
             <div class="m-4">
@@ -118,11 +118,13 @@
                     </div>
                 </div>
                 <!-- falta funcion de (ngSubmit)="cambiarContrasena(contrasena)" -->
-                <form #myFormCliente="ngForm" (keydown.enter)="$event.preventDefault()"> 
+                <form #myFormContrasena="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="cambioContrasena()"> 
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Contrasena">Contraseña</label>
-                            <input type="password" class="form-control form-control-sm" id="Contrasena" name="contrasena" #contrasena="ngModel" [(ngModel)]="cliente.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                            <input type="password" class="form-control form-control-sm" id="Contrasena" name="contrasena" #contrasena="ngModel" 
+                            (keyup)="validarContrasena()"
+                            [(ngModel)]="cliente.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
                             required />
                             <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
                             <span>Dato inválido.</span>
@@ -131,20 +133,20 @@
                         <div class="form-item col-md-4">
                             <label for="ConfirmarContrasena">Confirmar Contraseña</label>
                             <input type="password" class="form-control form-control-sm" id="ConfirmarContrasena" name="confirmarContrasena" 
-                            #confirmarContrasena="ngModel" (change)="validarContrasena()"
+                            #confirmarContrasena="ngModel" (keyup)="validarContrasena()"
                             [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmara contrasena" aria-describedby="pendiente"
                                 required />
                             <span class="text-danger" *ngIf="confirmarContrasena.touched && !confirmarContrasena.valid">
                                 <span></span>
                             </span>
-                            <span class="text-danger" *ngIf="!contasenaValida">
+                            <span class="text-danger" *ngIf="!valido">
                                 <span>Contraseñas no coinciden.</span>
                             </span>
                         </div>
                         <!-- pendientes ngIf de los botones modificar, gaurdar y cancelar-->
                         <div class="form-item col-md-2 text-right">
                             <!-- aqui tambien iria el de cancelar -->
-                            <button type="button" class="btn btn-outline-secondary mt-4" aria-label="Botón modificar" aria-describedby="pendiente">
+                            <button type="submit"  [disabled]="myFormContrasena.invalid || !valido" class="btn btn-outline-secondary mt-4" aria-label="Botón modificar" aria-describedby="pendiente">
                                 MODIFICAR
                             </button>
                         </div>
@@ -201,7 +203,7 @@
                             </div>
                         </div>
                         <div class="row justify-content-center form-item mt-3">
-                            <button type="submit" [disabled]="myFormCertificado.invalid && !archivoSeleccionado" class="btn btn-outline-secondary" aria-label="Botón modificar" aria-describedby="pendiente">
+                            <button type="submit" [disabled]="myFormCertificado.invalid || !archivoSeleccionado" class="btn btn-outline-secondary" aria-label="Botón modificar" aria-describedby="pendiente">
                                 MODIFICAR
                             </button>
                         </div>

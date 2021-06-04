@@ -104,7 +104,8 @@
                 </div>
                 <div class="form-item col-md-4">
                     <label for="Contrasena">Contraseña</label>
-                    <input type="password" class="form-control form-control-sm" id="Contrasena" name="contrasena" #contrasena="ngModel" [(ngModel)]="cliente.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                    <input type="password" class="form-control form-control-sm" id="Contrasena" name="contrasena" #contrasena="ngModel"
+                    (keyup)="validarContrasena()" [(ngModel)]="cliente.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
                         required />
                     <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
                         <span>Dato inválido.</span>
