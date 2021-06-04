@@ -7,11 +7,12 @@ import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { CuentaComponent } from './components/cuenta/cuenta.component';
 
+import { AutenticacionGuard } from './guards/autenticacion.guard';
 
 const routes: Routes = [
   {path : '', component: HomeComponent},
-  {path: 'crearFactura', component: CreateFacturaComponent },
-  {path: 'consultar', component: ConsultarComponent},
+  {path: 'crearFactura', component: CreateFacturaComponent, canActivate: [AutenticacionGuard] },
+  {path: 'consultar', component: ConsultarComponent, canActivate: [AutenticacionGuard]},
   {path : 'home', component: HomeComponent},
   {path : 'login', component: LoginComponent},
   {path : 'cuenta', component: CuentaComponent},

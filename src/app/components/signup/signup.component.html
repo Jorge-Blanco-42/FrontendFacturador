@@ -76,7 +76,7 @@
                     <label for="Distrito">Distrito</label>
                     <select class="form-control form-control-sm" id="Distrito" name="distrito" #distrito="ngModel" [(ngModel)]="cliente.distrito" aria-label="Distrito" aria-describedby="pendiente"
                         required>
-                        <option value="01">Carmen</option>
+                        <option value="10101">Carmen</option>
                     </select>
                 </div>
             </div>
@@ -85,7 +85,7 @@
                     <label for="Barrio">Barrio</label>
                     <select class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel" [(ngModel)]="cliente.barrio" aria-label="Barrio" aria-describedby="pendiente"
                         required>
-                        <option value="01">San José (parte)</option>
+                        <option value="San José">San José (parte)</option>
                     </select>
                 </div>
                 <div class="form-item col-md-6">
@@ -113,7 +113,7 @@
                 <div class="form-item col-md-4">
                     <label for="ConfirmarContrasena">Confirmar Contraseña</label>
                     <input type="password" class="form-control form-control-sm" id="ConfirmarContrasena" name="confirmarContrasena" 
-                    #confirmarContrasena="ngModel" (change)="validarContrasena()"
+                    #confirmarContrasena="ngModel" (keyup)="validarContrasena()"
                     [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmara contrasena" aria-describedby="pendiente"
                         required />
                     <span class="text-danger" *ngIf="confirmarContrasena.touched && !confirmarContrasena.valid">
@@ -124,7 +124,7 @@
                     </span>
                 </div>
             </div>
-            <button type="button" (submit)="registrar(cliente)" [disabled]="myForm.invalid" class="btn btn-outline-secondary" aria-label="Botón registrar" aria-describedby="pendiente">
+            <button type="submit" [disabled]="myForm.invalid || !valido" class="btn btn-outline-secondary" aria-label="Botón registrar" aria-describedby="pendiente">
                 REGISTRAR
             </button>
         </form>
