@@ -5,7 +5,7 @@
                 <div class="fondo-morado custom-border text-center py-5">
                     <h4 class="my-5">¿Ya tiene cuenta?</h4>
 
-                    <button type="button" class="btn btn-outline-light mt-5" (click)="closeSignUp()">INICIE SESIÓN
+                    <button type="button" class="btn btn-outline-light mt-5" (click)="closeSignUp(false)">INICIE SESIÓN
                         AQUÍ</button>
                 </div>
             </div>
@@ -91,10 +91,8 @@
                 <div class="row">
                     <div class="form-item col-md-4">
                         <label for="Barrio">Barrio</label>
-                        <select class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel"
+                        <input type="text" class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel"
                             [(ngModel)]="cliente.barrio" aria-label="Barrio" aria-describedby="pendiente" required>
-                            <option value="San José">San José (parte)</option>
-                        </select>
                     </div>
                     <div class="form-item col-md-6">
                         <label for="OtrasSenas">Otras señas</label>
@@ -128,10 +126,11 @@
                                   }"></i>
                                 </span>
                             </div>
-                            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
-                                <span>Campo obligatorio.</span>
-                            </span>
+                            
                         </div>
+                        <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                            <span>Campo obligatorio.</span>
+                        </span>
 
                     </div>
                     <div class="form-item col-md-4">

@@ -83,10 +83,8 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Barrio">Barrio</label>
-                            <select class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel" [disabled]="modificar" [(ngModel)]="cliente.barrio" aria-label="Barrio" aria-describedby="pendiente"
+                            <input type="text" class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel" [disabled]="modificar" [(ngModel)]="cliente.barrio" aria-label="Barrio" aria-describedby="pendiente"
                                 required>
-                                <option value="01">San José (parte)</option>
-                            </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="OtrasSenas">Otras señas</label>
@@ -135,10 +133,11 @@
                                       }"></i>
                                     </span>
                                 </div>
-                                <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
-                                    <span>Campo obligatorio.</span>
-                                </span>
+                                
                             </div>
+                            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                                <span>Campo obligatorio.</span>
+                            </span>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="ConfirmarContrasena">Confirmar Contraseña</label>
@@ -146,7 +145,7 @@
                                 <!-- Change input type to be dynamic -->
                                 <input [type]="mostrarConfirmacion ? 'text' : 'password'" class="form-control form-control-sm" id="ConfirmarContrasena"
                                 name="confirmarContrasena" #confirmarContrasena="ngModel" (keyup)="validarContrasena()"
-                                [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmara contrasena"
+                                [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmar contrasena"
                                 aria-describedby="pendiente" required />
                                 <div class="input-group-append" (click)="toggleContrasenaConfirmacion()">
                                     <span class="input-group-text">

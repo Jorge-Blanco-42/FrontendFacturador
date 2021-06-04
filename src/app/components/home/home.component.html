@@ -6,12 +6,12 @@
           </p>
         </div>
     
-        <div class = "container pt-4">
-            <button type="button" class="btn btn-light" >
+        <div class = "container pt-4" *ngIf="!login">
+            <button type="button" class="btn btn-light" (click)="abrirLogin()">
                 Empezar ahora
             </button>
     
-            <button type="button" class="btn btn-outline-light ml-3 b-white-purple" >
+            <button type="button" class="btn btn-outline-light ml-3 b-white-purple" (click)="abrirRegistro()">
                 Iniciar sesión
             </button>
         </div>
