@@ -23,7 +23,6 @@ import { ServicioCorreo } from 'src/app/services/correo';
 import { Correo } from 'src/app/models/correo';
 import { ServicioEscritorXML } from 'src/app/services/escritorXML';
 import { ServicioConsultas } from 'src/app/services/consultas';
-import { ServicioUbicacion } from 'src/app/services/ubicacion';
 
 //inicio mary
 export interface Clientes {
@@ -133,13 +132,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   signXML: FirmadoXML;
   sendXML: EnvioXML;
 
-  public provincias: any[] = [];
-  private cantones: any[] = [];
-  private distritos: any[] = [];
-  public cantonesFiltrados: any[] = [];
-  public distritosFiltrados: any[] = [];
-
-  public provinciaSeleccionada: number = 0;
 
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
@@ -147,8 +139,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
-    private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas,
-    private _servicioUbicacion: ServicioUbicacion) {
+    private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas) {
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012385",
       "98762268", "FE");
 
@@ -199,7 +190,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     let token = localStorage.getItem("token");
     this.actualizarTipoCambio(this.maxDate);
-    this.cargarUbicaciones();
     this.getCabys();
     this.impuestoTarifa.set("01-01", 1.0);
     this.impuestoTarifa.set("01-02", 1.01);
@@ -217,7 +207,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.impuestoTarifa.set("07-07", 1.04);
     this.impuestoTarifa.set("07-08", 1.13);
     this.impuestoTarifa.set("08", 0);
-
   }
 
   ngAfterViewInit() {
@@ -794,62 +783,5 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     }
     return lineaStr;
   }
-
-  private cargarUbicaciones(){
-    this._servicioUbicacion.getProvincias().subscribe(
-      data => {
-        console.log(data);
-        this.provincias = data;
-      },
-      error => {
-        console.log('An error happened! ', error);
-      }
-    );
-
-    this._servicioUbicacion.getCantones().subscribe(
-      data => {
-        this.cantones = data;
-      },
-      error => {
-        console.log('An error happened! ', error);
-      }
-    );
-
-    this._servicioUbicacion.getDistritos().subscribe(
-      data => {
-        this.distritos = data;
-      },
-      error => {
-        console.log('An error happened! ', error);
-      }
-    );
-
-    
-  }
-
-
-
-  cargarCantones(codigo_provincia: any){
-    this.distritosFiltrados = [];
-    this.cantonesFiltrados = [];
-    
-    this.cantonesFiltrados = this.cantones.filter(element => {
-      return element.codigo_provincia == codigo_provincia;
-    });
-    this.cargarDistritos(this.cantonesFiltrados[0].codigo_canton);
-    console.log(this.cantonesFiltrados);
-
-  };
-
-  cargarDistritos(codigo_canton?: any){
-    console.log(codigo_canton);
-    codigo_canton = parseInt(codigo_canton);
-    this.distritosFiltrados = this.distritos.filter(element => {
-      return element.codigo_canton == codigo_canton;
-    });
-
-    console.log(this.cantonesFiltrados);
-
-  };
 
 }
