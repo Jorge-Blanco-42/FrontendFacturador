@@ -1,22 +1,43 @@
 <div *ngIf='login'>
     <div class="container h-100">
-        <div class="row h-100 w-100" >
+        <div class="row h-100 w-100">
             <div class="col-md-6">
                 <div class="text-center py-5">
                     <h4 class="mb-5">¡Bienvenido!</h4>
                     <p>Inicie sesión aquí</p>
-                    <form #myForm="ngForm" >
+                    <form #myForm="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="iniciarSesion()">
                         <div class="row form-item">
-                            <label for="CorreoElectronico">Correo electrónico</label>
-                            <input type="text" class="form-control" id="CorreoElectronico" name="correoElectronico" aria-label="Correo Electronico" aria-describedby="pendiente"
-                                required/>
+                            <label for="cedula">Identificación</label>
+                            <input #cedula="ngModel" type="text" class="form-control" id="cedula" name="cedula"
+                                aria-label="Identificación" [(ngModel)]="usuario.cedula" aria-describedby="pendiente"
+                                required />
+                            <span class="text-danger" *ngIf="cedula.touched && !cedula.valid">
+                                <span>Campo obligatorio.</span>
+                            </span>
                         </div>
                         <div class="row form-item mb-3">
                             <label for="Contrasena">Contraseña</label>
-                            <input type="text" class="form-control" id="Contrasena" name="contrasena" aria-label="Contrasena" aria-describedby="pendiente"
-                                required/>
+                            <div class="input-group">
+                                <!-- Change input type to be dynamic -->
+                                <input [type]="mostrar ? 'text' : 'password'" #contrasena="ngModel" class="form-control"
+                                    id="Contrasena" name="contrasena" aria-label="Contraseña"
+                                    [(ngModel)]="usuario.password" aria-describedby="pendiente" required />
+                                <div class="input-group-append"  (click)="toggleContrasena()">
+                                    <span class="input-group-text">
+                                        <i class="fa" [ngClass]="{
+                                            'fa-eye-slash': mostrar,
+                                            'fa-eye': !mostrar
+                                          }"></i>
+                                    </span>
+                                </div>
+                                
+                            </div>
+                            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                                <span>Campo obligatorio.</span>
+                            </span>
                         </div>
-                        <button type="button" class="btn btn-outline-secondary" aria-label="Botón iniciar sesion" aria-describedby="pendiente">
+                        <button type="submit" class="btn btn-outline-secondary" [disabled]="myForm.invalid"
+                            aria-label="Botón iniciar sesion" aria-describedby="pendiente">
                             INGRESAR
                         </button>
                     </form>
@@ -31,7 +52,8 @@
                         <p><i class="fa fa-check-circle-o"></i> Crear documentos ilimitados</p>
                         <p><i class="fa fa-check-circle-o"></i> Cancelar facturas</p>
                         <p><i class="fa fa-check-circle-o"></i> Enviar facturas por correo electrónico</p>
-                        <button type="button" class="btn btn-outline-light mt-5" (click)="openSignUp()">REGISTRESE AQUÍ</button>
+                        <button type="button" class="btn btn-outline-light mt-5" (click)="openSignUp()">REGISTRESE
+                            AQUÍ</button>
                     </div>
                 </div>
             </div>

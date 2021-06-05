@@ -1,6 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { FormControl} from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
+import { ServicioUsuario } from 'src/app/services/usuario';
 
 
  export interface Cliente {
@@ -23,10 +26,13 @@ export class SignupComponent implements OnInit {
   @Input() login! : boolean;
   @Output() newItemEvent = new EventEmitter<boolean>();
 
+  mostrar: boolean = false;
+  mostrarConfirmacion: boolean = false;
   cliente!: Cliente;
   valido: boolean = true;
 
-  constructor() { 
+  constructor( private _servicioUsuario: ServicioUsuario, private _servicioAutenticacion: ServicioAutenticacion,
+    public dialogRef: MatDialogRef<SignupComponent>) { 
     this.cliente = {
       nombre: "",
       nombreRazonSocial: "", identificacion: "",
@@ -40,13 +46,24 @@ export class SignupComponent implements OnInit {
     console.log(this.login)
   }
   
-  closeSignUp(): void {
-    this.login  = true;
-    this.newItemEvent.emit(this.login);
+  closeSignUp(close: boolean): void {
+    this.newItemEvent.emit(close);
   }
 
   registrar(cliente : Cliente){
-    console.log(cliente);
+    this.validarContrasena();
+    console.log(this.valido, cliente)
+    if (this.valido){
+      this._servicioUsuario.registro(cliente).subscribe((res:any)=>{
+        console.log(res)
+        this._servicioAutenticacion.saveToken(res.token);
+        this.login = true
+        console.log("return true")
+        this.closeSignUp(true);
+      },err=>{
+        console.log(err)
+      })
+    }
   }
 
   validarContrasena(){
@@ -55,6 +72,14 @@ export class SignupComponent implements OnInit {
     }else{
       this.valido = false;
     }
+  }
+
+  toggleContrasena(){
+    this.mostrar = !this.mostrar;
+  }
+
+  toggleContrasenaConfirmacion(){
+    this.mostrarConfirmacion = !this.mostrarConfirmacion;
   }
 
 }

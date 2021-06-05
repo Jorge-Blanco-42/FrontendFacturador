@@ -5,13 +5,17 @@ import { CreateFacturaComponent } from './components/create-factura/create-factu
 import { ErrorComponent } from './components/error/error.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
+import { CuentaComponent } from './components/cuenta/cuenta.component';
+
+import { AutenticacionGuard } from './guards/autenticacion.guard';
 
 const routes: Routes = [
-  {path : '', component: HomeComponent},
-  {path: 'crearFactura', component: CreateFacturaComponent },
-  {path: 'consultar', component: ConsultarComponent},
   {path : 'home', component: HomeComponent},
+  {path : '', component: HomeComponent, canActivate: [AutenticacionGuard]},
+  {path: 'crearFactura', component: CreateFacturaComponent, canActivate: [AutenticacionGuard] },
+  {path: 'consultar', component: ConsultarComponent, canActivate: [AutenticacionGuard]},  
   {path : 'login', component: LoginComponent},
+  {path : 'cuenta', component: CuentaComponent, canActivate: [AutenticacionGuard]},
   {path: '**', component: ErrorComponent },
 ];
 

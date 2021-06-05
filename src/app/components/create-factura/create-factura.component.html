@@ -92,9 +92,7 @@
                             <div class="row">
                                 <div class="form-item col-md-4">
                                     <label for="BarrioEmisor">Barrio</label>
-                                    <select class="form-control" id="BarrioEmisor" name="barrioEmisor" #barrioEmisor="ngModel" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio" aria-label="Barrio del emisor" aria-describedby="pendiente">
-                                        <option value="04">Chirivico</option>
-                                    </select>
+                                    <input type="text" class="form-control" id="BarrioEmisor" name="barrioEmisor" #barrioEmisor="ngModel" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_barrio" aria-label="Barrio del emisor" aria-describedby="pendiente">
                                 </div>
                                 <div class="form-item col-md-8">
                                     <label for="OtrasSenasEmisor">Otras señas</label>
@@ -313,10 +311,8 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="BarrioReceptor">Barrio</label>
-                            <select class="form-control" id="BarrioReceptor" name="barrioReceptor" #barrioReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente"
+                            <input type="text" class="form-control" id="BarrioReceptor" name="barrioReceptor" #barrioReceptor="ngModel" [attr.disabled]="receptorDeshabilitado  ? true: null" [(ngModel)]="datosXML.receptor_barrio" aria-label="Barrio del receptor" aria-describedby="pendiente"
                                 required>
-                                <option value="01">San José (parte)</option>
-                            </select>
                         </div>
                         <div class="form-item col-md-8">
                             <label for="OtrasSenasReceptor">Otras señas</label>

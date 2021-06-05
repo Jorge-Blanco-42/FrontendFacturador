@@ -24,6 +24,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { CrearNotaComponent } from './components/crear-nota/crear-nota.component';
 import { LoginComponent } from './components/login/login.component';
 import { SignupComponent } from './components/signup/signup.component';
+import { CuentaComponent } from './components/cuenta/cuenta.component';
+import { MatTabsModule } from '@angular/material/tabs'; 
+import { ServicioAutenticacion } from './services/autenticacion.service';
+import { ServicioUsuario } from './services/usuario';
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +38,8 @@ import { SignupComponent } from './components/signup/signup.component';
     DialogResumen,
     CrearNotaComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    CuentaComponent
   ],
   imports: [
     BrowserModule,
@@ -54,10 +59,11 @@ import { SignupComponent } from './components/signup/signup.component';
     MatSortModule,
     IvyCarouselModule,
     MDBBootstrapModule.forRoot(),
-    MatDialogModule
+    MatDialogModule,
+    MatTabsModule
 
   ],
-  providers: [],
+  providers: [ServicioAutenticacion, ServicioUsuario],
   bootstrap: [AppComponent],
   entryComponents: [DialogResumen]
 })
