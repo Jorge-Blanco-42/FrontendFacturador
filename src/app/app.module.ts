@@ -28,6 +28,7 @@ import { CuentaComponent } from './components/cuenta/cuenta.component';
 import { MatTabsModule } from '@angular/material/tabs'; 
 import { ServicioAutenticacion } from './services/autenticacion.service';
 import { ServicioUsuario } from './services/usuario';
+import { ServicioPersona } from './services/persona';
 @NgModule({
   declarations: [
     AppComponent,
@@ -60,10 +61,10 @@ import { ServicioUsuario } from './services/usuario';
     IvyCarouselModule,
     MDBBootstrapModule.forRoot(),
     MatDialogModule,
-    MatTabsModule
+    MatTabsModule,
 
   ],
-  providers: [ServicioAutenticacion, ServicioUsuario],
+  providers: [ServicioAutenticacion, ServicioUsuario, ServicioPersona],
   bootstrap: [AppComponent],
   entryComponents: [DialogResumen]
 })

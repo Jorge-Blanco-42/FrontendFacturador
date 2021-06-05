@@ -24,6 +24,11 @@ import { Correo } from 'src/app/models/correo';
 import { ServicioEscritorXML } from 'src/app/services/escritorXML';
 import { ServicioConsultas } from 'src/app/services/consultas';
 import { ServicioUbicacion } from 'src/app/services/ubicacion';
+import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
+import { ServicioUsuario } from 'src/app/services/usuario';
+import { ServicioPersona } from 'src/app/services/persona';
+import { Persona } from 'src/app/models/persona';
+import { NONE_TYPE } from '@angular/compiler';
 
 //inicio mary
 export interface Clientes {
@@ -124,8 +129,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public maxDate = new Date();
   cabys: { impuesto: string, descripcion: string, codigoBienServicio: string }[] = [];
   public lineasJSON: {}[] = [];
+  public persona: Persona;
 
   public datosXML: CreacionXML;
+  private copiaReceptor: any;
   public datosXML2: CreacionXML;
   public lineas: Linea[] = [];
   public otrosCargos: OtroCargo[] = [];
@@ -136,8 +143,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public provincias: any[] = [];
   private cantones: any[] = [];
   private distritos: any[] = [];
-  public cantonesFiltrados: any[] = [];
-  public distritosFiltrados: any[] = [];
+  public cantonesFiltradosReceptor: any[] = [];
+  public distritosFiltradosReceptor: any[] = [];
+  public cantonesFiltradosEmisor: any[] = [];
+  public distritosFiltradosEmisor: any [] = [];
 
   public provinciaSeleccionada: number = 0;
 
@@ -148,7 +157,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas,
-    private _servicioUbicacion: ServicioUbicacion) {
+    private _servicioUbicacion: ServicioUbicacion, private _auntenticacionServicio: ServicioAutenticacion,
+    private _servicioPersona: ServicioPersona) {
+   
+  
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012385",
       "98762268", "FE");
 
@@ -160,11 +172,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       "Jiji", "Bichota", "", 'False')
 
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
-      "Rodolfo de Jesus Mora Zamora", "01", "113160737", "Rodolfo de Jesus Mora Zamora",
-      "1", "01", "01", "01", "Mi casa", "506", "86153313",
-      "506", "00000000", "jorgeblanco@estudiantec.cr", "", "", "",
+      "", "01", "", "",
+      "1", "01", "01", "01", "", "506", "",
+      "506", "", "", "", "", "",
       "", "", "", "", "506", "", "506", "", "", "01", "0", "01", "CRC",
-      "", "", "", "", "", "", "", "", "", "", "", "", "nada", "nada", "", "False");
+      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "False");
 
     this.signXML = new FirmadoXML("signXML", "signFE", "67d23a034ddf5991e5a8e9a72e708f4c", "",
       "2021", "FE");
@@ -176,6 +188,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
     this.impuestoTarifa = new Map();
+ 
+    this.persona = new Persona();
+
     this.total_OtrosCargos = 0;
 
 
@@ -199,8 +214,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     let token = localStorage.getItem("token");
     this.actualizarTipoCambio(this.maxDate);
-    this.cargarUbicaciones();
+    
     this.getCabys();
+    
     this.impuestoTarifa.set("01-01", 1.0);
     this.impuestoTarifa.set("01-02", 1.01);
     this.impuestoTarifa.set("01-03", 1.02);
@@ -217,6 +233,13 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.impuestoTarifa.set("07-07", 1.04);
     this.impuestoTarifa.set("07-08", 1.13);
     this.impuestoTarifa.set("08", 0);
+  
+    this.cargarUbicaciones().then( res =>{
+      this.cargarUsuario();
+    }).catch(error => {
+      console.log('Error cargarUbicacion', error);
+    });
+    
 
   }
 
@@ -665,10 +688,12 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   modificarEmisor() {
+    this.copiaReceptor = this.datosXML; 
     this.emisorDeshabilitado = false;
   }
 
   cancelarEmisor() {
+    this.datosXML = this.copiaReceptor;
     this.emisorDeshabilitado = true;
   }
 
@@ -795,61 +820,158 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     return lineaStr;
   }
 
-  private cargarUbicaciones(){
-    this._servicioUbicacion.getProvincias().subscribe(
-      data => {
-        console.log(data);
-        this.provincias = data;
-      },
-      error => {
-        console.log('An error happened! ', error);
-      }
-    );
-
-    this._servicioUbicacion.getCantones().subscribe(
-      data => {
-        this.cantones = data;
-      },
-      error => {
-        console.log('An error happened! ', error);
-      }
-    );
-
-    this._servicioUbicacion.getDistritos().subscribe(
-      data => {
-        this.distritos = data;
-      },
-      error => {
-        console.log('An error happened! ', error);
-      }
-    );
-
+  private cargarUbicaciones(): Promise<any>{
+    return new Promise((resolve, reject)=>{
+      this._servicioUbicacion.getProvincias().subscribe(
+        data => {
+          console.log(data);
+          this.provincias = data;
+        },
+        error => {
+          console.log('An error happened! ', error);
+          reject(error);
+        }
+      );
+  
+      this._servicioUbicacion.getCantones().subscribe(
+        data => {
+          this.cantones = data;
+        },
+        error => {
+          console.log('An error happened! ', error);
+          reject(error);
+        }
+      );
+  
+      this._servicioUbicacion.getDistritos().subscribe(
+        data => {
+          this.distritos = data;
+        },
+        error => {
+          console.log('An error happened! ', error);
+          reject(error);
+        }
+      );
+      resolve(true);
+    });
+      
+    
+    
     
   }
 
 
 
   cargarCantones(codigo_provincia: any){
-    this.distritosFiltrados = [];
-    this.cantonesFiltrados = [];
+    this.distritosFiltradosReceptor = [];
+    this.cantonesFiltradosReceptor = [];
     
-    this.cantonesFiltrados = this.cantones.filter(element => {
+    this.cantonesFiltradosReceptor = this.cantones.filter(element => {
       return element.codigo_provincia == codigo_provincia;
     });
-    this.cargarDistritos(this.cantonesFiltrados[0].codigo_canton);
-    console.log(this.cantonesFiltrados);
+    this.cargarDistritos(this.cantonesFiltradosReceptor[0].codigo_canton);
+    console.log(this.cantonesFiltradosReceptor);
 
   };
 
   cargarDistritos(codigo_canton?: any){
-    console.log(codigo_canton);
     codigo_canton = parseInt(codigo_canton);
-    this.distritosFiltrados = this.distritos.filter(element => {
+    this.distritosFiltradosReceptor = this.distritos.filter(element => {
       return element.codigo_canton == codigo_canton;
     });
 
-    console.log(this.cantonesFiltrados);
+    console.log(this.cantonesFiltradosReceptor);
 
   };
+
+  
+
+  cargarCantonesEmisor(codigo_provincia: any){
+    this.distritosFiltradosEmisor = [];
+    this.cantonesFiltradosEmisor = [];
+    console.log('codigo de provincia', codigo_provincia);
+    this.cantonesFiltradosEmisor = this.cantones.filter(element => {
+      return element.codigo_provincia == codigo_provincia;
+    });
+    console.log('Mis nuevos filtrados', this.cantonesFiltradosEmisor);
+    this.cargarDistritos(this.cantonesFiltradosEmisor[0].codigo_canton);
+    console.log(this.cantonesFiltradosEmisor);
+
+  };
+
+  cargarDistritosEmisor(codigo_canton?: any){
+    console.log(codigo_canton);
+    codigo_canton = parseInt(codigo_canton);
+    this.distritosFiltradosEmisor = this.distritos.filter(element => {
+      return element.codigo_canton == codigo_canton;
+    });
+
+    console.log(this.cantonesFiltradosEmisor);
+
+  };
+
+  private cargarUbicacionEmisor(codigo_canton: string, 
+    codigo_provincia: string){
+    this.cantonesFiltradosEmisor = this.cantones.filter(element => {
+      return element.codigo_provincia == codigo_provincia;
+    });
+
+    this.distritosFiltradosEmisor = this.distritos.filter(element => {
+      return element.codigo_canton == codigo_canton;
+    });
+
+    console.log('Holi',this.distritosFiltradosEmisor);
+   
+    
+  }
+
+  private ubicacionPersona(codigo_distrito: string): Promise<any>{
+    return new Promise((resolve, reject) => {
+      var res: Array<any> = new Array();
+      var distrito = this.distritos.filter(element => {
+        return element.codigo_distrito == codigo_distrito;
+      });
+      var canton =  this.cantones.filter(element => {
+        return element.codigo_canton == distrito[0].codigo_canton;
+      });
+      var provincia = this.provincias.filter(element => {
+        return element.codigo_provincia == canton[0].codigo_provincia;
+      });
+      res.push(distrito[0].codigo_distrito, canton[0].codigo_canton, provincia[0].codigo_provincia);
+      resolve(res);
+    });
+    
+
+
+  }
+
+  private cargarUsuario(){
+    var cedula = this._auntenticacionServicio.obtenerDatosUsuario().cedula;
+    this._servicioPersona.getPersona(cedula).subscribe( result => {
+      var personaResult = result.data[0];
+
+      this.ubicacionPersona(personaResult.IDDistrito).then(ubicacion => {
+        this.datosXML.emisor_distrito = ubicacion[0];
+      this.datosXML.emisor_canton = ubicacion[1];
+      this.datosXML.emisor_provincia = ubicacion[2];
+      
+      this.datosXML.emisor_num_identif = personaResult.cedula;
+      this.datosXML.emisor_nombre = personaResult.nombre;
+      this.datosXML.nombre_comercial = personaResult.nombreComercial;
+      this.datosXML.emisor_email = personaResult.email;
+      this.datosXML.emisor_tel = personaResult.telefono;
+      this.datosXML.emisor_barrio = personaResult.barrio;
+      this.datosXML.emisor_otras_senas = personaResult.otrasSenas;
+      this.datosXML.emisor_fax = personaResult.fax;
+      this.cargarUbicacionEmisor(this.datosXML.emisor_canton, this.datosXML.emisor_provincia);
+      console.log('Ubicación: ', this.persona.ubicacion);
+      });
+      
+    },
+    error => {
+      console.log(error);
+    });
+  
+  }
 
 }
