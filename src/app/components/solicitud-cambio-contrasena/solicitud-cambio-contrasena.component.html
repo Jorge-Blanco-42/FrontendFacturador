@@ -1,0 +1,25 @@
+<h3 class="text-center">Solicitar contraseña</h3>
+<div class="center" >
+
+    <div class="container mt-3" style="width:80%">
+
+        <p>Al brindar su identificación, se enviará un correo a la cuenta asociada con los pasos a seguir para cambiar la contraseña.</p>
+
+        <form #formReset="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="enviarRecuperacion()">
+            <div class="row form-item">
+                <label for="cedula">Identificación</label>
+                <input #cedula="ngModel" type="text" class="form-control" id="cedula" name="cedula"
+                    aria-label="Identificación" [(ngModel)]="usuario.cedula" aria-describedby="pendiente" required 
+                    pattern="[0-9]{9,}"  />
+                <span class="text-danger" *ngIf="cedula.touched && !cedula.valid">
+                    <span>Campo obligatorio.</span>
+                </span>
+            </div>
+            <button type="submit" class="btn ml-3 b-white-purple-simple" [disabled]="formReset.invalid"
+                aria-label="Botón enviar correo de recuperación" aria-describedby="pendiente">
+                Enviar correo de recuperación
+            </button>
+        </form>
+
+
+    </div>

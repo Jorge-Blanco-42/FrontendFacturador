@@ -29,6 +29,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ServicioAutenticacion } from './services/autenticacion.service';
 import { ServicioUsuario } from './services/usuario';
 import { ServicioPersona } from './services/persona';
+import { SolicitudCambioContrasenaComponent } from './components/solicitud-cambio-contrasena/solicitud-cambio-contrasena.component';
+import { CambiarContrasenaComponent } from './components/cambiar-contrasena/cambiar-contrasena.component';
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +44,9 @@ import { ServicioPersona } from './services/persona';
     CrearNotaComponent,
     LoginComponent,
     SignupComponent,
-    CuentaComponent
+    CuentaComponent,
+    SolicitudCambioContrasenaComponent,
+    CambiarContrasenaComponent
   ],
   imports: [
     BrowserModule,
@@ -62,6 +68,7 @@ import { ServicioPersona } from './services/persona';
     MDBBootstrapModule.forRoot(),
     MatDialogModule,
     MatTabsModule,
+    MatPasswordStrengthModule,
 
   ],
   providers: [ServicioAutenticacion, ServicioUsuario, ServicioPersona],
