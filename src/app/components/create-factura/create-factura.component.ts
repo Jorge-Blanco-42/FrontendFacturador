@@ -948,7 +948,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   private cargarUsuario(){
-    var cedula = this._auntenticacionServicio.obtenerDatosUsuario().cedula;
+    var cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioPersona.getPersona(cedula).subscribe( result => {
       var personaResult = result.data[0];
 
