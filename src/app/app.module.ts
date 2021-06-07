@@ -33,6 +33,14 @@ import { SolicitudCambioContrasenaComponent } from './components/solicitud-cambi
 import { CambiarContrasenaComponent } from './components/cambiar-contrasena/cambiar-contrasena.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 
+import { DatePipe } from '@angular/common';
+import { ServicioCaByS } from './services/cabys';
+import { ServicioConsultas } from './services/consultas';
+import { ServicioCorreo } from './services/correo';
+import { ServicioDecodificador } from './services/decodificador';
+import { ServicioEscritorXML } from './services/escritorXML';
+import { ServicioTipoCambio } from './services/tipoCambioXML';
+import { CapitalsPipe } from './pipes/capitals.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +54,8 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     SignupComponent,
     CuentaComponent,
     SolicitudCambioContrasenaComponent,
-    CambiarContrasenaComponent
+    CambiarContrasenaComponent,
+    CapitalsPipe
   ],
   imports: [
     BrowserModule,
@@ -71,7 +80,9 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     MatPasswordStrengthModule,
 
   ],
-  providers: [ServicioAutenticacion, ServicioUsuario, ServicioPersona],
+  providers: [ServicioAutenticacion, ServicioUsuario, DatePipe,
+    ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,
+    ServicioCorreo, ServicioEscritorXML, ServicioConsultas, ServicioPersona],
   bootstrap: [AppComponent],
   entryComponents: [DialogResumen]
 })

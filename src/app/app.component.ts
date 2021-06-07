@@ -90,7 +90,7 @@ export class AppComponent implements OnInit {
       this._certificateService.getCertificado(cedula).subscribe(
         result => {
           this.certificate = result[0];
-          this.getToken(this.certificate);
+          if(this.certificate)this.getToken(this.certificate);
         },
         error => {
           //alert(<any>error);
