@@ -311,3 +311,23 @@
         color:#fff;
         height: 3rem;
     }
+    .b-white-purple:hover{
+        color: white;
+        background-color: #514aac;
+        border-color:transparent;
+    
+    }
+
+    .b-white-purple-simple{
+        color: white;
+        background-color: #514aac;
+        border-color:transparent;
+    
+    }
+
+    .b-white-purple-simple:hover{
+        color: white;
+        background-color: #2b2577;
+        border-color:transparent;
+    
+    }

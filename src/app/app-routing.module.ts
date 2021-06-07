@@ -8,6 +8,7 @@ import { LoginComponent } from './components/login/login.component';
 import { CuentaComponent } from './components/cuenta/cuenta.component';
 
 import { AutenticacionGuard } from './guards/autenticacion.guard';
+import { CambiarContrasenaComponent } from './components/cambiar-contrasena/cambiar-contrasena.component';
 
 const routes: Routes = [
   {path : 'home', component: HomeComponent},
@@ -16,6 +17,7 @@ const routes: Routes = [
   {path: 'consultar', component: ConsultarComponent, canActivate: [AutenticacionGuard]},  
   {path : 'login', component: LoginComponent},
   {path : 'cuenta', component: CuentaComponent, canActivate: [AutenticacionGuard]},
+  {path: 'nueva-contrasena/:id/:token', component: CambiarContrasenaComponent, canActivate: [AutenticacionGuard]},
   {path: '**', component: ErrorComponent },
 ];
 

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioUsuario } from 'src/app/services/usuario';
+import { SolicitudCambioContrasenaComponent } from '../solicitud-cambio-contrasena/solicitud-cambio-contrasena.component';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent implements OnInit {
   mostrar: boolean = false;
 
   constructor(private router: Router,private _servicioUsuario: ServicioUsuario, private _servicioAutenticacion: ServicioAutenticacion,
-    public dialogRef: MatDialogRef<LoginComponent>, @Inject(MAT_DIALOG_DATA) public login: boolean) { }
+    public dialogRef: MatDialogRef<LoginComponent>, @Inject(MAT_DIALOG_DATA) public login: boolean,  public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -45,6 +46,14 @@ export class LoginComponent implements OnInit {
   
   toggleContrasena(){
     this.mostrar = !this.mostrar;
+  }
+
+  abrirSolicitudCambio(){
+    const dialogRef = this.dialog.open(SolicitudCambioContrasenaComponent, {
+      width: '50%',
+      height: '70%',
+      data: false
+    });
   }
 
 }

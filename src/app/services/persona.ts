@@ -29,7 +29,7 @@ export class ServicioPersona {
         data.append('otrasSenas', person.otrasSenas);
         data.append('telefono', person.telefono);
         data.append('fax', person.fax);
-        data.append('IDUsuario', person.IDUsuario)
+    
         return this._http.post(this.backend + 'insertPersona/', data);
     }
 

@@ -28,6 +28,11 @@ import { CuentaComponent } from './components/cuenta/cuenta.component';
 import { MatTabsModule } from '@angular/material/tabs'; 
 import { ServicioAutenticacion } from './services/autenticacion.service';
 import { ServicioUsuario } from './services/usuario';
+import { ServicioPersona } from './services/persona';
+import { SolicitudCambioContrasenaComponent } from './components/solicitud-cambio-contrasena/solicitud-cambio-contrasena.component';
+import { CambiarContrasenaComponent } from './components/cambiar-contrasena/cambiar-contrasena.component';
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+
 import { DatePipe } from '@angular/common';
 import { ServicioCaByS } from './services/cabys';
 import { ServicioConsultas } from './services/consultas';
@@ -48,6 +53,8 @@ import { CapitalsPipe } from './pipes/capitals.pipe';
     LoginComponent,
     SignupComponent,
     CuentaComponent,
+    SolicitudCambioContrasenaComponent,
+    CambiarContrasenaComponent,
     CapitalsPipe
   ],
   imports: [
@@ -69,12 +76,13 @@ import { CapitalsPipe } from './pipes/capitals.pipe';
     IvyCarouselModule,
     MDBBootstrapModule.forRoot(),
     MatDialogModule,
-    MatTabsModule
+    MatTabsModule,
+    MatPasswordStrengthModule,
 
   ],
   providers: [ServicioAutenticacion, ServicioUsuario, DatePipe,
     ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,
-    ServicioCorreo, ServicioEscritorXML, ServicioConsultas],
+    ServicioCorreo, ServicioEscritorXML, ServicioConsultas, ServicioPersona],
   bootstrap: [AppComponent],
   entryComponents: [DialogResumen]
 })

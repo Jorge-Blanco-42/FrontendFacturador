@@ -11,7 +11,7 @@ export class Persona{
         public otrasSenas: string = "",
         public telefono: string = "",
         public fax: string = "",
-        public IDUsuario: string = ""
+        public ubicacion : any = []
         ){
     }
 }

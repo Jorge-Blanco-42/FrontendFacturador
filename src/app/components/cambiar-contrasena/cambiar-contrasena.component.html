@@ -1,0 +1,49 @@
+<div *ngIf="!vencido" class="container mt-4" style="width: 60%;">
+    <h3>Crear nueva contraseña</h3>
+
+
+    <form #formReset="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="actualizarContrasena()">
+        <mat-form-field appearance="outline" class="input-group">
+            <label for="contrasena">Nueva contraseña: </label>
+
+            <div class ="d-flex">
+                <input matInput #contrasena="ngModel" [type]="mostrar ? 'text' : 'password'" class="form-control ml-2"
+                id="contrasena" name="contrasena" aria-label="Nueva contraseña" [(ngModel)]="clave.nueva_clave"
+                aria-describedby="pendiente" (click)="toggleContrasena()" minlength="8" required
+                placeholder="contraseña" />
+
+            <div class="input-group-append" (click)="toggleContrasena()">
+                <span class="input-group-text">
+                    <i class="fa" [ngClass]="{
+                                'fa-eye-slash': mostrar,
+                                'fa-eye': !mostrar
+                              }"></i>
+                </span>
+            </div>
+            </div>
+
+
+            <mat-password-strength class="mt-3" #passwordComponentWithValidation
+                (onStrengthChanged)="onStrengthChanged($event)" [password]="clave.nueva_clave">
+            </mat-password-strength>
+
+
+            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                <span>Campo obligatorio.</span>
+            </span>
+
+
+
+        </mat-form-field>
+
+
+
+        <button type="submit" class="btn ml-3 b-white-purple-simple" [disabled]="formReset.invalid"
+            aria-label="Botón actualizar contraseña" aria-describedby="pendiente">
+            Actualizar contraseña
+        </button>
+    </form>
+
+
+
+</div>
