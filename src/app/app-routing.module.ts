@@ -10,10 +10,10 @@ import { CuentaComponent } from './components/cuenta/cuenta.component';
 import { AutenticacionGuard } from './guards/autenticacion.guard';
 
 const routes: Routes = [
-  {path : '', component: HomeComponent},
-  {path: 'crearFactura', component: CreateFacturaComponent, canActivate: [AutenticacionGuard] },
-  {path: 'consultar', component: ConsultarComponent, canActivate: [AutenticacionGuard]},
   {path : 'home', component: HomeComponent},
+  {path : '', component: HomeComponent, canActivate: [AutenticacionGuard]},
+  {path: 'crearFactura', component: CreateFacturaComponent, canActivate: [AutenticacionGuard] },
+  {path: 'consultar', component: ConsultarComponent, canActivate: [AutenticacionGuard]},  
   {path : 'login', component: LoginComponent},
   {path : 'cuenta', component: CuentaComponent, canActivate: [AutenticacionGuard]},
   {path: '**', component: ErrorComponent },

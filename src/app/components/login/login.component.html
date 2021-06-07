@@ -30,10 +30,11 @@
                                           }"></i>
                                     </span>
                                 </div>
-                                <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
-                                    <span>Campo obligatorio.</span>
-                                </span>
+                                
                             </div>
+                            <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
+                                <span>Campo obligatorio.</span>
+                            </span>
                         </div>
                         <button type="submit" class="btn btn-outline-secondary" [disabled]="myForm.invalid"
                             aria-label="Botón iniciar sesion" aria-describedby="pendiente">

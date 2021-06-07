@@ -98,6 +98,10 @@ export class ServicioUsuario {
         return this._http.put(this.backend+'updateUsuario/'+cedula, data);
     }
 
+    getActividades(cedula: string){
+        return this._http.get(this.backend + 'getActividadEconomica/' + cedula);
+    }
+
     
 
     

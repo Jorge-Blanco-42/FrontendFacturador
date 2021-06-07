@@ -24,6 +24,9 @@ import { Correo } from 'src/app/models/correo';
 import { ServicioEscritorXML } from 'src/app/services/escritorXML';
 import { ServicioConsultas } from 'src/app/services/consultas';
 import { ServicioUbicacion } from 'src/app/services/ubicacion';
+import { ActividadEconomica } from 'src/app/models/actividadEconomica';
+import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
+import { ServicioUsuario } from 'src/app/services/usuario';
 
 //inicio mary
 export interface Clientes {
@@ -96,8 +99,7 @@ const ELEMENT_DATA: Clientes[] = [
   selector: 'app-create-factura',
   templateUrl: './create-factura.component.html',
   styleUrls: ['./create-factura.component.css'],
-  providers: [DatePipe, ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,
-    ServicioCorreo, ServicioEscritorXML, ServicioConsultas]
+  providers: []
 })
 export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
@@ -113,6 +115,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public clienteRegistrado: boolean = true;
   clienteSeleccionado: boolean = false;
   receptorDatosImportantes: boolean = true;
+
+  codigoActividad!:string;
+  actividades : ActividadEconomica[] = [];
 
   public radioCliente: number = 0;
   public total_OtrosCargos: number;
@@ -148,7 +153,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _signXMLService: ServicioFirmadoXML, private _createXMLService: ServicioCreacionXML,
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas,
-    private _servicioUbicacion: ServicioUbicacion) {
+    private _servicioUbicacion: ServicioUbicacion, private _servicioAutenticacion: ServicioAutenticacion, private _servicioUsuario: ServicioUsuario) {
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012385",
       "98762268", "FE");
 
@@ -177,11 +182,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.tipo_cambio = 0;
     this.impuestoTarifa = new Map();
     this.total_OtrosCargos = 0;
+    this.cargarActividades();
+
 
 
   }
-
-
   @ViewChild('clientesPaginator') set matPaginator(mp: MatPaginator) {
     this.paginator = mp;
     this.setDataSourceAttributes();
@@ -312,7 +317,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
               decodificado => {
                 xml = decodificado.xmlDecoded;
                 //console.log("xml inicial", xml);
-                this._servicioEscritorXML.arreglosGenerales(xml, "12345").subscribe(
+                this._servicioEscritorXML.arreglosGenerales(xml, this.codigoActividad).subscribe(
                   arreglado => {
                     xml = arreglado.xmlFile;
                     //console.log("arreglos", xml);
@@ -852,4 +857,14 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   };
 
+  cargarActividades(){
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioUsuario.getActividades(cedula).subscribe((res:any) =>{
+      console.log(res);
+      this.actividades = res.data;
+      if(this.actividades) this.codigoActividad = this.actividades[0].codigo;
+    },err=>{
+      console.log(err)
+    });
+  }
 }

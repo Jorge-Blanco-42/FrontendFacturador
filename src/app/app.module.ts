@@ -28,6 +28,14 @@ import { CuentaComponent } from './components/cuenta/cuenta.component';
 import { MatTabsModule } from '@angular/material/tabs'; 
 import { ServicioAutenticacion } from './services/autenticacion.service';
 import { ServicioUsuario } from './services/usuario';
+import { DatePipe } from '@angular/common';
+import { ServicioCaByS } from './services/cabys';
+import { ServicioConsultas } from './services/consultas';
+import { ServicioCorreo } from './services/correo';
+import { ServicioDecodificador } from './services/decodificador';
+import { ServicioEscritorXML } from './services/escritorXML';
+import { ServicioTipoCambio } from './services/tipoCambioXML';
+import { CapitalsPipe } from './pipes/capitals.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +47,8 @@ import { ServicioUsuario } from './services/usuario';
     CrearNotaComponent,
     LoginComponent,
     SignupComponent,
-    CuentaComponent
+    CuentaComponent,
+    CapitalsPipe
   ],
   imports: [
     BrowserModule,
@@ -63,7 +72,9 @@ import { ServicioUsuario } from './services/usuario';
     MatTabsModule
 
   ],
-  providers: [ServicioAutenticacion, ServicioUsuario],
+  providers: [ServicioAutenticacion, ServicioUsuario, DatePipe,
+    ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,
+    ServicioCorreo, ServicioEscritorXML, ServicioConsultas],
   bootstrap: [AppComponent],
   entryComponents: [DialogResumen]
 })
