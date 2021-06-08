@@ -80,9 +80,9 @@ export class ServicioUsuario {
         return this._http.delete(this.backend+'deleteUsuario/'+cedula, {headers: headers});
     }
 
-    getClientes(id:string): Observable<any>{
+    getClientes(cedula: string): Observable<any>{
         let headers = new HttpHeaders().set('Content-Type', 'aplication/json');
-        return this._http.get(this.backend + 'getClientes/' + id, {headers:headers});
+        return this._http.get(this.backend + 'getClientes/' + cedula, {headers:headers});
     }
     
     updateUsuario(cedula: string, newData: any){
