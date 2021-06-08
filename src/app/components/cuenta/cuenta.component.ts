@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { Certificado } from 'src/app/models/certificado';
+import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
+import { ServicioCertificado } from 'src/app/services/certificado';
 
 export interface Cliente {
   nombre: string, nombreRazonSocial: string,
@@ -10,11 +13,6 @@ export interface Cliente {
   distrito: string, barrio: string, otras_senas:string,
   telefono: string, fax: string, correo: string, contrasena: string, 
   confirmarContrasena: string
-}
-
-export interface Certificado {
-  usuario: string, contrasena: string,
-  pin: string, archivo: File
 }
 
 @Component({
@@ -44,7 +42,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   mostrar: boolean = false;
   mostrarConfirmacion: boolean = false;
 
-  constructor() { 
+  constructor(private _servicioAutenticacion: ServicioAutenticacion, private _servicioCertificado: ServicioCertificado) { 
     this.cliente = {
       nombre: "",
       nombreRazonSocial: "", identificacion: "",
@@ -52,17 +50,21 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       distrito: "", barrio: "", otras_senas:"",
       telefono: "", fax: "", correo: "", contrasena:"", confirmarContrasena: ""
     }
-
-    this.certificado = {
-      usuario: "", contrasena: "",
-      pin: "", archivo: this.currentFile
-    }
   }
   ngAfterViewInit(): void {
     
   }
 
   ngOnInit(): void {
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioCertificado.getCertificado(cedula).subscribe(
+      result => {
+        this.certificado = result[0];
+      },
+      error => {
+        //alert(<any>error);
+        console.log(<any>error)
+      });
   }
 
   guardar(cliente : Cliente){

@@ -447,7 +447,7 @@ export class DialogResumen implements OnInit {
       this._servicioCertificado.getCertificado("2").subscribe(
         result => {
           let certificado: Certificado = result;
-          let firma = new FirmadoXML("signXML", "signFE", certificado.archivo, this.xml, certificado.pin, "ND")
+          let firma = new FirmadoXML("signXML", "signFE", certificado.archivoURL, this.xml, certificado.pin, "ND")
           this._servicioFirma.firmarFEXML(firma).subscribe(
             res => { resolve(res.resp.xmlFirmado); },
             err => { reject(err); }
