@@ -25,4 +25,13 @@ export class ServicioCorreo {
         datos.append("base", correo.base);
         return this._http.post(this.backendUrl + 'sendEmail', datos);
     }
+
+    enviarCorreoSimple(correo: Correo): Observable<any> {
+        let datos = new FormData();
+        datos.append("to", correo.to);
+        datos.append("text", correo.text);
+        datos.append("subject", correo.subject);
+        return this._http.post(this.backendUrl + 'correoSimple', datos);
+    }
+
 }

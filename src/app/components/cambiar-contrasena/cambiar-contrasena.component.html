@@ -1,4 +1,19 @@
-<div *ngIf="!vencido" class="container mt-4" style="width: 60%;">
+<div *ngIf="verificando" class="row">
+    <div class="w-50 mx-auto">
+        <mat-spinner  style="margin:20% auto;" mode="indeterminate">
+        </mat-spinner>
+        <h4 class="font-weight-light text-center" style="size: 30px;">Verificando token</h4>
+    </div>
+</div>
+
+<div *ngIf="vencido">
+        <p class = "text-center"><i class="fa fa-exclamation-circle fa-5x" mode="indeterminate" caria-hidden="true"></i></p>
+        <h4 class="font-weight-light text-center" style="size: 30px;">Token vencido</h4>
+
+</div>
+
+
+<div *ngIf="!vencido && !verificando" class="container mt-4" style="width: 60%;">
     <h3>Crear nueva contraseña</h3>
 
 
@@ -6,25 +21,25 @@
         <mat-form-field appearance="outline" class="input-group">
             <label for="contrasena">Nueva contraseña: </label>
 
-            <div class ="d-flex">
+            <div class="d-flex">
                 <input matInput #contrasena="ngModel" [type]="mostrar ? 'text' : 'password'" class="form-control ml-2"
-                id="contrasena" name="contrasena" aria-label="Nueva contraseña" [(ngModel)]="clave.nueva_clave"
-                aria-describedby="pendiente" (click)="toggleContrasena()" minlength="8" required
-                placeholder="contraseña" />
+                    id="contrasena" name="contrasena" aria-label="Nueva contraseña" [(ngModel)]="clave.nueva_clave"
+                    aria-describedby="pendiente" (click)="toggleContrasena()" minlength="8" required
+                    placeholder="contraseña" />
 
-            <div class="input-group-append" (click)="toggleContrasena()">
-                <span class="input-group-text">
-                    <i class="fa" [ngClass]="{
+                <div class="input-group-append" (click)="toggleContrasena()">
+                    <span class="input-group-text">
+                        <i class="fa" [ngClass]="{
                                 'fa-eye-slash': mostrar,
                                 'fa-eye': !mostrar
                               }"></i>
-                </span>
-            </div>
+                    </span>
+                </div>
             </div>
 
 
             <mat-password-strength class="mt-3" #passwordComponentWithValidation
-                (onStrengthChanged)="onStrengthChanged($event)" [password]="clave.nueva_clave">
+                [password]="clave.nueva_clave">
             </mat-password-strength>
 
 
@@ -32,7 +47,7 @@
                 <span>Campo obligatorio.</span>
             </span>
 
-
+            <p *ngIf = "successful" class="text-success">Contraseña actualizada correctamente <br>Redireccionando...</p>
 
         </mat-form-field>
 

@@ -32,7 +32,7 @@ import { ServicioPersona } from './services/persona';
 import { SolicitudCambioContrasenaComponent } from './components/solicitud-cambio-contrasena/solicitud-cambio-contrasena.component';
 import { CambiarContrasenaComponent } from './components/cambiar-contrasena/cambiar-contrasena.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DatePipe } from '@angular/common';
 import { ServicioCaByS } from './services/cabys';
 import { ServicioConsultas } from './services/consultas';
@@ -78,7 +78,7 @@ import { CapitalsPipe } from './pipes/capitals.pipe';
     MatDialogModule,
     MatTabsModule,
     MatPasswordStrengthModule,
-
+    MatProgressSpinnerModule 
   ],
   providers: [ServicioAutenticacion, ServicioUsuario, DatePipe,
     ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,
