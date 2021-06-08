@@ -44,9 +44,7 @@ export interface Clientes {
   correo: string
 
 }
-
 const replacer = new RegExp('\"', 'g');
-
 const ELEMENT_DATA: Clientes[] = [
   {
     nombre: "David Gónzalez", receptor_tipo_identif: "01", identificacion: "123456789",
@@ -110,7 +108,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
   private paginator!: MatPaginator;
-
+  clientes : Clientes[] = [];
   public isCollapsedEmisorData: boolean = true;
   public isCollapsedReceptorData: boolean = true;
   public isCollapsedResumenData: boolean = true;
@@ -153,8 +151,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public distritosFiltradosEmisor: any [] = [];
 
   public provinciaSeleccionada: number = 0;
-
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  
+  dataSource = new MatTableDataSource(this.clientes);
   dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
 
   constructor(public datepipe: DatePipe, private _servicioTipoCambio: ServicioTipoCambio, private _servicioCaByS: ServicioCaByS,
@@ -237,12 +235,14 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.impuestoTarifa.set("08", 0);
   
     this.cargarUbicaciones().then( res =>{
-      this.cargarUsuario();
+    this.cargarUsuario();
+    this.cargarClientes();
+
     }).catch(error => {
       console.log('Error cargarUbicacion', error);
     });
     
-
+    
   }
 
   ngAfterViewInit() {
@@ -948,12 +948,12 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   private cargarUsuario(){
-    var cedula = this._auntenticacionServicio.obtenerDatosUsuario().cedula;
+    var cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioPersona.getPersona(cedula).subscribe( result => {
       var personaResult = result.data[0];
 
       this.ubicacionPersona(personaResult.IDDistrito).then(ubicacion => {
-        this.datosXML.emisor_distrito = ubicacion[0];
+      this.datosXML.emisor_distrito = ubicacion[0];
       this.datosXML.emisor_canton = ubicacion[1];
       this.datosXML.emisor_provincia = ubicacion[2];
       
@@ -986,4 +986,29 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       console.log(err)
     });
   }
+
+  cargarClientes(){
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioUsuario.getClientes(cedula).subscribe((res: any) =>{
+      res.data.forEach((cliente:any) => {
+        let temp: Clientes = {
+          nombre: cliente.nombre,
+          receptor_tipo_identif: cliente.IDTipoIDentificacion,
+          identificacion: cliente.cedula,
+          receptor_provincia: cliente.receptor_provincia,
+          receptor_canton: cliente.receptor_canton,
+          receptor_distrito: cliente.IDDistrito,
+          receptor_barrio: cliente.barrio,
+          receptor_cod_pais_tel: "506",
+          receptor_tel: cliente.telefono,
+          receptor_cod_pais_fax: "506",
+          receptor_fax: cliente.fax,
+          correo: cliente.email
+        }
+        this.clientes.push(temp)
+      })
+      this.dataSource = new MatTableDataSource(this.clientes);
+    })
+  }
+
 }
