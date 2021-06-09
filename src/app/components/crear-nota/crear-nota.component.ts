@@ -11,6 +11,7 @@ import { EnvioXML } from 'src/app/models/envioXML';
 import { FirmadoXML } from 'src/app/models/firmadoXML';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
+import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioCaByS } from 'src/app/services/cabys';
 import { ServicioCertificado } from 'src/app/services/certificado';
 import { ServicioClaveXML } from 'src/app/services/claveXML';
@@ -67,7 +68,7 @@ export class CrearNotaComponent implements OnInit {
     private _servicioUsuario: ServicioUsuario, private _servicioEscritorXML: ServicioEscritorXML,
     private _servicioDecodificador: ServicioDecodificador, private _servicioEnvio: ServicioEnvioXML,
     private _servicioFirma: ServicioFirmadoXML, private _servicioCertificado: ServicioCertificado,
-    public datepipe: DatePipe, private _servicioClave: ServicioClaveXML) {
+    public datepipe: DatePipe, private _servicioClave: ServicioClaveXML, private _servicioAutenticacion: ServicioAutenticacion) {
     this.total_OtrosCargos = 0;
     this.impuestoTarifa = new Map();
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
@@ -510,7 +511,8 @@ export class CrearNotaComponent implements OnInit {
 
   firmar(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this._servicioCertificado.getCertificado("2").subscribe(
+      let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+      this._servicioCertificado.getCertificado(cedula).subscribe(
         result => {
           let certificado: Certificado = result;
           let firma = new FirmadoXML("signXML", "signFE", certificado.archivoURL, this.xml, certificado.pin, this.data.tipoNota)
