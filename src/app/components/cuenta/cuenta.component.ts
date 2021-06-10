@@ -1,12 +1,15 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { MatTabsModule } from '@angular/material/tabs';
+import { ControlContainer, NgForm } from '@angular/forms';
+import {MatTabsModule} from '@angular/material/tabs';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Certificado } from 'src/app/models/certificado';
 import { UsuarioCRLibre } from 'src/app/models/usuarioCRLibre';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioCertificado } from 'src/app/services/certificado';
 import { ServicioUsuario } from 'src/app/services/usuario';
+import { ServicioPersona } from 'src/app/services/persona';
+import { ServicioUbicacion } from 'src/app/services/ubicacion';
+import { Persona } from 'src/app/models/persona';
 
 export interface Cliente {
   nombre: string, nombreRazonSocial: string,
@@ -14,6 +17,11 @@ export interface Cliente {
   provincia: string, canton: string,
   distrito: string, barrio: string, otras_senas: string,
   telefono: string, fax: string, correo: string, contrasena: string,
+  confirmarContrasena: string
+}
+
+export interface Contrasena {
+  contrasena: string, 
   confirmarContrasena: string
 }
 
@@ -28,7 +36,8 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   @ViewChild('myForm') public formDatos!: NgForm;
   @ViewChild('myFormContrasena') public formComtrasena!: NgForm;
 
-  cliente!: Cliente;
+  cliente!: Persona;
+  nuevaContrasena: Contrasena;
   // contasenaValida: boolean = true;
   valido: boolean = true;
 
@@ -45,18 +54,28 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   mostrar: boolean = false;
   mostrarConfirmacion: boolean = false;
 
-  constructor(private _servicioAutenticacion: ServicioAutenticacion, private _servicioCertificado: ServicioCertificado,
-    private _servicioUsuario: ServicioUsuario) {
-    this.cliente = {
-      nombre: "",
-      nombreRazonSocial: "", identificacion: "",
-      provincia: "", canton: "",
-      distrito: "", barrio: "", otras_senas: "",
-      telefono: "", fax: "", correo: "", contrasena: "", confirmarContrasena: ""
-    }
-    this.certificado = new Certificado("", "", "", "", "", undefined);
+  public provincias: any[] = [];
+  private cantones: any[] = [];
+  private distritos: any[] = [];
+  public cantonesFiltradosEmisor: any[] = [];
+  public distritosFiltradosEmisor: any [] = [];
 
+  constructor(private _servicioAutenticacion: ServicioAutenticacion, private _servicioCertificado: ServicioCertificado, 
+    private _servicioUbicacion: ServicioUbicacion, private _servicioPersona: ServicioPersona, private _servicioUsuario:ServicioUsuario) { 
+    this.cliente = new Persona("","","","","","","","","","",[]);
+    this.certificado = new Certificado("","","","","");
+    this.nuevaContrasena = {
+      contrasena: "", 
+      confirmarContrasena: ""
+    }
+    this.cargarUbicaciones().then( res =>{
+      this.cargarUsuario();
+  
+      }).catch(error => {
+        console.log('Error cargarUbicacion', error);
+      });
   }
+
   ngAfterViewInit(): void {
 
   }
@@ -75,12 +94,12 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       });
   }
 
-  guardar(cliente: Cliente) {
+  guardar(cliente : Persona){
     console.log(cliente);
   }
 
-  validarContrasena() {
-    if (this.cliente.contrasena === this.cliente.confirmarContrasena) {
+  validarContrasena(){
+    if(this.nuevaContrasena.contrasena === this.nuevaContrasena.confirmarContrasena){
       this.valido = true;
     } else {
       this.valido = false;
@@ -167,4 +186,128 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     this.mostrarConfirmacion = !this.mostrarConfirmacion;
   }
 
+  //
+
+  private cargarUbicaciones(): Promise<any>{
+    return new Promise((resolve, reject)=>{
+      this._servicioUbicacion.getProvincias().subscribe(
+        data => {
+          console.log(data, "<-----");
+          this.provincias = data;
+        },
+        error => {
+          console.log('An error happened! ', error);
+          reject(error);
+        }
+      );
+  
+      this._servicioUbicacion.getCantones().subscribe(
+        data => {
+          this.cantones = data;
+        },
+        error => {
+          console.log('An error happened! ', error);
+          reject(error);
+        }
+      );
+  
+      this._servicioUbicacion.getDistritos().subscribe(
+        data => {
+          this.distritos = data;
+        },
+        error => {
+          console.log('An error happened! ', error);
+          reject(error);
+        }
+      );
+      resolve(true);
+    });
+  }
+
+
+  cargarCantonesEmisor(codigo_provincia: any){
+    this.distritosFiltradosEmisor = [];
+    this.cantonesFiltradosEmisor = [];
+    console.log('codigo de provincia', codigo_provincia);
+    this.cantonesFiltradosEmisor = this.cantones.filter(element => {
+      return element.codigo_provincia == codigo_provincia;
+    });
+    console.log('Mis nuevos filtrados', this.cantonesFiltradosEmisor);
+    console.log(this.cantonesFiltradosEmisor);
+
+  };
+
+  cargarDistritosEmisor(codigo_canton?: any){
+    console.log(codigo_canton);
+    codigo_canton = parseInt(codigo_canton);
+    this.distritosFiltradosEmisor = this.distritos.filter(element => {
+      return element.codigo_canton == codigo_canton;
+    });
+
+    console.log(this.cantonesFiltradosEmisor);
+
+  };
+
+  private cargarUbicacionEmisor(codigo_canton: string, 
+    codigo_provincia: string){
+    this.cantonesFiltradosEmisor = this.cantones.filter(element => {
+      return element.codigo_provincia == codigo_provincia;
+    });
+
+    this.distritosFiltradosEmisor = this.distritos.filter(element => {
+      return element.codigo_canton == codigo_canton;
+    });
+
+    console.log('Holi',this.distritosFiltradosEmisor);
+   
+    
+  }
+
+  private ubicacionPersona(codigo_distrito: string): Promise<any>{
+    return new Promise((resolve, reject) => {
+      var res: Array<any> = new Array();
+      var distrito = this.distritos.filter(element => {
+        return element.codigo_distrito == codigo_distrito;
+      });
+      var canton =  this.cantones.filter(element => {
+        return element.codigo_canton == distrito[0].codigo_canton;
+      });
+      var provincia = this.provincias.filter(element => {
+        return element.codigo_provincia == canton[0].codigo_provincia;
+      });
+      res.push(distrito[0].codigo_distrito, canton[0].codigo_canton, provincia[0].codigo_provincia);
+      resolve(res);
+    });
+  }
+
+  private cargarUsuario(){
+    var cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioPersona.getPersona(cedula).subscribe( result => {
+      var personaResult = result.data[0];
+
+      this.ubicacionPersona(personaResult.IDDistrito).then(ubicacion => {
+      this.cliente.ubicacion[0] = ubicacion[0];
+      this.cliente.ubicacion[1] = ubicacion[1];
+      this.cliente.ubicacion[2] = ubicacion[2];
+      
+      this.cliente.cedula = personaResult.cedula;
+      this.cliente.nombre = personaResult.nombre;
+      this.cliente.nombreComercial = personaResult.nombreComercial;
+      this.cliente.email = personaResult.email;
+      this.cliente.telefono = personaResult.telefono;
+      this.cliente.barrio = personaResult.barrio;
+      this.cliente.otrasSenas = personaResult.otrasSenas;
+      this.cliente.fax = personaResult.fax;
+      this.cargarUbicacionEmisor(this.cliente.ubicacion[1], this.cliente.ubicacion[2]);
+      console.log('Ubicación: ', this.cliente.ubicacion);
+      });
+      
+    },
+    error => {
+      console.log(error);
+    });
+  
+  }
+
+  
 }

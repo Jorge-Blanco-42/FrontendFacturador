@@ -12,19 +12,19 @@
                     <div class="row">
                         <div class="form-item col-md-8">
                             <label for="NombreRazonSocial">Nombre o Razón Social</label>
-                            <input type="text" class="form-control form-control-sm" id="NombreRazonSocial" name="nombreRazonSocial" #nombreRazonSocial="ngModel" [(ngModel)]="cliente.nombreRazonSocial" aria-label="Nombre o Razon Social"
+                            <input type="text" class="form-control form-control-sm" id="NombreRazonSocial" name="nombreRazonSocial" #nombreRazonSocial="ngModel" [(ngModel)]="cliente.nombre" aria-label="Nombre o Razon Social"
                                 aria-describedby="pendiente" required readonly />
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Identificacion">Identificación</label>
-                            <input type="text" class="form-control form-control-sm" id="Identificacion" name="identificacion" #identificacion="ngModel" [(ngModel)]="cliente.identificacion" aria-label="Identificación"
+                            <input type="text" class="form-control form-control-sm" id="Identificacion" name="identificacion" #identificacion="ngModel" [(ngModel)]="cliente.cedula" aria-label="Identificación"
                                 aria-describedby="pendiente" required readonly />
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="NombreComercial">Nombre Comercial</label>
-                            <input type="text" class="form-control form-control-sm" id="NombreComercial" name="nombreComercial" #nombreComercial="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.nombre" aria-label="Nombre Comercial"
+                            <input type="text" class="form-control form-control-sm" id="NombreComercial" name="nombreComercial" #nombreComercial="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.nombreComercial" aria-label="Nombre Comercial"
                                 aria-describedby="pendiente" required />
                             <span class="text-danger"  *ngIf="nombreComercial.touched && !nombreComercial.valid">
                                 <span>Dato inválido.</span>
@@ -32,7 +32,7 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Correo">Correo electrónico</label>
-                            <input type="email" class="form-control form-control-sm" id="Correo" name="correo" #correo="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.correo" aria-label="Correo electrónico" aria-describedby="pendiente"
+                            <input type="email" class="form-control form-control-sm" id="Correo" name="correo" #correo="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.email" aria-label="Correo electrónico" aria-describedby="pendiente"
                                 required pattern="[\w-\.]+@([\w-]+\.)+[\w-]{2,4}" />
                             <span class="text-danger" *ngIf="correo.touched && !correo.valid">
                                 <span>Dato inválido.</span>
@@ -60,23 +60,23 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Provincia">Provincia</label>
-                            <select class="form-control form-control-sm" id="Provincia" name="provincia" #provincia="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.provincia" aria-label="Provincia" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" id="Provincia" name="provincia" #provincia="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.ubicacion[2]" aria-label="Provincia" aria-describedby="pendiente"
                                 required>
-                                <option value="1">San José</option>
+                                <option [value] = "provincia.codigo_provincia" *ngFor = "let provincia Of provincias; ">{{provincia.nombre_provincia}}</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Canton">Cantón</label>
-                            <select class="form-control form-control-sm" id="Canton" name="canton" #canton="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.canton" aria-label="Canton" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" id="Canton" name="canton" #canton="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.ubicacion[1]" aria-label="Canton" aria-describedby="pendiente"
                                 required>
-                                <option value="01">San José</option>
+                                <option [value] = "canton.codigo_canton" *ngFor = "let canton Of cantonesFiltradosEmisor;" >{{canton.nombre_canton}}</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Distrito">Distrito</label>
-                            <select class="form-control form-control-sm" id="Distrito" name="distrito" #distrito="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.distrito" aria-label="Distrito" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" id="Distrito" name="distrito" #distrito="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.ubicacion[0]" aria-label="Distrito" aria-describedby="pendiente"
                                 required>
-                                <option value="01">Carmen</option>
+                                <option [value] = "distrito.codigo_distrito" *ngFor = "let distrito Of distritosFiltradosEmisor;" >{{distrito.nombre_distrito}}</option>
                             </select>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="OtrasSenas">Otras señas</label>
-                            <input type="text" class="form-control form-control-sm" id="OtrasSenas" name="otrasSenas" #otras_senas="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.otras_senas" aria-label="Otras señas" aria-describedby="pendiente" />
+                            <input type="text" class="form-control form-control-sm" id="OtrasSenas" name="otrasSenas" #otras_senas="ngModel" [attr.disabled]="modificar ? true:null" [(ngModel)]="cliente.otrasSenas" aria-label="Otras señas" aria-describedby="pendiente" />
                         </div>
                         <!-- pendientes ngIf de los botones modificar, gaurdar y cancelar-->
                         <div class="form-item col-4 col-md-2 text-right" *ngIf="!modificar">
@@ -123,7 +123,7 @@
                             <div class="input-group">
                                 <!-- Change input type to be dynamic -->
                                 <input [type]="mostrar ? 'text' : 'password'" class="form-control form-control-sm"
-                                    id="Contrasena" name="contrasena" #contrasena="ngModel" (keyup)="validarContrasena()" [(ngModel)]="cliente.contrasena"
+                                    id="Contrasena" name="contrasena" #contrasena="ngModel" (keyup)="validarContrasena()" [(ngModel)]="nuevaContrasena.contrasena"
                                     aria-label="Contrasena" aria-describedby="pendiente" required />
                                 <div class="input-group-append" (click)="toggleContrasena()">
                                     <span class="input-group-text">
@@ -145,7 +145,7 @@
                                 <!-- Change input type to be dynamic -->
                                 <input [type]="mostrarConfirmacion ? 'text' : 'password'" class="form-control form-control-sm" id="ConfirmarContrasena"
                                 name="confirmarContrasena" #confirmarContrasena="ngModel" (keyup)="validarContrasena()"
-                                [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmar contrasena"
+                                [(ngModel)]="nuevaContrasena.confirmarContrasena" aria-label="Confirmar contrasena"
                                 aria-describedby="pendiente" required />
                                 <div class="input-group-append" (click)="toggleContrasenaConfirmacion()">
                                     <span class="input-group-text">
