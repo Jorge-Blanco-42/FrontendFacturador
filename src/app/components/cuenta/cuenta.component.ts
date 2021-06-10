@@ -166,21 +166,21 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   }
 
   cambioContrasena() {
-    // guardar cambio
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioUsuario.updateUsuario(cedula, {password: this.nuevaContrasena.contrasena})
+    .subscribe( res => {
+      console.log(res);
+    });
     this.formComtrasena.resetForm();
   }
 
   onTabChanged(event: MatTabChangeEvent) {
-    if (event.index == 0) {
-      //this.formCertificado.resetForm();
-    }
-    else {
+    if (event.index != 0) {
       this.formComtrasena.resetForm();
       this.valido = true;
       this.modificar = true;
       let datos = JSON.stringify(this.clienteOriginal);
       this.cliente = JSON.parse(datos);
-      //this.formDatos.resetForm();
     }
   }
 
