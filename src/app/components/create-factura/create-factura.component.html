@@ -80,7 +80,6 @@
                                     <label for="ProvinciaEmisor">Provincia</label>
                                     <select ng-init="datosXML.emisor_provincia" class="form-control" id="ProvinciaEmisor" name="provinciaEmisor" #provinciaEmisor="ngModel" 
                                     (change) = "cargarCantonesEmisor(datosXML.emisor_provincia)" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia" required aria-label="Provincia del emisor" aria-describedby="pendiente">
-                                    <option disabled value='0'>-- Seleccione una provincia --</option>
                                     <option [value] = "provincia.codigo_provincia" *ngFor = "let provincia Of provincias; ">{{provincia.nombre_provincia}}</option>
                                     </select>
                                 </div>
@@ -88,7 +87,6 @@
                                     <label for="CantonEmisor">Cantón</label>
                                     <select ng-init="datosXML.emisor_canton" class="form-control" id="CantonEmisor" name="cantonEmisor" #cantonEmisor="ngModel" 
                                     (change) = "cargarDistritosEmisor(datosXML.emisor_canton)" [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton" required aria-label="Canton del emisor" aria-describedby="pendiente">
-                                        <option selected disabled value= '0'>-- Seleccione un cantón --</option>
                                         <option [value] = "canton.codigo_canton" *ngFor = "let canton Of cantonesFiltradosEmisor;" >{{canton.nombre_canton}}</option>
                                     </select>
                                 </div>
@@ -96,7 +94,6 @@
                                     <label for="DistritoEmisor">Distrito</label>
                                     <select ng-init="datosXML.emisor_distrito" class="form-control" id="DistritoEmisor" name="distritoEmisor" #distritoEmisor="ngModel" 
                                     [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_distrito" aria-label="Distrito del emisor" aria-describedby="pendiente">
-                                        <option selected disabled value= '0'>-- Seleccione un distrito --</option>
                                         <option [value] = "distrito.codigo_distrito" *ngFor = "let distrito Of distritosFiltradosEmisor;" >{{distrito.nombre_distrito}}</option>
                                     </select>
                                 </div>
@@ -115,6 +112,7 @@
                                     </span>
                                 </div>
                             </div>
+                            <p *ngIf = "emisorGuardado" class = "text-success">Cambios guardados.</p>
                             <div class="row justify-content-end" *ngIf="emisorDeshabilitado">
                                 <div class="form-item col-auto">
                                     <button type="button" (click)="modificarEmisor()" class="btn btn-outline-secondary" aria-label="Botón modificar datos de emisor" aria-describedby="pendiente">

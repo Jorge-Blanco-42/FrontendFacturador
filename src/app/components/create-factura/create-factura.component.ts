@@ -30,6 +30,7 @@ import { ServicioPersona } from 'src/app/services/persona';
 import { Persona } from 'src/app/models/persona';
 import { NONE_TYPE } from '@angular/compiler';
 import { ActividadEconomica } from 'src/app/models/actividadEconomica';
+import { textChangeRangeIsUnchanged } from 'typescript';
 
 
 //inicio mary
@@ -143,6 +144,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   claveXML: ClaveXML;
   signXML: FirmadoXML;
   sendXML: EnvioXML;
+  
 
   public provincias: any[] = [];
   private cantones: any[] = [];
@@ -151,6 +153,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public distritosFiltradosReceptor: any[] = [];
   public cantonesFiltradosEmisor: any[] = [];
   public distritosFiltradosEmisor: any [] = [];
+
+  public emisorGuardado: boolean = false;
+  public receptorGuardado: boolean = false;
 
   public provinciaSeleccionada: number = 0;
 
@@ -700,7 +705,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   guardarEmisor() {
-    //console.log("PENDIENTE")
+    this.actualizarEmisor();
+    this.emisorDeshabilitado = true;
   }
 
   guardarReceptor() {
@@ -985,5 +991,34 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     },err=>{
       console.log(err)
     });
+  }
+
+
+  actualizarEmisor(){
+    var data: object = {
+      cedula: this.datosXML.emisor_num_identif,
+      nombre: this.datosXML.emisor_nombre,
+      email: this.datosXML.emisor_email,
+      nombreComercial: this.datosXML.nombre_comercial,
+      IDDistrito: this.datosXML.emisor_distrito,
+      barrio: this.datosXML.emisor_barrio,
+      otrasSenas: this.datosXML.emisor_otras_senas,
+      telefono: this.datosXML.emisor_tel,
+      fax: this.datosXML.emisor_fax
+    };
+
+
+    this._servicioPersona.updatePersona(this.datosXML.emisor_num_identif, data).subscribe(
+      res => {
+        console.log('Actualizado', res);
+        this.emisorGuardado = true;
+        setTimeout( () => {
+          this.emisorGuardado = false;
+        }, 5000);
+      },
+      errorActualizar => {
+        console.log('Error al actualizar', errorActualizar);
+      }
+    )
   }
 }
