@@ -98,7 +98,18 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   }
 
   guardar(cliente : Persona){
-    console.log(cliente);
+    console.log(cliente)
+    let datos = JSON.stringify(cliente);
+    let clienteActualizado = JSON.parse(datos);
+    delete clienteActualizado.ubicacion;
+    console.log(clienteActualizado)
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioPersona.updatePersona(cedula, clienteActualizado)
+    .subscribe(res => {
+      console.log(res);
+    }, error => {
+      console.log(error);
+    });
   }
 
   validarContrasena(){
@@ -163,6 +174,8 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   cancelarModificar() {
     this.modificar = true;
+    let datos = JSON.stringify(this.clienteOriginal);
+    this.cliente = JSON.parse(datos);
   }
 
   cambioContrasena() {
@@ -178,9 +191,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     if (event.index != 0) {
       this.formComtrasena.resetForm();
       this.valido = true;
-      this.modificar = true;
-      let datos = JSON.stringify(this.clienteOriginal);
-      this.cliente = JSON.parse(datos);
+      this.cancelarModificar();
     }
   }
 
@@ -295,6 +306,9 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.cliente.ubicacion[0] = ubicacion[0];
       this.cliente.ubicacion[1] = ubicacion[1];
       this.cliente.ubicacion[2] = ubicacion[2];
+
+      this.cliente.IDDistrito = ubicacion[0];
+      this.cliente.IDTipoIdentificacion = personaResult.IDTipoIdentificacion;
       
       this.cliente.cedula = personaResult.cedula;
       this.cliente.nombre = personaResult.nombre;
