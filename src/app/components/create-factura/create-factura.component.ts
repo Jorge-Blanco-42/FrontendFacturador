@@ -13,7 +13,7 @@ import { TipoCambio } from '../../models/tipoCambio';
 import { ServicioTipoCambio } from '../../services/tipoCambioXML';
 import { DatePipe } from '@angular/common';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { FormControl} from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Linea } from 'src/app/models/linea';
 import { OtroCargo } from 'src/app/models/otroCargo';
 import { MatTableDataSource } from '@angular/material/table';
@@ -31,6 +31,7 @@ import { Persona } from 'src/app/models/persona';
 import { NONE_TYPE } from '@angular/compiler';
 import { ActividadEconomica } from 'src/app/models/actividadEconomica';
 import { textChangeRangeIsUnchanged } from 'typescript';
+import { ServicioTipoIdentificacion } from 'src/app/services/tipoIdentificacion';
 
 
 //inicio mary
@@ -109,7 +110,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['busquedaNombreCliente', 'busquedaIdentificacionCliente', 'busquedaCorreoCliente'];
   displayedColumnsResumen: string[] = ['productoLinea', 'cantidadProductoLinea', 'totalLinea'];
   private paginator!: MatPaginator;
-  clientes : Clientes[] = [];
+  clientes: Clientes[] = [];
   public isCollapsedEmisorData: boolean = true;
   public isCollapsedReceptorData: boolean = true;
   public isCollapsedResumenData: boolean = true;
@@ -119,8 +120,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   clienteSeleccionado: boolean = false;
   receptorDatosImportantes: boolean = true;
 
-  codigoActividad!:string;
-  actividades : ActividadEconomica[] = [];
+  codigoActividad!: string;
+  actividades: ActividadEconomica[] = [];
 
   public radioCliente: number = 0;
   public total_OtrosCargos: number;
@@ -142,7 +143,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   claveXML: ClaveXML;
   signXML: FirmadoXML;
   sendXML: EnvioXML;
-  
+
 
   public provincias: any[] = [];
   private cantones: any[] = [];
@@ -150,13 +151,15 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public cantonesFiltradosReceptor: any[] = [];
   public distritosFiltradosReceptor: any[] = [];
   public cantonesFiltradosEmisor: any[] = [];
-  public distritosFiltradosEmisor: any [] = [];
+  public distritosFiltradosEmisor: any[] = [];
+  
+  public tipoIdentificaciones: any[] = [];
 
   public emisorGuardado: boolean = false;
   public receptorGuardado: boolean = false;
 
   public provinciaSeleccionada: number = 0;
-  
+
   dataSource = new MatTableDataSource(this.clientes);
   dataSourceResumen: MatTableDataSource<Linea> = new MatTableDataSource(this.lineas);
 
@@ -165,7 +168,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas,
     private _servicioUbicacion: ServicioUbicacion, private _servicioAutenticacion: ServicioAutenticacion, private _servicioUsuario: ServicioUsuario,
-    private _servicioPersona: ServicioPersona) {
+    private _servicioPersona: ServicioPersona, private _servicioTipoIdentificacion: ServicioTipoIdentificacion) {
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012385",
       "98762268", "FE");
 
@@ -193,7 +196,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.cambio = new TipoCambio("", "", "");
     this.tipo_cambio = 0;
     this.impuestoTarifa = new Map();
- 
+
     this.persona = new Persona();
 
     this.total_OtrosCargos = 0;
@@ -219,9 +222,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     let token = localStorage.getItem("token");
     this.actualizarTipoCambio(this.maxDate);
-    
+
     this.getCabys();
-    
+
     this.impuestoTarifa.set("01-01", 1.0);
     this.impuestoTarifa.set("01-02", 1.01);
     this.impuestoTarifa.set("01-03", 1.02);
@@ -238,16 +241,18 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.impuestoTarifa.set("07-07", 1.04);
     this.impuestoTarifa.set("07-08", 1.13);
     this.impuestoTarifa.set("08", 0);
-  
-    this.cargarUbicaciones().then( res =>{
-    this.cargarUsuario();
-    this.cargarClientes();
+
+    this.cargarUbicaciones().then(res => {
+      this.cargarUsuario();
+      this.cargarClientes();
+      this.cargarTipoID();
 
     }).catch(error => {
       console.log('Error cargarUbicacion', error);
     });
-    
-    
+
+   
+
   }
 
   ngAfterViewInit() {
@@ -695,7 +700,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   modificarEmisor() {
-    this.copiaReceptor = this.datosXML; 
+    this.copiaReceptor = this.datosXML;
     this.emisorDeshabilitado = false;
   }
 
@@ -747,6 +752,16 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.datosXML.receptor_canton = row.receptor_canton;
     this.datosXML.receptor_barrio = row.receptor_barrio;
     this.datosXML.receptor_distrito = row.receptor_distrito;
+
+
+    this.ubicacionPersona(this.datosXML.receptor_distrito).then(ubicacion => {
+      this.datosXML.receptor_distrito = ubicacion[0];
+      this.datosXML.receptor_canton = ubicacion[1];
+      this.datosXML.receptor_provincia = ubicacion[2];
+
+      this.cargarUbicacionReceptor(this.datosXML.receptor_canton, this.datosXML.receptor_provincia);
+
+    });
     //console.log(row);
   }
 
@@ -828,8 +843,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     return lineaStr;
   }
 
-  private cargarUbicaciones(): Promise<any>{
-    return new Promise((resolve, reject)=>{
+  private cargarUbicaciones(): Promise<any> {
+    return new Promise((resolve, reject) => {
       this._servicioUbicacion.getProvincias().subscribe(
         data => {
           console.log(data);
@@ -840,7 +855,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           reject(error);
         }
       );
-  
+
       this._servicioUbicacion.getCantones().subscribe(
         data => {
           this.cantones = data;
@@ -850,7 +865,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           reject(error);
         }
       );
-  
+
       this._servicioUbicacion.getDistritos().subscribe(
         data => {
           this.distritos = data;
@@ -862,18 +877,18 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       );
       resolve(true);
     });
-      
-    
-    
-    
+
+
+
+
   }
 
 
 
-  cargarCantones(codigo_provincia: any){
+  cargarCantones(codigo_provincia: any) {
     this.distritosFiltradosReceptor = [];
     this.cantonesFiltradosReceptor = [];
-    
+
     this.cantonesFiltradosReceptor = this.cantones.filter(element => {
       return element.codigo_provincia == codigo_provincia;
     });
@@ -882,7 +897,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   };
 
-  cargarDistritos(codigo_canton?: any){
+  cargarDistritos(codigo_canton?: any) {
     codigo_canton = parseInt(codigo_canton);
     this.distritosFiltradosReceptor = this.distritos.filter(element => {
       return element.codigo_canton == codigo_canton;
@@ -892,9 +907,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   };
 
-  
 
-  cargarCantonesEmisor(codigo_provincia: any){
+
+  cargarCantonesEmisor(codigo_provincia: any) {
     this.distritosFiltradosEmisor = [];
     this.cantonesFiltradosEmisor = [];
     console.log('codigo de provincia', codigo_provincia);
@@ -907,7 +922,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   };
 
-  cargarDistritosEmisor(codigo_canton?: any){
+  cargarDistritosEmisor(codigo_canton?: any) {
     console.log(codigo_canton);
     codigo_canton = parseInt(codigo_canton);
     this.distritosFiltradosEmisor = this.distritos.filter(element => {
@@ -918,8 +933,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   };
 
-  private cargarUbicacionEmisor(codigo_canton: string, 
-    codigo_provincia: string){
+  private cargarUbicacionEmisor(codigo_canton: string,
+    codigo_provincia: string) {
     this.cantonesFiltradosEmisor = this.cantones.filter(element => {
       return element.codigo_provincia == codigo_provincia;
     });
@@ -928,18 +943,36 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       return element.codigo_canton == codigo_canton;
     });
 
-    console.log('Holi',this.distritosFiltradosEmisor);
-   
-    
+    console.log('Holi', this.distritosFiltradosEmisor);
+
+
   }
 
-  private ubicacionPersona(codigo_distrito: string): Promise<any>{
+  private cargarUbicacionReceptor(codigo_canton: string,
+    codigo_provincia: string) {
+    this.cantonesFiltradosReceptor = this.cantones.filter(element => {
+      return element.codigo_provincia == codigo_provincia;
+    });
+
+    this.distritosFiltradosReceptor = this.distritos.filter(element => {
+      return element.codigo_canton == codigo_canton;
+    });
+
+    console.log('Holi', this.distritosFiltradosReceptor);
+
+
+  }
+
+
+
+
+  private ubicacionPersona(codigo_distrito: string): Promise<any> {
     return new Promise((resolve, reject) => {
       var res: Array<any> = new Array();
       var distrito = this.distritos.filter(element => {
         return element.codigo_distrito == codigo_distrito;
       });
-      var canton =  this.cantones.filter(element => {
+      var canton = this.cantones.filter(element => {
         return element.codigo_canton == distrito[0].codigo_canton;
       });
       var provincia = this.provincias.filter(element => {
@@ -948,53 +981,53 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       res.push(distrito[0].codigo_distrito, canton[0].codigo_canton, provincia[0].codigo_provincia);
       resolve(res);
     });
-    
+
 
 
   }
 
-  private cargarUsuario(){
+  private cargarUsuario() {
     var cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
-    this._servicioPersona.getPersona(cedula).subscribe( result => {
+    this._servicioPersona.getPersona(cedula).subscribe(result => {
       var personaResult = result.data[0];
 
       this.ubicacionPersona(personaResult.IDDistrito).then(ubicacion => {
-      this.datosXML.emisor_distrito = ubicacion[0];
-      this.datosXML.emisor_canton = ubicacion[1];
-      this.datosXML.emisor_provincia = ubicacion[2];
-      
-      this.datosXML.emisor_num_identif = personaResult.cedula;
-      this.datosXML.emisor_nombre = personaResult.nombre;
-      this.datosXML.nombre_comercial = personaResult.nombreComercial;
-      this.datosXML.emisor_email = personaResult.email;
-      this.datosXML.emisor_tel = personaResult.telefono;
-      this.datosXML.emisor_barrio = personaResult.barrio;
-      this.datosXML.emisor_otras_senas = personaResult.otrasSenas;
-      this.datosXML.emisor_fax = personaResult.fax;
-      this.cargarUbicacionEmisor(this.datosXML.emisor_canton, this.datosXML.emisor_provincia);
-      console.log('Ubicación: ', this.persona.ubicacion);
+        this.datosXML.emisor_distrito = ubicacion[0];
+        this.datosXML.emisor_canton = ubicacion[1];
+        this.datosXML.emisor_provincia = ubicacion[2];
+
+        this.datosXML.emisor_num_identif = personaResult.cedula;
+        this.datosXML.emisor_nombre = personaResult.nombre;
+        this.datosXML.nombre_comercial = personaResult.nombreComercial;
+        this.datosXML.emisor_email = personaResult.email;
+        this.datosXML.emisor_tel = personaResult.telefono;
+        this.datosXML.emisor_barrio = personaResult.barrio;
+        this.datosXML.emisor_otras_senas = personaResult.otrasSenas;
+        this.datosXML.emisor_fax = personaResult.fax;
+        this.cargarUbicacionEmisor(this.datosXML.emisor_canton, this.datosXML.emisor_provincia);
+        console.log('Ubicación: ', this.persona.ubicacion);
       });
-      
+
     },
-    error => {
-      console.log(error);
-    });
-  
+      error => {
+        console.log(error);
+      });
+
   }
 
-  cargarActividades(){
+  cargarActividades() {
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
-    this._servicioUsuario.getActividades(cedula).subscribe((res:any) =>{
+    this._servicioUsuario.getActividades(cedula).subscribe((res: any) => {
       console.log(res);
       this.actividades = res.data;
-      if(this.actividades) this.codigoActividad = this.actividades[0].codigo;
-    },err=>{
+      if (this.actividades) this.codigoActividad = this.actividades[0].codigo;
+    }, err => {
       console.log(err)
     });
   }
 
 
-  actualizarEmisor(){
+  actualizarEmisor() {
     var data: object = {
       cedula: this.datosXML.emisor_num_identif,
       nombre: this.datosXML.emisor_nombre,
@@ -1012,7 +1045,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       res => {
         console.log('Actualizado', res);
         this.emisorGuardado = true;
-        setTimeout( () => {
+        setTimeout(() => {
           this.emisorGuardado = false;
         }, 5000);
       },
@@ -1021,10 +1054,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       }
     )
   }
-  cargarClientes(){
+
+  cargarClientes() {
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
-    this._servicioUsuario.getClientes(cedula).subscribe((res: any) =>{
-      res.data.forEach((cliente:any) => {
+    this._servicioUsuario.getClientes(cedula).subscribe((res: any) => {
+      res.data.forEach((cliente: any) => {
         let temp: Clientes = {
           nombre: cliente.nombre,
           receptor_tipo_identif: cliente.IDTipoIDentificacion,
@@ -1039,9 +1073,23 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           receptor_fax: cliente.fax,
           correo: cliente.email
         }
-        this.clientes.push(temp)
+
+
+        this.clientes.push(temp);
       })
       this.dataSource = new MatTableDataSource(this.clientes);
+    })
+  }
+
+  private cargarTipoID(){
+    this._servicioTipoIdentificacion.getTipoID().subscribe((res: any) =>{
+      for(var element in res){
+        this.tipoIdentificaciones.push(res[element].descripcion);
+      }
+      console.log(this.tipoIdentificaciones);
+    },
+    error =>{
+      console.log('HEEE', error);
     })
   }
 
