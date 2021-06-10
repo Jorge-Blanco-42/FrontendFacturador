@@ -73,6 +73,10 @@ export class ServicioUsuario {
         return this._http.get(this.backend+'getDocumentos/'+id,{headers:headers});
     }
 
+    getUltimoDocumento(idUsuario: string): Observable<any>{
+        return this._http.get(this.backend + 'getUltimoDocumento/'+ idUsuario);
+      }
+
     getUsuario(cedula: string): Observable<any>{
         let headers = new HttpHeaders().set('Content-Type', 'application/json');
         return this._http.get(this.backend+'getUsuario/'+cedula, {headers: headers});
