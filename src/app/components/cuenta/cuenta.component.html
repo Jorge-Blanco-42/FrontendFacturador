@@ -193,7 +193,7 @@
                         <div class="row justify-content-center form-item">
                             <div class="col-sm-8">
                                 <label for="Contrasena">Contraseña</label>
-                                <input type="text" class="form-control" id="Contrasena" name="contrasena" #contrasenaCertificado="ngModel" [(ngModel)]="certificado.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                                <input type="text" class="form-control" id="Contrasena" name="contrasena" #contrasenaCertificado="ngModel" [(ngModel)]="certificado.password" aria-label="Contrasena" aria-describedby="pendiente"
                                     required/>
                                 <span class="text-danger" *ngIf="contrasenaCertificado.touched && !contrasenaCertificado.valid">
                                     <span>Dato inválido.</span>
