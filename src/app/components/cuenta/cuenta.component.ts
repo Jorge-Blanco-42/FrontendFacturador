@@ -37,6 +37,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   @ViewChild('myFormContrasena') public formComtrasena!: NgForm;
 
   cliente!: Persona;
+  clienteOriginal!:Persona;
   nuevaContrasena: Contrasena;
   // contasenaValida: boolean = true;
   valido: boolean = true;
@@ -63,6 +64,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   constructor(private _servicioAutenticacion: ServicioAutenticacion, private _servicioCertificado: ServicioCertificado, 
     private _servicioUbicacion: ServicioUbicacion, private _servicioPersona: ServicioPersona, private _servicioUsuario: ServicioUsuario) { 
     this.cliente = new Persona("","","","","","","","","","",[]);
+    this.clienteOriginal = new Persona("","","","","","","","","","",[]);
     this.certificado = new Certificado("","","","","");
     this.nuevaContrasena = {
       contrasena: "", 
@@ -71,7 +73,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     this.certificado = new Certificado("", "", "", "", "", undefined);
     this.cargarUbicaciones().then( res =>{
       this.cargarUsuario();
-  
+
       }).catch(error => {
         console.log('Error cargarUbicacion', error);
       });
@@ -170,12 +172,15 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   onTabChanged(event: MatTabChangeEvent) {
     if (event.index == 0) {
-      this.formCertificado.resetForm();
+      //this.formCertificado.resetForm();
     }
     else {
       this.formComtrasena.resetForm();
       this.valido = true;
-      this.formDatos.resetForm();
+      this.modificar = true;
+      let datos = JSON.stringify(this.clienteOriginal);
+      this.cliente = JSON.parse(datos);
+      //this.formDatos.resetForm();
     }
   }
 
@@ -301,6 +306,10 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.cliente.fax = personaResult.fax;
       this.cargarUbicacionEmisor(this.cliente.ubicacion[1], this.cliente.ubicacion[2]);
       console.log('Ubicación: ', this.cliente.ubicacion);
+      
+      let datos = JSON.stringify(this.cliente);
+      this.clienteOriginal = JSON.parse(datos);
+
       });
       
     },
