@@ -33,7 +33,7 @@ export class ServicioAutenticacion {
 
   public obtenerDatosUsuario(): Usuario {
     const token = this.getToken();
-    let usuario = new Usuario("","",0);
+    let usuario = new Usuario("","",0,"","");
     let payload;
     if (token) {
       payload = token.split('.')[1];

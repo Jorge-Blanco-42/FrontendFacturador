@@ -17,7 +17,7 @@ const routes: Routes = [
   {path: 'consultar', component: ConsultarComponent, canActivate: [AutenticacionGuard]},  
   {path : 'login', component: LoginComponent},
   {path : 'cuenta', component: CuentaComponent, canActivate: [AutenticacionGuard]},
-  {path: 'nueva-contrasena/:id/:token', component: CambiarContrasenaComponent, canActivate: [AutenticacionGuard]},
+  {path: 'nueva-contrasena/:id/:token', component: CambiarContrasenaComponent},
   {path: '**', component: ErrorComponent },
 ];
 

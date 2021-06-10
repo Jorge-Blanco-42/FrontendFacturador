@@ -3,14 +3,25 @@ import { ControlContainer, NgForm } from '@angular/forms';
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Certificado } from 'src/app/models/certificado';
+import { UsuarioCRLibre } from 'src/app/models/usuarioCRLibre';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioCertificado } from 'src/app/services/certificado';
 import { ServicioPersona } from 'src/app/services/persona';
 import { ServicioUbicacion } from 'src/app/services/ubicacion';
 import { Persona } from 'src/app/models/persona';
+import { ServicioUsuario } from 'src/app/services/usuario';
 
 export interface Contrasena {
   contrasena: string, 
+  confirmarContrasena: string
+}
+
+export interface Cliente {
+  nombre: string, nombreRazonSocial: string,
+  identificacion: string,
+  provincia: string, canton: string,
+  distrito: string, barrio: string, otras_senas: string,
+  telefono: string, fax: string, correo: string, contrasena: string,
   confirmarContrasena: string
 }
 
@@ -31,13 +42,14 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   valido: boolean = true;
 
   certificado!: Certificado;
+  archivoOriginal: string = "";
 
   selectedFiles!: FileList;
   currentFile!: File;
   archivoSeleccionado: boolean = false;
   currentFileName: string = "Seleccionar archivo";
 
-  modificar:boolean = true;
+  modificar: boolean = true;
 
   mostrar: boolean = false;
   mostrarConfirmacion: boolean = false;
@@ -49,13 +61,14 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   public distritosFiltradosEmisor: any [] = [];
 
   constructor(private _servicioAutenticacion: ServicioAutenticacion, private _servicioCertificado: ServicioCertificado, 
-    private _servicioUbicacion: ServicioUbicacion, private _servicioPersona: ServicioPersona) { 
+    private _servicioUbicacion: ServicioUbicacion, private _servicioPersona: ServicioPersona, private _servicioUsuario: ServicioUsuario) { 
     this.cliente = new Persona("","","","","","","","","","",[]);
     this.certificado = new Certificado("","","","","");
     this.nuevaContrasena = {
       contrasena: "", 
       confirmarContrasena: ""
     }
+    this.certificado = new Certificado("", "", "", "", "", undefined);
     this.cargarUbicaciones().then( res =>{
       this.cargarUsuario();
   
@@ -65,7 +78,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    
+
   }
 
   ngOnInit(): void {
@@ -73,6 +86,8 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     this._servicioCertificado.getCertificado(cedula).subscribe(
       result => {
         this.certificado = result[0];
+        this.certificado.archivoURL = result[0].archivo;
+        this.archivoOriginal = result[0].archivo;
       },
       error => {
         //alert(<any>error);
@@ -87,13 +102,41 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   validarContrasena(){
     if(this.nuevaContrasena.contrasena === this.nuevaContrasena.confirmarContrasena){
       this.valido = true;
-    }else{
+    } else {
       this.valido = false;
     }
   }
 
-  modificarCertificado(certificado:Certificado){
-    console.log(certificado);
+  modificarCertificado(certificado: Certificado) {
+    let usuario = this._servicioAutenticacion.obtenerDatosUsuario();
+    console.log(usuario)
+    if (this.certificado.archivoURL !== this.archivoOriginal && certificado.archivo) {
+      let CRLibre = new UsuarioCRLibre("users", "users_log_me_in", usuario.nombreDeUsuario, usuario.password ? usuario.password : "");
+      this._servicioUsuario.iniciarSesionCR(CRLibre).subscribe(login => {
+        if (certificado.archivo) {
+          this._servicioCertificado.subirCertificado(certificado.archivo, usuario.nombreDeUsuario, login.resp.sessionKey).subscribe((res: any) => {
+            certificado.archivoURL = res.resp.downloadCode;
+            this._servicioCertificado.actualizarCertificado(certificado, usuario.cedula).subscribe((res:any) =>{
+              console.log(res);
+            },(err:any) =>{
+              console.log(err);
+            })
+          }, (err: any) => {
+            console.log(err);
+          })
+        }
+      }, err => {
+        console.log(err)
+      })
+
+    }else{
+      this._servicioCertificado.actualizarCertificado(certificado, usuario.cedula).subscribe((res:any) =>{
+        console.log(res);
+      },(err:any) =>{
+        console.log(err);
+      })
+    }
+    
   }
 
   selectFile(event: any): void {
@@ -104,43 +147,43 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.certificado.archivo = this.currentFile;
       this.archivoSeleccionado = true;
       this.currentFileName = this.currentFile.name;
+      this.certificado.archivoURL = this.currentFileName;
       console.log(this.currentFileName)
-    } else{
+    } else {
       this.currentFileName = "Seleccionar archivo";
       this.archivoSeleccionado = false;
-    } 
+    }
   }
 
-  modificarCuenta(){
+  modificarCuenta() {
     this.modificar = false;
   }
 
-  cancelarModificar(){
+  cancelarModificar() {
     this.modificar = true;
   }
 
-  cambioContrasena(){
+  cambioContrasena() {
     // guardar cambio
     this.formComtrasena.resetForm();
   }
 
-  onTabChanged(event: MatTabChangeEvent) 
-  {
-    if(event.index == 0){
-        this.formCertificado.resetForm();
+  onTabChanged(event: MatTabChangeEvent) {
+    if (event.index == 0) {
+      this.formCertificado.resetForm();
     }
-    else{
+    else {
       this.formComtrasena.resetForm();
       this.valido = true;
       this.formDatos.resetForm();
     }
   }
 
-  toggleContrasena(){
+  toggleContrasena() {
     this.mostrar = !this.mostrar;
   }
 
-  toggleContrasenaConfirmacion(){
+  toggleContrasenaConfirmacion() {
     this.mostrarConfirmacion = !this.mostrarConfirmacion;
   }
 

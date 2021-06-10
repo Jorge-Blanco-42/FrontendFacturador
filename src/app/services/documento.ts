@@ -17,4 +17,6 @@ export class ServicioDocumento {
   getDocumentos(idUsuario: string): Observable<any>{
     return this._http.get(this.backendUrl + 'getDocumentos/'+ idUsuario);
   }
+
+  
 }
