@@ -261,7 +261,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       let xd = this.claveMayor.substr(21, 20)
       this.consecutivo = parseInt(this.claveMayor.substr(31, 10));
       console.log(this.consecutivo)
-      this.consecutivo += 1;
+      this.consecutivo += 1;  
       this.claveXML.consecutivo = this.consecutivo.toString().padStart(10,"0");
       this.claveXML.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8,"0");
     },err=>{
@@ -1107,9 +1107,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   private cargarTipoID(){
     this._servicioTipoIdentificacion.getTipoID().subscribe((res: any) =>{
       for(var element in res){
-        this.tipoIdentificaciones.push(res[element].descripcion);
+        this.tipoIdentificaciones.push(res[element]);
       }
-      console.log(this.tipoIdentificaciones);
+      console.log('DOCUMENTOS', this.tipoIdentificaciones);
     },
     error =>{
       console.log('HEEE', error);

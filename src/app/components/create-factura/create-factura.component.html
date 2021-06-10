@@ -243,14 +243,9 @@
                         </div>
                         <div class="form-item col-md-4">
                             <label for="TipoIdentificacionReceptor">Tipo de Identificación</label>
-                            <select class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_tipo_identif" aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente"
+                            <select ng-init = "datosXML.receptor_tipo_identif" class="form-control" id="TipoIdentificacionReceptor" name="tipoIdentificacionReceptor" [attr.disabled]="receptorDatosImportantes ? true: null" [(ngModel)]="datosXML.receptor_tipo_identif" aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente"
                                 required>
-                                <option value="01">Cédula Física</option>
-                                <option value="02">Cédula Jurídica</option>
-                                <option value=03>Pasaporte</option>
-                                <option value=04>Dimex</option>
-                                <option value=05>DIDI</option>
-                                <option value=06>NITE</option>
+                                <option [value] = "datosXML.receptor_tipo_identif" *ngFor = "let id Of tipoIdentificaciones">{{id.descripcion}}</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
