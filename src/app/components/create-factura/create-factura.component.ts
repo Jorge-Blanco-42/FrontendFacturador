@@ -258,7 +258,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       console.log(err);
     })
     setTimeout(() => {
-      
       console.log(this.datosXML);
       console.log(this.claveXML);
       console.log(this.signXML);
