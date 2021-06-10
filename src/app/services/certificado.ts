@@ -44,4 +44,24 @@ export class ServicioCertificado {
         return this._http.post(this.url,form);
     }
 
+    subirCertificado(certificado: File, usuario: string, key: string): Observable<any>{
+        let form = new FormData();
+        form.append("w","fileUploader");
+        form.append("r","subir_certif");
+        form.append("iam",usuario);
+        form.append("sessionKey",key);
+        form.append("fileToUpload",certificado);
+        return this._http.post(this.url,form);
+    }
+
+    actualizarCertificado(certificado:Certificado, id: string): Observable<any>{
+        let form = new FormData();
+        form.append("usuario",certificado.usuario);
+        form.append("contrasena",certificado.password);
+        form.append("archivo",certificado.archivoURL);
+        form.append("pin",certificado.pin);
+        form.append("cedula",id);
+        return this._http.patch(this.backendUrl+"actualizar-certificado",form);
+    }
+
 }

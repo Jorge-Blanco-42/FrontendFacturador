@@ -214,17 +214,17 @@
                             <div class="col-sm-8">
                                 <label for="Archivo">Archivo</label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="customFileLang" #archivo="ngModel" [(ngModel)]="certificado.archivo" lang="es" (change)="selectFile($event)" required>
-                                    <label class="custom-file-label" for="customFileLang" data-browse="Buscar">{{currentFileName}}</label>
+                                    <input type="file" class="custom-file-input" name="customFileLang" lang="es" (change)="selectFile($event)">
+                                    <label class="custom-file-label" for="customFileLang" data-browse="Buscar">{{certificado.archivoURL}}</label>
                                   </div>
-                                <span class="text-secondary" *ngIf="(archivo.touched && !archivoSeleccionado) || !archivoSeleccionado">
+                                <!-- <span class="text-secondary" *ngIf="(archivo.touched && !archivoSeleccionado) || !archivoSeleccionado">
                                     <span>El archivo es obligatorio.</span>
-                                </span>
+                                </span> -->
                             </div>
                         </div>
                         <div class="row justify-content-center form-item mt-3">
-                            <button type="submit" [disabled]="myFormCertificado.invalid || !archivoSeleccionado" class="btn btn-outline-secondary" aria-label="Botón modificar" aria-describedby="pendiente">
-                                MODIFICAR
+                            <button type="submit" [disabled]="myFormCertificado.invalid" class="btn btn-outline-secondary" aria-label="Botón modificar" aria-describedby="pendiente">
+                                Guardar
                             </button>
                         </div>
                     </form> 

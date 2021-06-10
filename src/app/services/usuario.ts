@@ -26,9 +26,12 @@ export class ServicioUsuario {
     }
 
     iniciarSesionCR(user: UsuarioCRLibre): Observable<any> {
-        let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-        var params = "w=" + user.w + "&r=" + user.r + "&userName=" + user.userName + "&pwd=" + user.pwd;
-        return this._http.post(this.url, params, { headers: headers });
+        let data = new FormData();
+        data.append("w",user.w);
+        data.append("r",user.r);
+        data.append("userName",user.userName);
+        data.append("pwd",user.pwd);
+        return this._http.post(this.url, data);
     }
 
     iniciarSesion(user: Usuario){
@@ -69,6 +72,10 @@ export class ServicioUsuario {
         let headers = new HttpHeaders().set('Content-Type', 'application/json');
         return this._http.get(this.backend+'getDocumentos/'+id,{headers:headers});
     }
+
+    getUltimoDocumento(idUsuario: string): Observable<any>{
+        return this._http.get(this.backend + 'getUltimoDocumento/'+ idUsuario);
+      }
 
     getUsuario(cedula: string): Observable<any>{
         let headers = new HttpHeaders().set('Content-Type', 'application/json');

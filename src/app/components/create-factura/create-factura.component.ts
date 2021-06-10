@@ -28,10 +28,11 @@ import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioUsuario } from 'src/app/services/usuario';
 import { ServicioPersona } from 'src/app/services/persona';
 import { Persona } from 'src/app/models/persona';
-import { NONE_TYPE } from '@angular/compiler';
 import { ActividadEconomica } from 'src/app/models/actividadEconomica';
 import { textChangeRangeIsUnchanged } from 'typescript';
 import { ServicioTipoIdentificacion } from 'src/app/services/tipoIdentificacion';
+import { ServicioCertificado } from 'src/app/services/certificado';
+import { Certificado } from 'src/app/models/certificado';
 
 
 //inicio mary
@@ -134,10 +135,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   cabys: { impuesto: string, descripcion: string, codigoBienServicio: string }[] = [];
   public lineasJSON: {}[] = [];
   public persona: Persona;
-
+  claveMayor:string = "";
+  consecutivo:number = 0;
   public datosXML: CreacionXML;
   private copiaReceptor: any;
-  public datosXML2: CreacionXML;
   public lineas: Linea[] = [];
   public otrosCargos: OtroCargo[] = [];
   claveXML: ClaveXML;
@@ -168,16 +169,10 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas,
     private _servicioUbicacion: ServicioUbicacion, private _servicioAutenticacion: ServicioAutenticacion, private _servicioUsuario: ServicioUsuario,
-    private _servicioPersona: ServicioPersona, private _servicioTipoIdentificacion: ServicioTipoIdentificacion) {
+    private _servicioPersona: ServicioPersona, private _servicioTipoIdentificacion: ServicioTipoIdentificacion,
+    private _servicioCertificado: ServicioCertificado) {
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012385",
       "98762268", "FE");
-
-    this.datosXML2 = new CreacionXML("genXML", "gen_xml_fe", "",
-      "", "2021-04-18T00:54:00-06:00", "Jorge Luis Blanco Cordero", "01", "113160737", "Jorge Luis Blanco Cordero",
-      "6", "02", "03", "01", "En la jungla", "506", "86153313", "506", "00000000", "jorge.luis1999@hotmail.com", "Walner Borbon",
-      "01", "702320717", "6", "02", "03", "01", "506", "84922891", "506", "00000000", "walner.borbon@hotmail.com",
-      "01", "0", "01", "CRC", "569.48", "0", "10000", "10000", "0", "10000", "10000", "20000", "100", "19900", "1170", "21070",
-      "Jiji", "Bichota", "", 'False')
 
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
       "", "01", "", "",
@@ -186,8 +181,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       "", "", "", "", "506", "", "506", "", "", "01", "0", "01", "CRC",
       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "False");
 
-    this.signXML = new FirmadoXML("signXML", "signFE", "67d23a034ddf5991e5a8e9a72e708f4c", "",
-      "2021", "FE");
+    this.signXML = new FirmadoXML("signXML", "signFE", "", "",
+      "", "FE");
 
     this.sendXML = new EnvioXML("send", "json", "",
       "", "", "01",
@@ -220,6 +215,17 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   paginatorResumen!: MatPaginator;
 
   ngOnInit(): void {
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    let usuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
+    this.sendXML.emi_numeroIdentificacion = cedula;
+    this._servicioCertificado.getCertificado(cedula).subscribe(
+      result => {
+        this.signXML.p12Url = result[0].archivo;
+        this.signXML.pinP12 = result[0].pin;
+      }, err => {
+        console.log(err);
+      });
+
     let token = localStorage.getItem("token");
     this.actualizarTipoCambio(this.maxDate);
 
@@ -250,8 +256,23 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     }).catch(error => {
       console.log('Error cargarUbicacion', error);
     });
-
-   
+    this._servicioUsuario.getUltimoDocumento(usuario).subscribe(res=>{
+      this.claveMayor = res.doc.claveDocumento;
+      let xd = this.claveMayor.substr(21, 20)
+      this.consecutivo = parseInt(this.claveMayor.substr(31, 10));
+      console.log(this.consecutivo)
+      this.consecutivo += 1;
+      this.claveXML.consecutivo = this.consecutivo.toString().padStart(10,"0");
+      this.claveXML.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8,"0");
+    },err=>{
+      console.log(err);
+    })
+    setTimeout(() => {
+      console.log(this.datosXML);
+      console.log(this.claveXML);
+      console.log(this.signXML);
+      console.log(this.sendXML);
+    }, 2000);
 
   }
 
@@ -332,6 +353,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
     let fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
     if (fecha) this.datosXML.fecha_emision = fecha.toString();
+    
     this._servicioClaveXML.crearClaveXML(this.claveXML).subscribe(
       result => {
         //console.log("CLAVE XML ", <any>result);
@@ -743,7 +765,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   getRecord(row: any) {
     this.clienteSeleccionado = true;
     this.datosXML.receptor_nombre = row.nombre;
-    this.datosXML.receptor_tipo_identif = row.receptor_tipo_identif;
+    this.datosXML.receptor_tipo_identif = row.receptor_tipo_identif.toString().padStart(2, "0");;
     this.datosXML.receptor_num_identif = row.identificacion;
     this.datosXML.receptor_email = row.correo;
     this.datosXML.receptor_tel = row.receptor_tel;
@@ -751,7 +773,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.datosXML.receptor_provincia = row.receptor_provincia;
     this.datosXML.receptor_canton = row.receptor_canton;
     this.datosXML.receptor_barrio = row.receptor_barrio;
-    this.datosXML.receptor_distrito = row.receptor_distrito;
+    this.datosXML.receptor_distrito = row.receptor_distrito.toString();
 
 
     this.ubicacionPersona(this.datosXML.receptor_distrito).then(ubicacion => {
@@ -990,12 +1012,13 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     var cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioPersona.getPersona(cedula).subscribe(result => {
       var personaResult = result.data[0];
-
+      console.log(personaResult);
       this.ubicacionPersona(personaResult.IDDistrito).then(ubicacion => {
-        this.datosXML.emisor_distrito = ubicacion[0];
-        this.datosXML.emisor_canton = ubicacion[1];
-        this.datosXML.emisor_provincia = ubicacion[2];
-
+        this.datosXML.emisor_distrito = ubicacion[0].toString();
+        this.datosXML.emisor_canton = ubicacion[1].toString();
+        this.datosXML.emisor_provincia = ubicacion[2].toString();
+        this.datosXML.emisor_tipo_indetif = personaResult.IDTipoIdentificacion.toString().padStart(2, "0");
+        this.sendXML.emi_tipoIdentificacion = this.datosXML.emisor_tipo_indetif;
         this.datosXML.emisor_num_identif = personaResult.cedula;
         this.datosXML.emisor_nombre = personaResult.nombre;
         this.datosXML.nombre_comercial = personaResult.nombreComercial;

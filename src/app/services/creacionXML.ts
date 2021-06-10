@@ -28,9 +28,9 @@ export class ServicioCreacionXML {
         form.append("emisor_num_identif", xmlData.emisor_num_identif);
         form.append("nombre_comercial", xmlData.nombre_comercial);
         form.append("emisor_provincia", xmlData.emisor_provincia);
-        form.append("emisor_canton", xmlData.emisor_canton);
-        form.append("emisor_distrito", xmlData.emisor_distrito);
-        form.append("emisor_barrio", xmlData.emisor_barrio);
+        form.append("emisor_canton", xmlData.emisor_canton.substr(1,3));
+        form.append("emisor_distrito", xmlData.emisor_distrito.substr(3,3));
+        form.append("emisor_barrio", "01");
         form.append("emisor_otras_senas", xmlData.emisor_otras_senas);
         form.append("emisor_cod_pais_tel", xmlData.emisor_cod_pais_tel);
         form.append("emisor_tel", xmlData.emisor_tel);
@@ -41,9 +41,9 @@ export class ServicioCreacionXML {
         form.append("receptor_tipo_identif", xmlData.receptor_tipo_identif);
         form.append("receptor_num_identif", xmlData.receptor_num_identif);
         form.append("receptor_provincia", xmlData.receptor_provincia);
-        form.append("receptor_canton", xmlData.receptor_canton);
-        form.append("receptor_distrito", xmlData.receptor_distrito);
-        form.append("receptor_barrio", xmlData.receptor_barrio);
+        form.append("receptor_canton", xmlData.receptor_canton.substr(1,3));
+        form.append("receptor_distrito", xmlData.receptor_distrito.substr(3,3));
+        form.append("receptor_barrio", "01");
         form.append("receptor_cod_pais_tel", xmlData.receptor_cod_pais_tel);
         form.append("receptor_tel", xmlData.receptor_tel);
         form.append("receptor_cod_pais_fax", xmlData.receptor_cod_pais_fax);
