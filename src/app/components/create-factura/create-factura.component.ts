@@ -28,7 +28,6 @@ import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioUsuario } from 'src/app/services/usuario';
 import { ServicioPersona } from 'src/app/services/persona';
 import { Persona } from 'src/app/models/persona';
-import { NONE_TYPE } from '@angular/compiler';
 import { ActividadEconomica } from 'src/app/models/actividadEconomica';
 import { ServicioCertificado } from 'src/app/services/certificado';
 import { Certificado } from 'src/app/models/certificado';
@@ -209,11 +208,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     let usuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
+    this.sendXML.emi_numeroIdentificacion = cedula;
     this._servicioCertificado.getCertificado(cedula).subscribe(
       result => {
-        let certificado: Certificado = result;
-        this.signXML.p12Url = certificado.archivoURL;
-        this.signXML.pinP12 = certificado.pin;
+        this.signXML.p12Url = result[0].archivo;
+        this.signXML.pinP12 = result[0].pin;
       }, err => {
         console.log(err);
       });
@@ -250,10 +249,11 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this._servicioUsuario.getUltimoDocumento(usuario).subscribe(res=>{
       this.claveMayor = res.doc.claveDocumento;
       let xd = this.claveMayor.substr(21, 20)
-      this.consecutivo = parseInt(this.claveMayor.substr(31, 1));
+      this.consecutivo = parseInt(this.claveMayor.substr(31, 10));
       console.log(this.consecutivo)
       this.consecutivo += 1;
-      console.log(xd)
+      this.claveXML.consecutivo = this.consecutivo.toString().padStart(10,"0");
+      this.claveXML.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8,"0");
     },err=>{
       console.log(err);
     })
@@ -979,7 +979,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
         this.datosXML.emisor_distrito = ubicacion[0].toString();
         this.datosXML.emisor_canton = ubicacion[1].toString();
         this.datosXML.emisor_provincia = ubicacion[2].toString();
-        this.datosXML.emisor_tipo_indetif = personaResult.IDTipoIdentificacion.toString();
+        this.datosXML.emisor_tipo_indetif = personaResult.IDTipoIdentificacion.toString().padStart(2, "0");
+        this.sendXML.emi_tipoIdentificacion = this.datosXML.emisor_tipo_indetif;
         this.datosXML.emisor_num_identif = personaResult.cedula;
         this.datosXML.emisor_nombre = personaResult.nombre;
         this.datosXML.nombre_comercial = personaResult.nombreComercial;
