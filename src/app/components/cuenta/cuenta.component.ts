@@ -10,6 +10,7 @@ import { ServicioPersona } from 'src/app/services/persona';
 import { ServicioUbicacion } from 'src/app/services/ubicacion';
 import { Persona } from 'src/app/models/persona';
 import { ServicioUsuario } from 'src/app/services/usuario';
+import { error } from 'jquery';
 
 export interface Contrasena {
   contrasena: string, 
@@ -41,6 +42,14 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   nuevaContrasena: Contrasena;
   // contasenaValida: boolean = true;
   valido: boolean = true;
+  contrasenaActualizada:boolean = false;
+  contrasenaError:boolean = false;
+  mostrarContrasenaCertificado: boolean = false;
+  certificadoActualizado : boolean = false;
+  certificadoError : boolean = false;
+  datosPersonalesActualizado : boolean = false;
+  datosPersonalesError : boolean = false;
+
 
   certificado: Certificado = new Certificado("", "", "", "", "", undefined);
   archivoOriginal: string = "";
@@ -105,8 +114,17 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     this._servicioPersona.updatePersona(cedula, clienteActualizado)
     .subscribe(res => {
       console.log(res);
+      this.modificar = true;
+      this.datosPersonalesActualizado = true;
+      setTimeout(() => {
+        this.datosPersonalesActualizado = false;
+      }, 5000);
     }, error => {
       console.log(error);
+      this.datosPersonalesError = true;
+      setTimeout(() => {
+        this.datosPersonalesError = false;
+      }, 5000);
     });
   }
 
@@ -129,22 +147,47 @@ export class CuentaComponent implements OnInit, AfterViewInit {
             certificado.archivoURL = res.resp.downloadCode;
             this._servicioCertificado.actualizarCertificado(certificado, usuario.cedula).subscribe((res:any) =>{
               console.log(res);
+              this.certificadoActualizado = true;
+              setTimeout(() => {
+                this.certificadoActualizado = false;
+              }, 5000);
+
             },(err:any) =>{
               console.log(err);
+              this.certificadoError = true;
+              setTimeout(() => {
+                this.certificadoError = false;
+              }, 5000);
             })
           }, (err: any) => {
             console.log(err);
+            this.certificadoError = true;
+            setTimeout(() => {
+              this.certificadoError = false;
+            }, 5000);
           })
         }
       }, err => {
-        console.log(err)
+        console.log(err);
+        this.certificadoError = true;
+        setTimeout(() => {
+          this.certificadoError = false;
+        }, 5000);
       })
 
     }else{
       this._servicioCertificado.actualizarCertificado(certificado, usuario.cedula).subscribe((res:any) =>{
         console.log(res);
+        this.certificadoActualizado = true;
+        setTimeout(() => {
+          this.certificadoActualizado = false;
+        }, 5000);
       },(err:any) =>{
         console.log(err);
+        this.certificadoError = true;
+        setTimeout(() => {
+          this.certificadoError = false;
+        }, 5000);
       })
     }
     
@@ -184,8 +227,20 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     this._servicioUsuario.updateUsuario(cedula, {password: this.nuevaContrasena.contrasena})
     .subscribe( res => {
       console.log(res);
+      this.formComtrasena.resetForm();
+
+      this.contrasenaActualizada = true;
+      setTimeout(() => {
+        this.contrasenaActualizada = false;
+      }, 5000);
+
+    }, error => {
+      this.contrasenaError = true;
+      setTimeout(() => {
+        this.contrasenaError = false;
+      }, 5000);
     });
-    this.formComtrasena.resetForm();
+
   }
 
   onTabChanged(event: MatTabChangeEvent) {
@@ -202,6 +257,10 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   toggleContrasenaConfirmacion() {
     this.mostrarConfirmacion = !this.mostrarConfirmacion;
+  }
+
+  toggleContrasenaCertificado() {
+    this.mostrarContrasenaCertificado = !this.mostrarContrasenaCertificado;
   }
 
   //

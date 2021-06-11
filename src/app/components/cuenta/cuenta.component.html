@@ -110,7 +110,9 @@
                             </button>
                         </div>
                     </div>
-
+                    <p *ngIf="datosPersonalesActualizado" class="text-success">Datos actualizados correctamente.</p>
+                    <p *ngIf="datosPersonalesError" class="text-danger">Error al actualizar los datos.</p>
+                    <!--  -->
                 </form>
                 <!-- Siguiente seccion -->
                 <div class="header-title mt-5" aria-label="Sección de cambio de contraseña" aria-describedby="pendiente">
@@ -174,6 +176,8 @@
                             </button>
                         </div>
                     </div>
+                    <p *ngIf="contrasenaActualizada" class="text-success">Contraseña actualizada correctamente.</p>
+                    <p *ngIf="contrasenaError" class="text-danger">Error al actualizar contraseña.</p>
                 </form>
             </div>
     
@@ -196,8 +200,18 @@
                         <div class="row justify-content-center form-item">
                             <div class="col-sm-8">
                                 <label for="Contrasena">Contraseña</label>
-                                <input type="text" class="form-control" id="Contrasena" name="contrasena" #contrasenaCertificado="ngModel" [(ngModel)]="certificado.password" aria-label="Contrasena" aria-describedby="pendiente"
-                                    required/>
+                                <div class="input-group">
+                                    <input [type]="mostrarContrasenaCertificado ? 'text' : 'password'" class="form-control" id="Contrasena" name="contrasena" #contrasenaCertificado="ngModel" [(ngModel)]="certificado.password" aria-label="Contrasena" aria-describedby="pendiente"
+                                        required/>
+                                    <div class="input-group-append" (click)="toggleContrasenaCertificado()">
+                                        <span class="input-group-text">
+                                            <i class="fa" [ngClass]="{
+                                            'fa-eye-slash': mostrarContrasenaCertificado,
+                                            'fa-eye': !mostrarContrasenaCertificado
+                                            }"></i>
+                                        </span>
+                                    </div>
+                                </div>
                                 <span class="text-danger" *ngIf="contrasenaCertificado.touched && !contrasenaCertificado.valid">
                                     <span>Dato inválido.</span>
                                 </span>
@@ -225,7 +239,12 @@
                                 </span> -->
                             </div>
                         </div>
-                        <div class="row justify-content-center form-item mt-3">
+                        <div class="row justify-content-center form-item">
+                            <p *ngIf="certificadoActualizado" class="text-success">Certificado actualizado correctamente.</p>
+                            <p *ngIf="certificadoError" class="text-danger">Error al actualizar certificado.</p>
+                            <!-- *ngIf="contrasenaActualizada" -->
+                        </div>
+                        <div [ngClass]="certificadoActualizado || certificadoError ? 'mt-0' : 'mt-3'" class="row justify-content-center form-item">
                             <button type="submit" [disabled]="myFormCertificado.invalid" class="btn btn-outline-secondary" aria-label="Botón modificar" aria-describedby="pendiente">
                                 GUARDAR
                             </button>
