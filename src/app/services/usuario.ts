@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { Global } from './global'
 import { environment } from 'src/environments/environment';
 import { Documento } from '../models/documento';
+import { Persona } from '../models/persona';
 
 @Injectable()
 export class ServicioUsuario {
@@ -105,6 +106,22 @@ export class ServicioUsuario {
     getClientes(cedula: string): Observable<any>{
         let headers = new HttpHeaders().set('Content-Type', 'aplication/json');
         return this._http.get(this.backend + 'getClientes/' + cedula, {headers:headers});
+    }
+
+    insertCliente(idUsuario: string, cliente: Persona){
+        let data = new FormData();
+        data.append('cedula', cliente.cedula);
+        data.append('nombre', cliente.nombre);
+        data.append('email', cliente.email);
+        data.append('nombreComercial', cliente.nombreComercial);
+        data.append('IDTipoIdentificacion', cliente.IDTipoIdentificacion);
+        data.append('IDDistrito', cliente.IDDistrito);
+        data.append('barrio', cliente.barrio);
+        data.append('otrasSenas', cliente.otrasSenas);
+        data.append('telefono', cliente.telefono);
+        data.append('fax', cliente.fax);
+    
+        return this._http.post(this.backend + 'insertCliente/'+idUsuario, data);
     }
     
     updateUsuario(cedula: string, newData: any){

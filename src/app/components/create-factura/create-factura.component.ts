@@ -419,7 +419,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                             this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
                                               resp => {
                                                 console.log("", resp);
-                                                
+
                                                 let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
                                                   "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
                                                   this.sendXML.comprobanteXml, resp.resp["respuesta-xml"], "base64");
@@ -435,15 +435,15 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                                     // else if(resp.resp["ind-estado"] === "aceptado") aceptacion = "1";
                                                     // else aceptacion = "2"
                                                     aceptacion = "1";
-                                                    let documento = new Documento(this.sendXML.clave,this.sendXML.comprobanteXml,
-                                                                                  fechaBD?fechaBD:"",this.datosXML.receptor_nombre,"1",usuario,
-                                                                                  aceptacion,resp.resp["respuesta-xml"]);
-                                                    this._servicioUsuario.insertDocumento(documento).subscribe(estadoFinal =>{
+                                                    let documento = new Documento(this.sendXML.clave, this.sendXML.comprobanteXml,
+                                                      fechaBD ? fechaBD : "", this.datosXML.receptor_nombre, "1", usuario,
+                                                      aceptacion, resp.resp["respuesta-xml"]);
+                                                    this._servicioUsuario.insertDocumento(documento).subscribe(estadoFinal => {
                                                       console.log(estadoFinal);
-                                                    }, errorBD =>{
+                                                    }, errorBD => {
                                                       console.log("error en base de datos", errorBD);
                                                     })
-                                                    
+
                                                   },
                                                   error => {
                                                     console.log("No se pudo enviar el correo");
@@ -762,7 +762,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   guardarReceptor() {
-    //console.log("PENDIENTE")
     var persona = new Persona();
     persona.cedula = this.datosXML.receptor_num_identif;
     persona.nombre = this.datosXML.receptor_nombre;
@@ -788,10 +787,20 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           fax: this.datosXML.receptor_fax
         };
     */
-    let IDUsuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
-    this._servicioPersona.insertCliente(IDUsuario,persona).subscribe(
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioUsuario.insertCliente(cedula, persona).subscribe(
       res => {
         console.log('Actualizado', res);
+        let clienteNuevo: Clientes = {
+          nombre: persona.nombre,
+          receptor_tipo_identif: persona.IDTipoIdentificacion, identificacion: persona.cedula,
+          receptor_provincia: this.datosXML.receptor_provincia, receptor_canton: this.datosXML.receptor_canton,
+          receptor_distrito: persona.IDDistrito, receptor_barrio: persona.barrio,
+          receptor_cod_pais_tel: "506", receptor_tel: persona.telefono,
+          receptor_cod_pais_fax: "506", receptor_fax: persona.fax,
+          correo: persona.email
+        }
+        this.clientes.push(clienteNuevo);
         this.receptorInsertado = true;
         setTimeout(() => {
           this.receptorInsertado = false;
