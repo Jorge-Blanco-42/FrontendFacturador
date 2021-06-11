@@ -6,10 +6,15 @@ import { Certificado } from 'src/app/models/certificado';
 import { UsuarioCRLibre } from 'src/app/models/usuarioCRLibre';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioCertificado } from 'src/app/services/certificado';
-import { ServicioUsuario } from 'src/app/services/usuario';
 import { ServicioPersona } from 'src/app/services/persona';
 import { ServicioUbicacion } from 'src/app/services/ubicacion';
 import { Persona } from 'src/app/models/persona';
+import { ServicioUsuario } from 'src/app/services/usuario';
+
+export interface Contrasena {
+  contrasena: string, 
+  confirmarContrasena: string
+}
 
 export interface Cliente {
   nombre: string, nombreRazonSocial: string,
@@ -17,11 +22,6 @@ export interface Cliente {
   provincia: string, canton: string,
   distrito: string, barrio: string, otras_senas: string,
   telefono: string, fax: string, correo: string, contrasena: string,
-  confirmarContrasena: string
-}
-
-export interface Contrasena {
-  contrasena: string, 
   confirmarContrasena: string
 }
 
@@ -37,6 +37,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   @ViewChild('myFormContrasena') public formComtrasena!: NgForm;
 
   cliente!: Persona;
+  clienteOriginal!:Persona;
   nuevaContrasena: Contrasena;
   // contasenaValida: boolean = true;
   valido: boolean = true;
@@ -63,14 +64,16 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   constructor(private _servicioAutenticacion: ServicioAutenticacion, private _servicioCertificado: ServicioCertificado, 
     private _servicioUbicacion: ServicioUbicacion, private _servicioPersona: ServicioPersona, private _servicioUsuario:ServicioUsuario) { 
     this.cliente = new Persona("","","","","","","","","","",[]);
+    this.clienteOriginal = new Persona("","","","","","","","","","",[]);
     this.certificado = new Certificado("","","","","");
     this.nuevaContrasena = {
       contrasena: "", 
       confirmarContrasena: ""
     }
+    this.certificado = new Certificado("", "", "", "", "", undefined);
     this.cargarUbicaciones().then( res =>{
       this.cargarUsuario();
-  
+
       }).catch(error => {
         console.log('Error cargarUbicacion', error);
       });
@@ -95,7 +98,18 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   }
 
   guardar(cliente : Persona){
-    console.log(cliente);
+    console.log(cliente)
+    let datos = JSON.stringify(cliente);
+    let clienteActualizado = JSON.parse(datos);
+    delete clienteActualizado.ubicacion;
+    console.log(clienteActualizado)
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioPersona.updatePersona(cedula, clienteActualizado)
+    .subscribe(res => {
+      console.log(res);
+    }, error => {
+      console.log(error);
+    });
   }
 
   validarContrasena(){
@@ -160,21 +174,24 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   cancelarModificar() {
     this.modificar = true;
+    let datos = JSON.stringify(this.clienteOriginal);
+    this.cliente = JSON.parse(datos);
   }
 
   cambioContrasena() {
-    // guardar cambio
+    let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
+    this._servicioUsuario.updateUsuario(cedula, {password: this.nuevaContrasena.contrasena})
+    .subscribe( res => {
+      console.log(res);
+    });
     this.formComtrasena.resetForm();
   }
 
   onTabChanged(event: MatTabChangeEvent) {
-    if (event.index == 0) {
-      this.formCertificado.resetForm();
-    }
-    else {
+    if (event.index != 0) {
       this.formComtrasena.resetForm();
       this.valido = true;
-      this.formDatos.resetForm();
+      this.cancelarModificar();
     }
   }
 
@@ -289,6 +306,9 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.cliente.ubicacion[0] = ubicacion[0];
       this.cliente.ubicacion[1] = ubicacion[1];
       this.cliente.ubicacion[2] = ubicacion[2];
+
+      this.cliente.IDDistrito = ubicacion[0];
+      this.cliente.IDTipoIdentificacion = personaResult.IDTipoIdentificacion;
       
       this.cliente.cedula = personaResult.cedula;
       this.cliente.nombre = personaResult.nombre;
@@ -300,6 +320,10 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.cliente.fax = personaResult.fax;
       this.cargarUbicacionEmisor(this.cliente.ubicacion[1], this.cliente.ubicacion[2]);
       console.log('Ubicación: ', this.cliente.ubicacion);
+      
+      let datos = JSON.stringify(this.cliente);
+      this.clienteOriginal = JSON.parse(datos);
+
       });
       
     },
