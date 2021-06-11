@@ -20,6 +20,7 @@ import { DatePipe } from '@angular/common';
 import { ServicioCertificado } from 'src/app/services/certificado';
 import { ServicioClaveXML } from 'src/app/services/claveXML';
 import { ServicioFirmadoXML } from 'src/app/services/firmadoXML';
+import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 
 export interface PeriodicElement {
   name: string;
@@ -52,7 +53,8 @@ export class ConsultarComponent implements OnInit {
 
   }
 
-  constructor(public dialog: MatDialog, private _servicioUsuario: ServicioUsuario) {
+  constructor(public dialog: MatDialog, private _servicioUsuario: ServicioUsuario,
+              private _servicioAutenticacion: ServicioAutenticacion) {
     this.cargarDocumentos()
       .then((res) => {
         let resp = JSON.parse(res);
@@ -107,7 +109,8 @@ export class ConsultarComponent implements OnInit {
 
   cargarDocumentos(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this._servicioUsuario.getDocumentos("1").subscribe(
+      let idUsuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
+      this._servicioUsuario.getDocumentos(idUsuario).subscribe(
         result => { resolve(JSON.stringify(result)); },
         err => { reject(err); }
       )

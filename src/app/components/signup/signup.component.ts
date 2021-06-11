@@ -3,6 +3,7 @@ import { Output, EventEmitter } from '@angular/core';
 import { FormControl} from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
+import { ServicioUbicacion } from 'src/app/services/ubicacion';
 import { ServicioUsuario } from 'src/app/services/usuario';
 
 
@@ -31,8 +32,14 @@ export class SignupComponent implements OnInit {
   cliente!: Cliente;
   valido: boolean = true;
 
+  public provincias: any[] = [];
+  private cantones: any[] = [];
+  private distritos: any[] = [];
+  public cantonesFiltrados: any[] = [];
+  public distritosFiltrados: any[] = [];
+
   constructor( private _servicioUsuario: ServicioUsuario, private _servicioAutenticacion: ServicioAutenticacion,
-    public dialogRef: MatDialogRef<SignupComponent>) { 
+    public dialogRef: MatDialogRef<SignupComponent>, private _servicioUbicacion: ServicioUbicacion) { 
     this.cliente = {
       nombre: "",
       nombreRazonSocial: "", identificacion: "",
@@ -43,7 +50,9 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.login)
+    this.cargarUbicaciones().then(res =>{
+      this.cargarCantones(this.cliente.provincia);
+    });
   }
   
   closeSignUp(close: boolean): void {
@@ -81,5 +90,82 @@ export class SignupComponent implements OnInit {
   toggleContrasenaConfirmacion(){
     this.mostrarConfirmacion = !this.mostrarConfirmacion;
   }
+
+  // //carga los cantones filtrados del receptor
+  // cargarCantones(codigo_provincia: any) {
+  //   this.distritosFiltradosReceptor = [];
+  //   this.cantonesFiltradosReceptor = [];
+
+  //   this.cantonesFiltradosReceptor = this.cantones.filter(element => {
+  //     return element.codigo_provincia == codigo_provincia;
+  //   });
+  //   this.cargarDistritos(this.cantonesFiltradosReceptor[0].codigo_canton);
+
+  // };
+
+  // //carga los distritos filtrados del receptor
+  // cargarDistritos(codigo_canton?: any) {
+  //   codigo_canton = parseInt(codigo_canton);
+  //   this.distritosFiltradosReceptor = this.distritos.filter(element => {
+  //     return element.codigo_canton == codigo_canton;
+  //   });
+
+  //llena los arrays privados de provincia, cantón y distrito.
+  private cargarUbicaciones(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._servicioUbicacion.getProvincias().subscribe(
+        provincias => {
+          this.provincias = provincias;
+
+          this._servicioUbicacion.getCantones().subscribe(
+            cantones => {
+              this.cantones = cantones;
+
+              this._servicioUbicacion.getDistritos().subscribe(
+                distritos => {
+                  this.distritos = distritos;
+                  this.cliente.provincia = provincias[0].codigo_provincia;
+                  resolve(true);
+                },
+                error => {
+                  reject(error);
+                }
+              );
+
+            },
+            error => {
+              reject(error);
+            }
+          );
+
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  //carga las cantones filtrados del emisor
+  cargarCantones(codigo_provincia: any) {
+    this.distritosFiltrados = [];
+    this.cantonesFiltrados = [];
+    this.cantonesFiltrados = this.cantones.filter(element => {
+      return element.codigo_provincia == codigo_provincia;
+    });
+    this.cliente.canton = this.cantonesFiltrados[0].codigo_canton;
+    this.cargarDistritos(this.cliente.canton)
+
+  };
+
+  //carga los distritos filtrados del emisor
+  cargarDistritos(codigo_canton?: any) {
+    console.log(codigo_canton);
+    codigo_canton = parseInt(codigo_canton);
+    this.distritosFiltrados = this.distritos.filter(element => {
+      return element.codigo_canton == codigo_canton;
+    });
+    this.cliente.distrito = this.distritosFiltrados[0].codigo_distrito;
+  };
 
 }

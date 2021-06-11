@@ -66,6 +66,38 @@
                 </div>
                 <div class="row">
                     <div class="form-item col-md-4">
+                        <label for="ProvinciaEmisor">Provincia</label>
+                        <select ng-init="datosXML.emisor_provincia" class="form-control" id="ProvinciaEmisor"
+                            name="provinciaEmisor" #provinciaEmisor="ngModel"
+                            (change)="cargarCantones(cliente.provincia)" [(ngModel)]="cliente.provincia" required
+                            aria-label="Provincia del emisor" aria-describedby="pendiente">
+                            <option [value]="provincia.codigo_provincia" *ngFor="let provincia Of provincias; ">
+                                {{provincia.nombre_provincia}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-item col-md-4">
+                        <label for="CantonEmisor">Cantón</label>
+                        <select ng-init="datosXML.emisor_canton" class="form-control" id="CantonEmisor"
+                            name="cantonEmisor" #cantonEmisor="ngModel" (change)="cargarDistritos(cliente.canton)"
+                            [(ngModel)]="cliente.canton" required aria-label="Canton del emisor"
+                            aria-describedby="pendiente">
+                            <option [value]="canton.codigo_canton" *ngFor="let canton Of cantonesFiltrados;">
+                                {{canton.nombre_canton}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-item col-md-4">
+                        <label for="DistritoEmisor">Distrito</label>
+                        <select ng-init="datosXML.emisor_distrito" class="form-control" id="DistritoEmisor"
+                            name="distritoEmisor" #distritoEmisor="ngModel" [(ngModel)]="cliente.distrito"
+                            aria-label="Distrito del emisor" aria-describedby="pendiente">
+                            <option [value]="distrito.codigo_distrito"
+                                *ngFor="let distrito Of distritosFiltrados;">
+                                {{distrito.nombre_distrito}}</option>
+                        </select>
+                    </div>
+                    <!-- <div class="form-item col-md-4">
                         <label for="Provincia">Provincia</label>
                         <select class="form-control form-control-sm" id="Provincia" name="provincia"
                             #provincia="ngModel" [(ngModel)]="cliente.provincia" aria-label="Provincia"
@@ -86,13 +118,14 @@
                             [(ngModel)]="cliente.distrito" aria-label="Distrito" aria-describedby="pendiente" required>
                             <option value="10101">Carmen</option>
                         </select>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="row">
                     <div class="form-item col-md-4">
                         <label for="Barrio">Barrio</label>
-                        <input type="text" class="form-control form-control-sm" id="Barrio" name="barrio" #barrio="ngModel"
-                            [(ngModel)]="cliente.barrio" aria-label="Barrio" aria-describedby="pendiente" required>
+                        <input type="text" class="form-control form-control-sm" id="Barrio" name="barrio"
+                            #barrio="ngModel" [(ngModel)]="cliente.barrio" aria-label="Barrio"
+                            aria-describedby="pendiente" required>
                     </div>
                     <div class="form-item col-md-6">
                         <label for="OtrasSenas">Otras señas</label>
@@ -116,8 +149,9 @@
                         <div class="input-group">
                             <!-- Change input type to be dynamic -->
                             <input [type]="mostrar ? 'text' : 'password'" class="form-control form-control-sm"
-                                id="Contrasena" name="contrasena" #contrasena="ngModel" (keyup)="validarContrasena()" [(ngModel)]="cliente.contrasena"
-                                aria-label="Contrasena" aria-describedby="pendiente" required />
+                                id="Contrasena" name="contrasena" #contrasena="ngModel" (keyup)="validarContrasena()"
+                                [(ngModel)]="cliente.contrasena" aria-label="Contrasena" aria-describedby="pendiente"
+                                required />
                             <div class="input-group-append" (click)="toggleContrasena()">
                                 <span class="input-group-text">
                                     <i class="fa" [ngClass]="{
@@ -126,7 +160,7 @@
                                   }"></i>
                                 </span>
                             </div>
-                            
+
                         </div>
                         <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
                             <span>Campo obligatorio.</span>
@@ -137,10 +171,11 @@
                         <label for="ConfirmarContrasena">Confirmar Contraseña</label>
                         <div class="input-group">
                             <!-- Change input type to be dynamic -->
-                            <input [type]="mostrarConfirmacion ? 'text' : 'password'" class="form-control form-control-sm" id="ConfirmarContrasena"
-                            name="confirmarContrasena" #confirmarContrasena="ngModel" (keyup)="validarContrasena()"
-                            [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmara contrasena"
-                            aria-describedby="pendiente" required />
+                            <input [type]="mostrarConfirmacion ? 'text' : 'password'"
+                                class="form-control form-control-sm" id="ConfirmarContrasena" name="confirmarContrasena"
+                                #confirmarContrasena="ngModel" (keyup)="validarContrasena()"
+                                [(ngModel)]="cliente.confirmarContrasena" aria-label="Confirmara contrasena"
+                                aria-describedby="pendiente" required />
                             <div class="input-group-append" (click)="toggleContrasenaConfirmacion()">
                                 <span class="input-group-text">
                                     <i class="fa" [ngClass]="{
@@ -148,7 +183,7 @@
                                     'fa-eye': !mostrarConfirmacion
                                   }"></i>
                                 </span>
-                            </div>                            
+                            </div>
                         </div>
                         <span class="text-danger" *ngIf="contrasena.touched && !contrasena.valid">
                             <span>Campo obligatorio.</span>
@@ -156,7 +191,7 @@
                         <span class="text-danger" *ngIf="!valido">
                             <span>Contraseñas no coinciden.</span>
                         </span>
-                        
+
                     </div>
                 </div>
                 <button type="submit" [disabled]="myForm.invalid || !valido" class="btn btn-outline-secondary"
