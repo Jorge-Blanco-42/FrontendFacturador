@@ -6,7 +6,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Certificado } from 'src/app/models/certificado';
 import { ClaveXML } from 'src/app/models/claveXML';
+import { Correo } from 'src/app/models/correo';
 import { CreacionXML } from 'src/app/models/creacionXML';
+import { Documento } from 'src/app/models/documento';
 import { EnvioXML } from 'src/app/models/envioXML';
 import { FirmadoXML } from 'src/app/models/firmadoXML';
 import { Linea } from 'src/app/models/linea';
@@ -15,6 +17,8 @@ import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioCaByS } from 'src/app/services/cabys';
 import { ServicioCertificado } from 'src/app/services/certificado';
 import { ServicioClaveXML } from 'src/app/services/claveXML';
+import { ServicioConsultas } from 'src/app/services/consultas';
+import { ServicioCorreo } from 'src/app/services/correo';
 import { ServicioDecodificador } from 'src/app/services/decodificador';
 import { ServicioEnvioXML } from 'src/app/services/envioXML';
 import { ServicioEscritorXML } from 'src/app/services/escritorXML';
@@ -47,6 +51,11 @@ export class CrearNotaComponent implements OnInit {
   clave = "";
   fechaEmision = "";
 
+  consecutivo:number = 0;
+  strConsecutivo:string = "";
+  codigoSeguridad:string = "";
+  claveMayor:string="";
+
   xml: string;
 
   public total_OtrosCargos: number;
@@ -68,7 +77,8 @@ export class CrearNotaComponent implements OnInit {
     private _servicioUsuario: ServicioUsuario, private _servicioEscritorXML: ServicioEscritorXML,
     private _servicioDecodificador: ServicioDecodificador, private _servicioEnvio: ServicioEnvioXML,
     private _servicioFirma: ServicioFirmadoXML, private _servicioCertificado: ServicioCertificado,
-    public datepipe: DatePipe, private _servicioClave: ServicioClaveXML, private _servicioAutenticacion: ServicioAutenticacion) {
+    public datepipe: DatePipe, private _servicioClave: ServicioClaveXML, private _servicioAutenticacion: ServicioAutenticacion,
+    private _servicioConsultas: ServicioConsultas, private _servicioCorreo: ServicioCorreo) {
     this.total_OtrosCargos = 0;
     this.impuestoTarifa = new Map();
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
@@ -81,20 +91,24 @@ export class CrearNotaComponent implements OnInit {
     this.convertirXML()
       .then((res) => {
         var datos = JSON.parse(res);
-        this.tipoIdentEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Tipo[0];
-        this.tipoIdentReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Tipo[0];
-        this.clave = datos.jsonData.FacturaElectronica.Clave[0];
-        this.fechaEmision = datos.jsonData.FacturaElectronica.FechaEmision[0];
-        this.nombreEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Nombre;
-        this.cedulaEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Identificacion[0].Numero;
-        this.correoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].CorreoElectronico;
-        this.telefonoEmisor = datos.jsonData.FacturaElectronica.Emisor[0].Telefono[0].NumTelefono;
-        this.nombreReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Nombre;
-        this.cedulaReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Identificacion[0].Numero;
-        this.correoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].CorreoElectronico;
-        this.telefonoReceptor = datos.jsonData.FacturaElectronica.Receptor[0].Telefono[0].NumTelefono;
+        let tipo;
+        if (datos.jsonData.FacturaElectronica) tipo = "FacturaElectronica";
+        else if (datos.jsonData.NotaDebitoElectronica) tipo = "NotaDebitoElectronica";
+        else tipo = "NotaCreditoElectronica";
+        this.tipoIdentEmisor = datos.jsonData[tipo].Emisor[0].Identificacion[0].Tipo[0];
+        this.tipoIdentReceptor = datos.jsonData[tipo].Receptor[0].Identificacion[0].Tipo[0];
+        this.clave = datos.jsonData[tipo].Clave[0];
+        this.fechaEmision = datos.jsonData[tipo].FechaEmision[0];
+        this.nombreEmisor = datos.jsonData[tipo].Emisor[0].Nombre;
+        this.cedulaEmisor = datos.jsonData[tipo].Emisor[0].Identificacion[0].Numero;
+        this.correoEmisor = datos.jsonData[tipo].Emisor[0].CorreoElectronico;
+        this.telefonoEmisor = datos.jsonData[tipo].Emisor[0].Telefono[0].NumTelefono;
+        this.nombreReceptor = datos.jsonData[tipo].Receptor[0].Nombre;
+        this.cedulaReceptor = datos.jsonData[tipo].Receptor[0].Identificacion[0].Numero;
+        this.correoReceptor = datos.jsonData[tipo].Receptor[0].CorreoElectronico;
+        this.telefonoReceptor = datos.jsonData[tipo].Receptor[0].Telefono[0].NumTelefono;
         this.lineas = [];
-        var lineasJSON = datos.jsonData.FacturaElectronica.DetalleServicio;
+        var lineasJSON = datos.jsonData[tipo].DetalleServicio;
 
         for (let index = 0; index < lineasJSON.length; index++) {
           const lineaJson = lineasJSON[index];
@@ -112,7 +126,7 @@ export class CrearNotaComponent implements OnInit {
             linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento);
             linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento;
           }
-          if(lineaJson.LineaDetalle[0].BaseImponible)
+          if (lineaJson.LineaDetalle[0].BaseImponible)
             linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible[0]);
           linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0]);
           linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal[0]);
@@ -124,7 +138,7 @@ export class CrearNotaComponent implements OnInit {
         this.dataSourceResumen = new MatTableDataSource(this.lineas);
 
         this.otrosCargos = [];
-        var cargosJSON = datos.jsonData.FacturaElectronica.OtrosCargos;
+        var cargosJSON = datos.jsonData[tipo].OtrosCargos;
         if (cargosJSON) {
           for (let index = 0; index < cargosJSON.length; index++) {
             const cargoJSON = cargosJSON[index];
@@ -188,26 +202,73 @@ export class CrearNotaComponent implements OnInit {
 
   enviarNota() {
     this.crearClave()
-    .then((res) => {
-      console.log(res.resp)
-      this.claveNueva = res.resp.clave;
-      this.crearNota()
       .then((res) => {
-        this.xml = res.xmlencoded;
-        this.firmar()
+        console.log(res.resp)
+        this.claveNueva = res.resp.clave;
+        this.crearNota()
           .then((res) => {
-            this.xml = res;
-            this.enviar()
-              .then((res) => { console.log(res) })
+            this.xml = res.xmlencoded;
+            this.firmar()
+              .then((res) => {
+                this.xml = res;
+                this.enviar()
+                  .then((respEnvio) => {
+                    if (respEnvio.resp.Status === 202) {
+                      console.log("esperar");
+                      setTimeout(() => {
+                        let token = localStorage.getItem("token");
+                        this._servicioConsultas.consultarAceptacion(this.claveNueva, token ? token : "").subscribe(
+                          resp => {
+                            console.log("", resp);
+
+                            let correo = new Correo(this.correoReceptor, "Factura electrónica " + this.nombreEmisor,
+                              "Se adjunta factura electrónica", "Factura " + this.nombreEmisor + ".xml",
+                              this.xml, resp.resp["respuesta-xml"], "base64");
+                            console.log(correo);
+                            this._servicioCorreo.enviarCorreo(correo).subscribe(
+                              res => {
+                                console.log("correo enviado", correo);
+                                let fechaBD = this.datepipe.transform(this.fechaEmision, "dd/MM/yyyy")
+                                let usuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
+                                let aceptacion;
+                                // console.log(fecha, fechaBD);
+                                // if(resp.resp["ind-estado"] === "rechazado") aceptacion = "3";
+                                // else if(resp.resp["ind-estado"] === "aceptado") aceptacion = "1";
+                                // else aceptacion = "2"
+                                aceptacion = "2";
+                                let documento = new Documento(this.claveNueva, this.xml,
+                                  fechaBD ? fechaBD : "", this.nombreReceptor, this.data.tipoNota==="NC"?"3":"2", usuario,
+                                  aceptacion, resp.resp["respuesta-xml"]);
+                                this._servicioUsuario.insertDocumento(documento).subscribe(estadoFinal => {
+                                  console.log(estadoFinal);
+                                  this.dialogRef.close();
+                                  console.log(res)
+                                }, errorBD => {
+                                  console.log("error en base de datos", errorBD);
+                                })
+
+                              },
+                              error => {
+                                console.log("No se pudo enviar el correo");
+                              }
+                            );
+                          },
+                          error => {
+                            console.log("error en consulta");
+                          }
+                        )
+                      }, 30000);
+                    }
+                  })
+                  .catch((err) => { console.error(err) })
+              })
               .catch((err) => { console.error(err) })
           })
           .catch((err) => { console.error(err) })
       })
       .catch((err) => { console.error(err) })
-    })
-    .catch((err) => { console.error(err) })
-    
-    
+
+
   }
 
 
@@ -477,8 +538,8 @@ export class CrearNotaComponent implements OnInit {
 
   crearClave(): Promise<any> {
     return new Promise((resolve, reject) => {
-      let clave = new ClaveXML("clave","clave",this.tipoIdentEmisor,this.cedulaEmisor,
-      "normal","506","010002375","98862261",this.data.tipoNota);
+      let clave = new ClaveXML("clave", "clave", this.tipoIdentEmisor, this.cedulaEmisor,
+        "normal", "506", "010002375", "98862261", this.data.tipoNota);
       this._servicioClave.crearClaveXML(clave).subscribe(
         result => { resolve(result); },
         err => { reject(err); }
@@ -492,8 +553,8 @@ export class CrearNotaComponent implements OnInit {
       this._servicioDecodificador.decodificarXML(this.xml).subscribe(
         result1 => {
           let fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
-          
-          this._servicioEscritorXML.crearNota(result1.xmlDecoded, this.data.tipoNota, data, this.claveNueva , fecha?fecha:"").subscribe(
+
+          this._servicioEscritorXML.crearNota(result1.xmlDecoded, this.data.tipoNota, data, this.claveNueva, fecha ? fecha : "").subscribe(
             result2 => {
               this._servicioDecodificador.codificarXML(result2.xmlFile).subscribe(
                 res => { resolve(res); },

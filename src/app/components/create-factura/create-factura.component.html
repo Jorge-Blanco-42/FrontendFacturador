@@ -100,7 +100,7 @@
                                         id="ProvinciaEmisor" name="provinciaEmisor" #provinciaEmisor="ngModel"
                                         (change)="cargarCantonesEmisor(datosXML.emisor_provincia)"
                                         [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_provincia"
-                                        required aria-label="Provincia del emisor" aria-describedby="pendiente">
+                                        aria-label="Provincia del emisor" aria-describedby="pendiente">
                                         <option [value]="provincia.codigo_provincia"
                                             *ngFor="let provincia Of provincias; ">{{provincia.nombre_provincia}}
                                         </option>
@@ -111,7 +111,7 @@
                                     <select ng-init="datosXML.emisor_canton" class="form-control" id="CantonEmisor"
                                         name="cantonEmisor" #cantonEmisor="ngModel"
                                         (change)="cargarDistritosEmisor(datosXML.emisor_canton)"
-                                        [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton" required
+                                        [disabled]="emisorDeshabilitado" [(ngModel)]="datosXML.emisor_canton"
                                         aria-label="Canton del emisor" aria-describedby="pendiente">
                                         <option [value]="canton.codigo_canton"
                                             *ngFor="let canton Of cantonesFiltradosEmisor;">{{canton.nombre_canton}}
@@ -313,7 +313,7 @@
                             <select class="form-control" id="TipoIdentificacionReceptor" #tipoIdentificacionReceptor = "ngModel"
                                 name="tipoIdentificacionReceptor" [attr.disabled]="receptorDeshabilitado  ? true: null"
                                 [(ngModel)]="datosXML.receptor_tipo_identif"
-                                aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente" required>
+                                aria-label="Tipo de identificacion del receptor" aria-describedby="pendiente" >
                                 <option [value]="id.IDTipoIdentificacion" *ngFor="let id Of tipoIdentificaciones"
                                     [attr.selected]="id.IDTipoIdentificacion.toString() == datosXML.receptor_tipo_identif.toString() ? true: null">
                                     {{id.descripcion}}</option>
@@ -373,7 +373,7 @@
                                 (change)="cargarCantones(datosXML.receptor_provincia)"
                                 [attr.disabled]="receptorDeshabilitado  ? true: null"
                                 [(ngModel)]="datosXML.receptor_provincia" aria-label="Provincia del receptor"
-                                aria-describedby="pendiente" required>
+                                aria-describedby="pendiente" >
                                 <option [value]="provincia.codigo_provincia" *ngFor="let provincia Of provincias;">
                                     {{provincia.nombre_provincia}}</option>
                             </select>
@@ -385,7 +385,7 @@
                                 (change)="cargarDistritos(datosXML.receptor_canton)"
                                 [attr.disabled]="receptorDeshabilitado  ? true: null"
                                 [(ngModel)]="datosXML.receptor_canton" aria-label="Canton del receptor"
-                                aria-describedby="pendiente" required>
+                                aria-describedby="pendiente" >
                                 <option [value]="canton.codigo_canton"
                                     *ngFor="let canton Of cantonesFiltradosReceptor;">{{canton.nombre_canton}}</option>
                             </select>
@@ -396,7 +396,7 @@
                                 name="distritoReceptor" #distritoReceptor="ngModel"
                                 [attr.disabled]="receptorDeshabilitado  ? true: null"
                                 [(ngModel)]="datosXML.receptor_distrito" aria-label="Distrito del receptor"
-                                aria-describedby="pendiente" required>
+                                aria-describedby="pendiente" >
                                 <option [value]="distrito.codigo_distrito"
                                     *ngFor="let distrito Of distritosFiltradosReceptor;">{{distrito.nombre_distrito}}
                                 </option>
@@ -469,7 +469,7 @@
             <div class="col-md-4 form-item">
                 <label for="metodos">Método de pago</label>
                 <select class="form-control" name="metodos" id="metodos" [(ngModel)]="datosXML.medio_pago"
-                    aria-label="Método de pago del receptor" aria-describedby="pendiente" required>
+                    aria-label="Método de pago del receptor" aria-describedby="pendiente" >
                     <option value="01" selected>Efectivo</option>
                     <option value="02">Tarjeta</option>
                     <option value="03">Cheque</option>
@@ -482,7 +482,7 @@
                 <label for="condiciones">Condición de venta</label>
                 <select class="form-control mb-3" name="condiciones" id="condiciones"
                     [(ngModel)]="datosXML.condicion_venta" aria-label="Condición de venta del receptor"
-                    aria-describedby="pendiente" required>
+                    aria-describedby="pendiente" >
                     <option value="01" selected>Contado</option>
                     <option value="02">Crédito</option>
                     <option value="03">Consignación</option>
@@ -676,7 +676,7 @@
                                 aria-label="Razón de descuento en producto en linea de detalle"
                                 aria-describedby="pendiente"></td>
                         <td><select class="form-control custom-select" (change)="actualizarTarifaLinea(linea);"
-                                [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}" required
+                                [(ngModel)]="linea.impuesto" [ngModelOptions]="{standalone: true}" 
                                 aria-label="Impuesto de producto en linea de detalle" aria-describedby="pendiente">
                                 <option value="01-01">IVA exento</option>
                                 <option value="01-02">IVA reducido 1%</option>
@@ -1051,9 +1051,10 @@
             </div>
             <div class="row pt-4">
                 <div class="col-md-12 text-center">
+                    <!-- Hay problemas de validacion con el myForm.invalid -->
                     <button type="submit" class="btn btn-outline-secondary" (submit)="enviar(datosXML)"
                         aria-label="Botón enviar factura" aria-describedby="pendiente"
-                        [disabled]="myForm.invalid || (!clienteSeleccionado || !clienteRegistrado)">
+                        [disabled]="(!clienteSeleccionado || !clienteRegistrado)">
                         <h5>ENVIAR</h5>
                     </button>
                 </div>

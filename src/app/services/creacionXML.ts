@@ -17,6 +17,7 @@ export class ServicioCreacionXML {
 
 
     crearXML(xmlData: CreacionXML): Observable<any> {
+        console.log(xmlData.emisor_canton, xmlData.receptor_canton, xmlData.emisor_distrito,xmlData.receptor_distrito)
         let form = new FormData();
         form.append("w", xmlData.w);
         form.append("r", xmlData.r);
@@ -41,8 +42,8 @@ export class ServicioCreacionXML {
         form.append("receptor_tipo_identif", xmlData.receptor_tipo_identif);
         form.append("receptor_num_identif", xmlData.receptor_num_identif);
         form.append("receptor_provincia", xmlData.receptor_provincia);
-        form.append("receptor_canton", xmlData.receptor_canton.substr(1,3));
-        form.append("receptor_distrito", xmlData.receptor_distrito.substr(3,3));
+        form.append("receptor_canton", xmlData.receptor_canton.toString().substr(1,3));
+        form.append("receptor_distrito", xmlData.receptor_distrito.toString().substr(3,3));
         form.append("receptor_barrio", "01");
         form.append("receptor_cod_pais_tel", xmlData.receptor_cod_pais_tel);
         form.append("receptor_tel", xmlData.receptor_tel);

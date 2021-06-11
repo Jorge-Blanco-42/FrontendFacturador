@@ -34,6 +34,7 @@ import { ServicioTipoIdentificacion } from 'src/app/services/tipoIdentificacion'
 import { ServicioCertificado } from 'src/app/services/certificado';
 import { Certificado } from 'src/app/models/certificado';
 import { Router } from '@angular/router';
+import { Documento } from 'src/app/models/documento';
 
 
 //inicio mary
@@ -418,6 +419,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                             this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
                                               resp => {
                                                 console.log("", resp);
+                                                
                                                 let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
                                                   "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
                                                   this.sendXML.comprobanteXml, resp.resp["respuesta-xml"], "base64");
@@ -425,6 +427,23 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                                 this._servicioCorreo.enviarCorreo(correo).subscribe(
                                                   res => {
                                                     console.log("correo enviado", correo);
+                                                    let fechaBD = this.datepipe.transform(fecha, "dd/MM/yyyy")
+                                                    let usuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
+                                                    let aceptacion;
+                                                    // console.log(fecha, fechaBD);
+                                                    // if(resp.resp["ind-estado"] === "rechazado") aceptacion = "3";
+                                                    // else if(resp.resp["ind-estado"] === "aceptado") aceptacion = "1";
+                                                    // else aceptacion = "2"
+                                                    aceptacion = "1";
+                                                    let documento = new Documento(this.sendXML.clave,this.sendXML.comprobanteXml,
+                                                                                  fechaBD?fechaBD:"",this.datosXML.receptor_nombre,"1",usuario,
+                                                                                  aceptacion,resp.resp["respuesta-xml"]);
+                                                    this._servicioUsuario.insertDocumento(documento).subscribe(estadoFinal =>{
+                                                      console.log(estadoFinal);
+                                                    }, errorBD =>{
+                                                      console.log("error en base de datos", errorBD);
+                                                    })
+                                                    
                                                   },
                                                   error => {
                                                     console.log("No se pudo enviar el correo");

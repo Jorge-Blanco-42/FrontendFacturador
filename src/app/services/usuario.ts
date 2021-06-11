@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Global } from './global'
 import { environment } from 'src/environments/environment';
+import { Documento } from '../models/documento';
 
 @Injectable()
 export class ServicioUsuario {
@@ -71,6 +72,20 @@ export class ServicioUsuario {
     getDocumentos(id:string): Observable<any>{
         let headers = new HttpHeaders().set('Content-Type', 'application/json');
         return this._http.get(this.backend+'getDocumentos/'+id,{headers:headers});
+    }
+
+    insertDocumento(doc: Documento){
+        let data = new FormData();
+        data.append("clave",doc.clave);
+        data.append("xml",doc.xml);
+        data.append("fecha",doc.fecha);
+        data.append("receptor",doc.receptor);
+        data.append("tipoDocumento",doc.tipoDocumento);
+        data.append("IDUsuario",doc.IDUsuario);
+        data.append("estadoAceptacion",doc.estadoAceptacion);
+        data.append("xmlEstadoAceptacion",doc.xmlEstadoAceptacion);
+
+        return this._http.post(this.backend+"/insertDocumento", data);
     }
 
     getUltimoDocumento(idUsuario: string): Observable<any>{
