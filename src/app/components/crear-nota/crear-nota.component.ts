@@ -51,10 +51,10 @@ export class CrearNotaComponent implements OnInit {
   clave = "";
   fechaEmision = "";
 
-  consecutivo:number = 0;
-  strConsecutivo:string = "";
-  codigoSeguridad:string = "";
-  claveMayor:string="";
+  consecutivo: number = 0;
+  strConsecutivo: string = "";
+  codigoSeguridad: string = "";
+  claveMayor: string = "";
 
   xml: string;
 
@@ -109,31 +109,32 @@ export class CrearNotaComponent implements OnInit {
         this.telefonoReceptor = datos.jsonData[tipo].Receptor[0].Telefono[0].NumTelefono;
         this.lineas = [];
         var lineasJSON = datos.jsonData[tipo].DetalleServicio;
-
-        for (let index = 0; index < lineasJSON.length; index++) {
-          const lineaJson = lineasJSON[index];
-          //
-          let linea = new Linea("", "", [{ descripcion: "", impuesto: "", codigoBienServicio: "" }], 0, "", 0, 0, "", "", false, 0, 0, 0, 0);
-          linea.producto = lineaJson.LineaDetalle[0].Detalle[0];
-          linea.codigo = lineaJson.LineaDetalle[0].Codigo[0];
-          linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle;
-          linea.filtro[0].impuesto = lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0];
-          linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo;
-          linea.cantidad = Number(lineaJson.LineaDetalle[0].Cantidad);
-          linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida[0];
-          linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario);
-          if (lineaJson.LineaDetalle[0].Descuento) {
-            linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento);
-            linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento;
+        if (lineasJSON) {
+          for (let index = 0; index < lineasJSON.length; index++) {
+            const lineaJson = lineasJSON[index];
+            //
+            let linea = new Linea("", "", [{ descripcion: "", impuesto: "", codigoBienServicio: "" }], 0, "", 0, 0, "", "", false, 0, 0, 0, 0);
+            linea.producto = lineaJson.LineaDetalle[0].Detalle[0];
+            linea.codigo = lineaJson.LineaDetalle[0].Codigo[0];
+            linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle;
+            linea.filtro[0].impuesto = lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0];
+            linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo;
+            linea.cantidad = Number(lineaJson.LineaDetalle[0].Cantidad);
+            linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida[0];
+            linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario);
+            if (lineaJson.LineaDetalle[0].Descuento) {
+              linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento);
+              linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento;
+            }
+            if (lineaJson.LineaDetalle[0].BaseImponible)
+              linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible[0]);
+            linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0]);
+            linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal[0]);
+            linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea[0]); //no se estan usando todos los campos del xml
+            //
+            console.log(linea)
+            this.lineas.push(linea);
           }
-          if (lineaJson.LineaDetalle[0].BaseImponible)
-            linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible[0]);
-          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0]);
-          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal[0]);
-          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea[0]); //no se estan usando todos los campos del xml
-          //
-          console.log(linea)
-          this.lineas.push(linea);
         }
         this.dataSourceResumen = new MatTableDataSource(this.lineas);
 
@@ -189,6 +190,17 @@ export class CrearNotaComponent implements OnInit {
     this.impuestoTarifa.set("07-07", 1.04);
     this.impuestoTarifa.set("07-08", 1.13);
     this.impuestoTarifa.set("08", 0);
+    let usuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
+    this._servicioUsuario.getUltimoDocumento(usuario).subscribe(res => {
+      this.claveMayor = res.doc.claveDocumento;
+      this.consecutivo = parseInt(this.claveMayor.substr(31, 10));
+      console.log(this.consecutivo)
+      this.consecutivo += 1;
+      this.strConsecutivo = this.consecutivo.toString().padStart(10, "0");
+      this.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8, "0");
+    }, err => {
+      console.log(err);
+    })
   }
 
   onNoClick(): void {
@@ -237,7 +249,7 @@ export class CrearNotaComponent implements OnInit {
                                 // else aceptacion = "2"
                                 aceptacion = "2";
                                 let documento = new Documento(this.claveNueva, this.xml,
-                                  fechaBD ? fechaBD : "", this.nombreReceptor, this.data.tipoNota==="NC"?"3":"2", usuario,
+                                  fechaBD ? fechaBD : "", this.nombreReceptor, this.data.tipoNota === "NC" ? "3" : "2", usuario,
                                   aceptacion, resp.resp["respuesta-xml"]);
                                 this._servicioUsuario.insertDocumento(documento).subscribe(estadoFinal => {
                                   console.log(estadoFinal);
@@ -539,7 +551,7 @@ export class CrearNotaComponent implements OnInit {
   crearClave(): Promise<any> {
     return new Promise((resolve, reject) => {
       let clave = new ClaveXML("clave", "clave", this.tipoIdentEmisor, this.cedulaEmisor,
-        "normal", "506", "010002375", "98862261", this.data.tipoNota);
+        "normal", "506", this.strConsecutivo, this.codigoSeguridad, this.data.tipoNota);
       this._servicioClave.crearClaveXML(clave).subscribe(
         result => { resolve(result); },
         err => { reject(err); }

@@ -40,11 +40,11 @@ export interface PeriodicElement {
 export class ConsultarComponent implements OnInit {
 
   columnasFactura: string[] = ['fecha', 'receptor', 'numeroConsecutivo', 'claveDocumento', 'tipoDocumento', 'estado', 'notaCredito', 'notaDebito', 'enviarCorreo', 'anular'];
-  facturas: { fecha: string, nombreComercial: string, numeroConsecutivo: string, claveDocumento: string, tipoDocumento: string, estado: string, xml: string }[] = [];
-  datosFacturas!: MatTableDataSource<{ fecha: string; nombreComercial: string; numeroConsecutivo: string; claveDocumento: string; tipoDocumento: string; estado: string, xml: string; }>;
+  facturas:any[] = [];
+  datosFacturas!: MatTableDataSource<any>;
   private paginator!: MatPaginator;
   private sorter!: MatSort;
-  
+
 
   @ViewChild('documentosPaginator') set matPaginator(mp: MatPaginator) {
     this.paginator = mp;
@@ -64,10 +64,7 @@ export class ConsultarComponent implements OnInit {
         console.log(resp)
         let documentos = resp.docs;
         let estados = resp.estados;
-        documentos.forEach((doc: {
-          claveDocumento: string; fechaDocumento: string; xml: string,
-          IDTipoDocumento: number, nombreReceptor: string, estadoAceptacion: number
-        }) => {
+        documentos.forEach((doc: any) => {
           let clave: string = doc.claveDocumento;
           let consecutivo = clave.substr(21, 20);
           let tipoDocumento = "";
@@ -81,7 +78,8 @@ export class ConsultarComponent implements OnInit {
           });
           this.facturas.push({
             fecha: doc.fechaDocumento.substr(0, 10), nombreComercial: doc.nombreReceptor,
-            numeroConsecutivo: consecutivo, claveDocumento: clave, tipoDocumento: tipoDocumento, estado: estado, xml: doc.xml
+            numeroConsecutivo: consecutivo, claveDocumento: clave, tipoDocumento: tipoDocumento, estado: estado, xml: doc.xml,
+            xmlEstadoAceptacion: doc.xmlEstadoAceptacion
           });
         });
         this.datosFacturas = new MatTableDataSource(this.facturas);
@@ -106,7 +104,7 @@ export class ConsultarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
   }
 
 
@@ -135,13 +133,15 @@ export class ConsultarComponent implements OnInit {
     });
   }
 
-  openDialogCorreo(xml: string): void {
+  openDialogCorreo(xml: string,
+    xmlEstadoAceptacion:string): void {
     const dialogRef = this.dialog.open(DialogResumen, {
       width: '80%',
       height: '70%',
       data: {
         anular: false,
-        xml: xml
+        xml: xml,
+        xmlEstadoAceptacion: xmlEstadoAceptacion
       }
     });
 
@@ -179,7 +179,7 @@ export class ConsultarComponent implements OnInit {
   }
 
   EnviarCorreo(element: any) {
-    this.openDialogCorreo(element.xml);
+    this.openDialogCorreo(element.xml, element.xmlEstadoAceptacion);
   }
 
   anularFactura(element: any) {
@@ -208,6 +208,7 @@ export class DialogResumen implements OnInit {
   checkOtro: boolean = false;
   otraDireccion: string = "";
   xml: string;
+  xmlEstadoAceptacion:string;
   anular: boolean;
 
   nombreEmisor = "";
@@ -226,14 +227,14 @@ export class DialogResumen implements OnInit {
   fechaEmision = "";
   fecha: string | null = "";
 
-  consecutivo:number = 0;
-  strConsecutivo:string = "";
-  codigoSeguridad:string = "";
-  claveMayor:string="";
+  consecutivo: number = 0;
+  strConsecutivo: string = "";
+  codigoSeguridad: string = "";
+  claveMayor: string = "";
 
   constructor(
     public dialogRef: MatDialogRef<DialogResumen>,
-    @Inject(MAT_DIALOG_DATA) public data: { anular: boolean, xml: string }, private _servicioCorreo: ServicioCorreo,
+    @Inject(MAT_DIALOG_DATA) public data: { anular: boolean, xml: string, xmlEstadoAceptacion:string }, private _servicioCorreo: ServicioCorreo,
     private _servicioUsuario: ServicioUsuario, private _servicioEscritorXML: ServicioEscritorXML,
     private _servicioDecodificador: ServicioDecodificador, private _servicioEnvio: ServicioEnvioXML,
     private _servicioFirma: ServicioFirmadoXML, private _servicioCertificado: ServicioCertificado,
@@ -241,11 +242,12 @@ export class DialogResumen implements OnInit {
     private _servicioConsultas: ServicioConsultas) {
     this.anular = data.anular;
     this.xml = data.xml;
+    this.xmlEstadoAceptacion = data.xmlEstadoAceptacion;
     this.convertirXML()
       .then((res) => {
         var datos = JSON.parse(res);
         let tipo;
-        if(datos.jsonData.FacturaElectronica) tipo = "FacturaElectronica";
+        if (datos.jsonData.FacturaElectronica) tipo = "FacturaElectronica";
         else if (datos.jsonData.NotaDebitoElectronica) tipo = "NotaDebitoElectronica";
         else tipo = "NotaCreditoElectronica";
         this.tipoIdentEmisor = datos.jsonData[tipo].Emisor[0].Identificacion[0].Tipo[0];
@@ -261,30 +263,31 @@ export class DialogResumen implements OnInit {
         this.telefonoReceptor = datos.jsonData[tipo].Receptor[0].Telefono[0].NumTelefono[0];
         var lineas: Linea[] = [];
         var lineasJSON = datos.jsonData[tipo].DetalleServicio;
-
-        for (let index = 0; index < lineasJSON.length; index++) {
-          const lineaJson = lineasJSON[index];
-          //
-          let linea = new Linea("", "", [{ descripcion: "", impuesto: "", codigoBienServicio: "" }], 0, "", 0, 0, "", "", false, 0, 0, 0, 0);
-          linea.producto = lineaJson.LineaDetalle[0].Detalle[0];
-          linea.codigo = lineaJson.LineaDetalle[0].Codigo[0];
-          linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle[0];
-          linea.filtro[0].impuesto = lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0];
-          linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo[0];
-          linea.cantidad = Number(lineaJson.LineaDetalle[0].Cantidad);
-          linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida[0];
-          linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario[0]);
-          if (lineaJson.LineaDetalle[0].Descuento) {
-            linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento[0]);
-            linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento[0];
+        if (lineasJSON) {
+          for (let index = 0; index < lineasJSON.length; index++) {
+            const lineaJson = lineasJSON[index];
+            //
+            let linea = new Linea("", "", [{ descripcion: "", impuesto: "", codigoBienServicio: "" }], 0, "", 0, 0, "", "", false, 0, 0, 0, 0);
+            linea.producto = lineaJson.LineaDetalle[0].Detalle[0];
+            linea.codigo = lineaJson.LineaDetalle[0].Codigo[0];
+            linea.filtro[0].descripcion = lineaJson.LineaDetalle[0].Detalle[0];
+            linea.filtro[0].impuesto = lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0];
+            linea.filtro[0].codigoBienServicio = lineaJson.LineaDetalle[0].Codigo[0];
+            linea.cantidad = Number(lineaJson.LineaDetalle[0].Cantidad);
+            linea.tipo = lineaJson.LineaDetalle[0].UnidadMedida[0];
+            linea.precioUnitario = Number(lineaJson.LineaDetalle[0].PrecioUnitario[0]);
+            if (lineaJson.LineaDetalle[0].Descuento) {
+              linea.descuento = Number(lineaJson.LineaDetalle[0].Descuento[0].MontoDescuento[0]);
+              linea.razon = lineaJson.LineaDetalle[0].Descuento[0].NaturalezaDescuento[0];
+            }
+            if (lineaJson.LineaDetalle[0].BaseImponible)
+              linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible[0]);
+            linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0]);
+            linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal[0]);
+            linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea[0]); //no se estan usando todos los campos del xml
+            //
+            lineas.push(linea);
           }
-          if (lineaJson.LineaDetalle[0].BaseImponible)
-            linea.base = Number(lineaJson.LineaDetalle[0].BaseImponible[0]);
-          linea.tarifa = Number(lineaJson.LineaDetalle[0].Impuesto[0].Tarifa[0]);
-          linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal[0]);
-          linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea[0]); //no se estan usando todos los campos del xml
-          //
-          lineas.push(linea);
         }
 
         var cargos: OtroCargo[] = [];
@@ -420,7 +423,7 @@ export class DialogResumen implements OnInit {
 
   enviarCorreo() {
     let correo: Correo = new Correo("", "Factura electrónica " + this.nombreEmisor, "Se adjunta factura eléctronica",
-      "Factura.xml", this.xml, "", "base64");//PONER EL XML DEL MENSAJE DE ACEPTACION
+      "Factura.xml", this.xml, this.xmlEstadoAceptacion, "base64");//PONER EL XML DEL MENSAJE DE ACEPTACION
     if (this.checkEmisor) {
       correo.to = this.correoEmisor;
       console.log(correo);
