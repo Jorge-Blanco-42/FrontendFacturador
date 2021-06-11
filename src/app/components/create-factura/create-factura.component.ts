@@ -29,8 +29,11 @@ import { ServicioUsuario } from 'src/app/services/usuario';
 import { ServicioPersona } from 'src/app/services/persona';
 import { Persona } from 'src/app/models/persona';
 import { ActividadEconomica } from 'src/app/models/actividadEconomica';
+import { textChangeRangeIsUnchanged } from 'typescript';
+import { ServicioTipoIdentificacion } from 'src/app/services/tipoIdentificacion';
 import { ServicioCertificado } from 'src/app/services/certificado';
 import { Certificado } from 'src/app/models/certificado';
+import { Router } from '@angular/router';
 
 
 //inicio mary
@@ -133,8 +136,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   cabys: { impuesto: string, descripcion: string, codigoBienServicio: string }[] = [];
   public lineasJSON: {}[] = [];
   public persona: Persona;
-  claveMayor:string = "";
-  consecutivo:number = 0;
+  claveMayor: string = "";
+  consecutivo: number = 0;
   public datosXML: CreacionXML;
   private copiaReceptor: any;
   public lineas: Linea[] = [];
@@ -143,6 +146,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   signXML: FirmadoXML;
   sendXML: EnvioXML;
 
+
   public provincias: any[] = [];
   private cantones: any[] = [];
   private distritos: any[] = [];
@@ -150,6 +154,16 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   public distritosFiltradosReceptor: any[] = [];
   public cantonesFiltradosEmisor: any[] = [];
   public distritosFiltradosEmisor: any[] = [];
+
+  public tipoIdentificaciones: any[] = [];
+
+  public emisorGuardado: boolean = false;
+  public receptorGuardado: boolean = false;
+  public receptorActualizado: boolean = false;
+  public receptorInsertado: boolean = false;
+  public registradoAntes: boolean = false;
+
+  public otras_senas_receptor: string = "";
 
   public provinciaSeleccionada: number = 0;
 
@@ -161,7 +175,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _sendXMLService: ServicioEnvioXML, private _servicioClaveXML: ServicioClaveXML, private _servicioDecodificador: ServicioDecodificador,
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas,
     private _servicioUbicacion: ServicioUbicacion, private _servicioAutenticacion: ServicioAutenticacion, private _servicioUsuario: ServicioUsuario,
-    private _servicioPersona: ServicioPersona, private _servicioCertificado: ServicioCertificado) {
+    private _servicioPersona: ServicioPersona, private _servicioTipoIdentificacion: ServicioTipoIdentificacion,
+    private _servicioCertificado: ServicioCertificado, private _router: Router) {
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012385",
       "98762268", "FE");
 
@@ -242,19 +257,20 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.cargarUbicaciones().then(res => {
       this.cargarUsuario();
       this.cargarClientes();
+      this.cargarTipoID();
 
     }).catch(error => {
       console.log('Error cargarUbicacion', error);
     });
-    this._servicioUsuario.getUltimoDocumento(usuario).subscribe(res=>{
+    this._servicioUsuario.getUltimoDocumento(usuario).subscribe(res => {
       this.claveMayor = res.doc.claveDocumento;
       let xd = this.claveMayor.substr(21, 20)
       this.consecutivo = parseInt(this.claveMayor.substr(31, 10));
       console.log(this.consecutivo)
       this.consecutivo += 1;
-      this.claveXML.consecutivo = this.consecutivo.toString().padStart(10,"0");
-      this.claveXML.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8,"0");
-    },err=>{
+      this.claveXML.consecutivo = this.consecutivo.toString().padStart(10, "0");
+      this.claveXML.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8, "0");
+    }, err => {
       console.log(err);
     })
     setTimeout(() => {
@@ -343,7 +359,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
     let fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
     if (fecha) this.datosXML.fecha_emision = fecha.toString();
-    
+
     this._servicioClaveXML.crearClaveXML(this.claveXML).subscribe(
       result => {
         //console.log("CLAVE XML ", <any>result);
@@ -722,11 +738,55 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
   guardarEmisor() {
-    //console.log("PENDIENTE")
+    this.actualizarEmisor();
+    this.emisorDeshabilitado = true;
   }
 
   guardarReceptor() {
     //console.log("PENDIENTE")
+    var persona = new Persona();
+    persona.cedula = this.datosXML.receptor_num_identif;
+    persona.nombre = this.datosXML.receptor_nombre;
+    persona.email = this.datosXML.receptor_email;
+    persona.nombreComercial = this.datosXML.receptor_nombre;
+    persona.IDTipoIdentificacion = this.datosXML.receptor_tipo_identif;
+    persona.IDDistrito = this.datosXML.receptor_distrito;
+    persona.barrio = this.datosXML.receptor_barrio;
+    persona.otrasSenas = this.otras_senas_receptor;
+    persona.telefono = this.datosXML.receptor_tel;
+    persona.fax = this.datosXML.receptor_fax;
+    /*
+        var data: object = {
+          cedula: this.datosXML.receptor_num_identif,
+          nombre: this.datosXML.receptor_nombre,
+          email: this.datosXML.receptor_email,
+          nombreComercial: this.datosXML.nombre_comercial,
+          IDTipoIdentificacion: this.datosXML.receptor_tipo_identif,
+          IDDistrito: this.datosXML.receptor_distrito,
+          barrio: this.datosXML.receptor_barrio,
+          otrasSenas: this.otras_senas_receptor,
+          telefono: this.datosXML.receptor_tel,
+          fax: this.datosXML.receptor_fax
+        };
+    */
+
+    this._servicioPersona.insertPersona(persona).subscribe(
+      res => {
+        console.log('Actualizado', res);
+        this.receptorInsertado = true;
+        setTimeout(() => {
+          this.receptorInsertado = false;
+        }, 5000);
+      },
+      errorActualizar => {
+        console.log('Error al actualizar', errorActualizar);
+        this.registradoAntes = true;
+        setTimeout(() => {
+          this.registradoAntes = false;
+        }, 5000);
+
+      }
+    );
   }
 
   toggle() {
@@ -751,6 +811,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  //Obtiene la informaciónd el receptor seleccionado en la table y la carga en el modelo.
   getRecord(row: any) {
     this.clienteSeleccionado = true;
     this.datosXML.receptor_nombre = row.nombre;
@@ -762,7 +823,17 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.datosXML.receptor_provincia = row.receptor_provincia;
     this.datosXML.receptor_canton = row.receptor_canton;
     this.datosXML.receptor_barrio = row.receptor_barrio;
-    this.datosXML.receptor_distrito = row.receptor_distrito.toString()
+    this.datosXML.receptor_distrito = row.receptor_distrito.toString();
+
+
+    this.ubicacionPersona(this.datosXML.receptor_distrito).then(ubicacion => {
+      this.datosXML.receptor_distrito = ubicacion[0];
+      this.datosXML.receptor_canton = ubicacion[1];
+      this.datosXML.receptor_provincia = ubicacion[2];
+
+      this.cargarUbicacionReceptor(this.datosXML.receptor_canton, this.datosXML.receptor_provincia);
+
+    });
     //console.log(row);
   }
 
@@ -800,8 +871,37 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.receptorDeshabilitado = false;
   }
 
+  //en caso de haber actualizado el receptor, toma los campos del form y lo actualiza en la base
   actualizarReceptor() {
     this.receptorDeshabilitado = true;
+
+    var data: object = {
+      cedula: this.datosXML.receptor_num_identif,
+      nombre: this.datosXML.receptor_nombre,
+      email: this.datosXML.receptor_email,
+      nombreComercial: this.datosXML.nombre_comercial,
+      IDTipoIdentificacion: this.datosXML.receptor_tipo_identif,
+      IDDistrito: this.datosXML.receptor_distrito,
+      barrio: this.datosXML.receptor_barrio,
+      telefono: this.datosXML.receptor_tel,
+      fax: this.datosXML.receptor_fax
+    };
+
+
+    this._servicioPersona.updatePersona(this.datosXML.receptor_num_identif, data).subscribe(
+      res => {
+        console.log('Actualizado', res);
+        this.receptorActualizado = true;
+        setTimeout(() => {
+          this.receptorActualizado = false;
+        }, 5000);
+      },
+      errorActualizar => {
+        console.log('Error al actualizar', errorActualizar);
+        this._router.navigate(['**']);
+      }
+    );
+
   }
 
   cancelarReceptor() {
@@ -844,39 +944,43 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     return lineaStr;
   }
 
+  //llena los arrays privados de provincia, cantón y distrito.
   private cargarUbicaciones(): Promise<any> {
     return new Promise((resolve, reject) => {
       this._servicioUbicacion.getProvincias().subscribe(
-        data => {
-          console.log(data);
-          this.provincias = data;
+        provincias => {
+          this.provincias = provincias;
+
+          this._servicioUbicacion.getCantones().subscribe(
+            cantones => {
+              this.cantones = cantones;
+
+              this._servicioUbicacion.getDistritos().subscribe(
+                distritos => {
+                  this.distritos = distritos;
+                  resolve(true);
+                },
+                error => {
+                  reject(error);
+                }
+              );
+
+            },
+            error => {
+              reject(error);
+            }
+          );
+
         },
         error => {
-          console.log('An error happened! ', error);
           reject(error);
         }
       );
 
-      this._servicioUbicacion.getCantones().subscribe(
-        data => {
-          this.cantones = data;
-        },
-        error => {
-          console.log('An error happened! ', error);
-          reject(error);
-        }
-      );
 
-      this._servicioUbicacion.getDistritos().subscribe(
-        data => {
-          this.distritos = data;
-        },
-        error => {
-          console.log('An error happened! ', error);
-          reject(error);
-        }
-      );
-      resolve(true);
+
+
+
     });
 
 
@@ -885,7 +989,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   }
 
 
-
+  //carga los cantones filtrados del receptor
   cargarCantones(codigo_provincia: any) {
     this.distritosFiltradosReceptor = [];
     this.cantonesFiltradosReceptor = [];
@@ -894,35 +998,34 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       return element.codigo_provincia == codigo_provincia;
     });
     this.cargarDistritos(this.cantonesFiltradosReceptor[0].codigo_canton);
-    console.log(this.cantonesFiltradosReceptor);
 
   };
 
+  //carga los distritos filtrados del receptor
   cargarDistritos(codigo_canton?: any) {
     codigo_canton = parseInt(codigo_canton);
     this.distritosFiltradosReceptor = this.distritos.filter(element => {
       return element.codigo_canton == codigo_canton;
     });
 
-    console.log(this.cantonesFiltradosReceptor);
+
 
   };
 
 
-
+  //carga las cantones filtrados del emisor
   cargarCantonesEmisor(codigo_provincia: any) {
     this.distritosFiltradosEmisor = [];
     this.cantonesFiltradosEmisor = [];
-    console.log('codigo de provincia', codigo_provincia);
     this.cantonesFiltradosEmisor = this.cantones.filter(element => {
       return element.codigo_provincia == codigo_provincia;
     });
-    console.log('Mis nuevos filtrados', this.cantonesFiltradosEmisor);
     this.cargarDistritos(this.cantonesFiltradosEmisor[0].codigo_canton);
     console.log(this.cantonesFiltradosEmisor);
 
   };
 
+  //carga los distritos filtrados del emisor
   cargarDistritosEmisor(codigo_canton?: any) {
     console.log(codigo_canton);
     codigo_canton = parseInt(codigo_canton);
@@ -934,6 +1037,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   };
 
+  //carga en los dropdown de ubicacion la almacenada en la base.
   private cargarUbicacionEmisor(codigo_canton: string,
     codigo_provincia: string) {
     this.cantonesFiltradosEmisor = this.cantones.filter(element => {
@@ -944,11 +1048,26 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       return element.codigo_canton == codigo_canton;
     });
 
-    console.log('Holi', this.distritosFiltradosEmisor);
+
+
+  }
+  //carga en los dropdown de ubicacion la almacenada en la base.
+  private cargarUbicacionReceptor(codigo_canton: string,
+    codigo_provincia: string) {
+    this.cantonesFiltradosReceptor = this.cantones.filter(element => {
+      return element.codigo_provincia == codigo_provincia;
+    });
+
+    this.distritosFiltradosReceptor = this.distritos.filter(element => {
+      return element.codigo_canton == codigo_canton;
+    });
 
 
   }
 
+
+
+  /*retorna los ID de ubicación (provincia, cantón, distrito) asociados a una persona*/
   private ubicacionPersona(codigo_distrito: string): Promise<any> {
     return new Promise((resolve, reject) => {
       var res: Array<any> = new Array();
@@ -969,6 +1088,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   }
 
+  //carga los datos del emisor en el form
   private cargarUsuario() {
     var cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioPersona.getPersona(cedula).subscribe(result => {
@@ -989,7 +1109,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
         this.datosXML.emisor_otras_senas = personaResult.otrasSenas;
         this.datosXML.emisor_fax = personaResult.fax;
         this.cargarUbicacionEmisor(this.datosXML.emisor_canton, this.datosXML.emisor_provincia);
-        console.log('Ubicación: ', this.persona.ubicacion);
       });
 
     },
@@ -1010,6 +1129,36 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     });
   }
 
+
+  //actualiza el emisor en la base de datos, obteniendo los datos desde el modelo
+  actualizarEmisor() {
+    var data: object = {
+      cedula: this.datosXML.emisor_num_identif,
+      nombre: this.datosXML.emisor_nombre,
+      email: this.datosXML.emisor_email,
+      nombreComercial: this.datosXML.nombre_comercial,
+      IDDistrito: this.datosXML.emisor_distrito,
+      barrio: this.datosXML.emisor_barrio,
+      otrasSenas: this.datosXML.emisor_otras_senas,
+      telefono: this.datosXML.emisor_tel,
+      fax: this.datosXML.emisor_fax
+    };
+
+
+    this._servicioPersona.updatePersona(this.datosXML.emisor_num_identif, data).subscribe(
+      res => {
+        console.log('Actualizado', res);
+        this.emisorGuardado = true;
+        setTimeout(() => {
+          this.emisorGuardado = false;
+        }, 5000);
+      },
+      errorActualizar => {
+        console.log('Error al actualizar', errorActualizar);
+      }
+    )
+  }
+
   cargarClientes() {
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioUsuario.getClientes(cedula).subscribe((res: any) => {
@@ -1028,10 +1177,24 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           receptor_fax: cliente.fax,
           correo: cliente.email
         }
-        this.clientes.push(temp)
+
+
+        this.clientes.push(temp);
       })
       this.dataSource = new MatTableDataSource(this.clientes);
     })
+  }
+
+  private cargarTipoID() {
+    this._servicioTipoIdentificacion.getTipoID().subscribe((res: any) => {
+      for (var element in res) {
+        res[element].IDTipoIdentificacion = res[element].IDTipoIdentificacion.toString().padStart(2, "0");
+        this.tipoIdentificaciones.push(res[element]);
+      }
+    },
+      error => {
+        this._router.navigate(['**']);
+      })
   }
 
 }
