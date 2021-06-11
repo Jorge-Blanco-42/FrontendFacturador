@@ -42,7 +42,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   // contasenaValida: boolean = true;
   valido: boolean = true;
 
-  certificado!: Certificado;
+  certificado: Certificado = new Certificado("", "", "", "", "", undefined);
   archivoOriginal: string = "";
 
   selectedFiles!: FileList;
@@ -65,12 +65,11 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     private _servicioUbicacion: ServicioUbicacion, private _servicioPersona: ServicioPersona, private _servicioUsuario:ServicioUsuario) { 
     this.cliente = new Persona("","","","","","","","","","",[]);
     this.clienteOriginal = new Persona("","","","","","","","","","",[]);
-    this.certificado = new Certificado("","","","","");
     this.nuevaContrasena = {
       contrasena: "", 
       confirmarContrasena: ""
     }
-    this.certificado = new Certificado("", "", "", "", "", undefined);
+    
     this.cargarUbicaciones().then( res =>{
       this.cargarUsuario();
 
@@ -90,10 +89,10 @@ export class CuentaComponent implements OnInit, AfterViewInit {
         this.certificado = result[0];
         this.certificado.archivoURL = result[0].archivo;
         this.archivoOriginal = result[0].archivo;
+        console.log("klsajdslakdjalskdjsaldkj",this.certificado)
       },
       error => {
-        //alert(<any>error);
-        console.log(<any>error)
+        console.log("Error de carga de certificado", error)
       });
   }
 
@@ -328,7 +327,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       
     },
     error => {
-      console.log(error);
+      console.log("Error cargar usuario ", error);
     });
   
   }

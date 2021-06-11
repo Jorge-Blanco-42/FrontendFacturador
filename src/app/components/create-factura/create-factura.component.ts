@@ -769,8 +769,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           fax: this.datosXML.receptor_fax
         };
     */
-
-    this._servicioPersona.insertPersona(persona).subscribe(
+    let IDUsuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
+    this._servicioPersona.insertCliente(IDUsuario,persona).subscribe(
       res => {
         console.log('Actualizado', res);
         this.receptorInsertado = true;
@@ -787,6 +787,24 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
       }
     );
+
+    // this._servicioPersona.insertPersona(persona).subscribe(
+    //   res => {
+    //     console.log('Actualizado', res);
+    //     this.receptorInsertado = true;
+    //     setTimeout(() => {
+    //       this.receptorInsertado = false;
+    //     }, 5000);
+    //   },
+    //   errorActualizar => {
+    //     console.log('Error al actualizar', errorActualizar);
+    //     this.registradoAntes = true;
+    //     setTimeout(() => {
+    //       this.registradoAntes = false;
+    //     }, 5000);
+
+    //   }
+    // );
   }
 
   toggle() {
@@ -1187,7 +1205,9 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
   private cargarTipoID() {
     this._servicioTipoIdentificacion.getTipoID().subscribe((res: any) => {
+      // console.log(res);
       for (var element in res) {
+
         res[element].IDTipoIdentificacion = res[element].IDTipoIdentificacion.toString().padStart(2, "0");
         this.tipoIdentificaciones.push(res[element]);
       }
