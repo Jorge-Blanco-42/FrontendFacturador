@@ -41,6 +41,7 @@ import { ServicioDecodificador } from './services/decodificador';
 import { ServicioEscritorXML } from './services/escritorXML';
 import { ServicioTipoCambio } from './services/tipoCambioXML';
 import { CapitalsPipe } from './pipes/capitals.pipe';
+import { ToastrModule } from 'ngx-toastr';
 @NgModule({
   declarations: [
     AppComponent,
@@ -78,7 +79,8 @@ import { CapitalsPipe } from './pipes/capitals.pipe';
     MatDialogModule,
     MatTabsModule,
     MatPasswordStrengthModule,
-    MatProgressSpinnerModule 
+    MatProgressSpinnerModule,
+    ToastrModule.forRoot()
   ],
   providers: [ServicioAutenticacion, ServicioUsuario, DatePipe,
     ServicioTipoCambio, ServicioCaByS, ServicioDecodificador,

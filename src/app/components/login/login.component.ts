@@ -5,6 +5,7 @@ import { Usuario } from 'src/app/models/usuario';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioUsuario } from 'src/app/services/usuario';
 import { SolicitudCambioContrasenaComponent } from '../solicitud-cambio-contrasena/solicitud-cambio-contrasena.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -15,9 +16,11 @@ export class LoginComponent implements OnInit {
 
   usuario: Usuario = new Usuario("","",0,"");
   mostrar: boolean = false;
+  
 
   constructor(private router: Router,private _servicioUsuario: ServicioUsuario, private _servicioAutenticacion: ServicioAutenticacion,
-    public dialogRef: MatDialogRef<LoginComponent>, @Inject(MAT_DIALOG_DATA) public login: boolean,  public dialog: MatDialog) { }
+    public dialogRef: MatDialogRef<LoginComponent>, @Inject(MAT_DIALOG_DATA) public login: boolean,  public dialog: MatDialog, 
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -28,9 +31,11 @@ export class LoginComponent implements OnInit {
       this.login = true
       console.log("return true")
       this.router.navigate(['/'])
+      this.toastr.success('Inicio de sesión correcto', 'Bienvenido');
       this.dialogRef.close(true);
     },error =>{
-      this.dialogRef.close(false);
+      // this.dialogRef.close(false);
+      this.toastr.error('Credenciales inválidas', 'Error');
     })
   }
 
