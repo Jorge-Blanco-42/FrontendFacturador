@@ -63,14 +63,14 @@
                     <div class="row">
                         <div class="form-item col-md-4">
                             <label for="Provincia">Provincia</label>
-                            <select class="form-control form-control-sm" id="Provincia" name="provincia" #provincia="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.ubicacion[2]" aria-label="Provincia" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" (change)="cargarCantonesEmisor(cliente.ubicacion[2])" id="Provincia" name="provincia" #provincia="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.ubicacion[2]" aria-label="Provincia" aria-describedby="pendiente"
                                 required>
                                 <option [value] = "provincia.codigo_provincia" *ngFor = "let provincia Of provincias; ">{{provincia.nombre_provincia}}</option>
                             </select>
                         </div>
                         <div class="form-item col-md-4">
                             <label for="Canton">Cantón</label>
-                            <select class="form-control form-control-sm" id="Canton" name="canton" #canton="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.ubicacion[1]" aria-label="Canton" aria-describedby="pendiente"
+                            <select class="form-control form-control-sm" (change)="cargarDistritosEmisor(cliente.ubicacion[1])" id="Canton" name="canton" #canton="ngModel" [disabled]="modificar"  [(ngModel)]="cliente.ubicacion[1]" aria-label="Canton" aria-describedby="pendiente"
                                 required>
                                 <option [value] = "canton.codigo_canton" *ngFor = "let canton Of cantonesFiltradosEmisor;" >{{canton.nombre_canton}}</option>
                             </select>

@@ -91,24 +91,6 @@ export class SignupComponent implements OnInit {
     this.mostrarConfirmacion = !this.mostrarConfirmacion;
   }
 
-  // //carga los cantones filtrados del receptor
-  // cargarCantones(codigo_provincia: any) {
-  //   this.distritosFiltradosReceptor = [];
-  //   this.cantonesFiltradosReceptor = [];
-
-  //   this.cantonesFiltradosReceptor = this.cantones.filter(element => {
-  //     return element.codigo_provincia == codigo_provincia;
-  //   });
-  //   this.cargarDistritos(this.cantonesFiltradosReceptor[0].codigo_canton);
-
-  // };
-
-  // //carga los distritos filtrados del receptor
-  // cargarDistritos(codigo_canton?: any) {
-  //   codigo_canton = parseInt(codigo_canton);
-  //   this.distritosFiltradosReceptor = this.distritos.filter(element => {
-  //     return element.codigo_canton == codigo_canton;
-  //   });
 
   //llena los arrays privados de provincia, cantón y distrito.
   private cargarUbicaciones(): Promise<any> {

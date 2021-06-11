@@ -89,7 +89,6 @@ export class CuentaComponent implements OnInit, AfterViewInit {
         this.certificado = result[0];
         this.certificado.archivoURL = result[0].archivo;
         this.archivoOriginal = result[0].archivo;
-        console.log("klsajdslakdjalskdjsaldkj",this.certificado)
       },
       error => {
         console.log("Error de carga de certificado", error)
@@ -173,8 +172,11 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   cancelarModificar() {
     this.modificar = true;
+    console.log(this.clienteOriginal)
     let datos = JSON.stringify(this.clienteOriginal);
     this.cliente = JSON.parse(datos);
+    this.cargarUbicacionEmisor(this.cliente.ubicacion[1], this.cliente.ubicacion[2]);
+
   }
 
   cambioContrasena() {
@@ -204,39 +206,37 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   //
 
-  private cargarUbicaciones(): Promise<any>{
-    return new Promise((resolve, reject)=>{
+  private cargarUbicaciones(): Promise<any> {
+    return new Promise((resolve, reject) => {
       this._servicioUbicacion.getProvincias().subscribe(
-        data => {
-          console.log(data, "<-----");
-          this.provincias = data;
+        provincias => {
+          this.provincias = provincias;
+
+          this._servicioUbicacion.getCantones().subscribe(
+            cantones => {
+              this.cantones = cantones;
+
+              this._servicioUbicacion.getDistritos().subscribe(
+                distritos => {
+                  this.distritos = distritos;
+                  resolve(true);
+                },
+                error => {
+                  reject(error);
+                }
+              );
+
+            },
+            error => {
+              reject(error);
+            }
+          );
+
         },
         error => {
-          console.log('An error happened! ', error);
           reject(error);
         }
       );
-  
-      this._servicioUbicacion.getCantones().subscribe(
-        data => {
-          this.cantones = data;
-        },
-        error => {
-          console.log('An error happened! ', error);
-          reject(error);
-        }
-      );
-  
-      this._servicioUbicacion.getDistritos().subscribe(
-        data => {
-          this.distritos = data;
-        },
-        error => {
-          console.log('An error happened! ', error);
-          reject(error);
-        }
-      );
-      resolve(true);
     });
   }
 
@@ -244,12 +244,14 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   cargarCantonesEmisor(codigo_provincia: any){
     this.distritosFiltradosEmisor = [];
     this.cantonesFiltradosEmisor = [];
-    console.log('codigo de provincia', codigo_provincia);
     this.cantonesFiltradosEmisor = this.cantones.filter(element => {
       return element.codigo_provincia == codigo_provincia;
     });
+      this.cliente.ubicacion[1] = this.cantonesFiltradosEmisor[0].codigo_canton;
+      this.cargarDistritosEmisor(this.cliente.ubicacion[1]);
+    
+    
     console.log('Mis nuevos filtrados', this.cantonesFiltradosEmisor);
-    console.log(this.cantonesFiltradosEmisor);
 
   };
 
@@ -259,7 +261,9 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     this.distritosFiltradosEmisor = this.distritos.filter(element => {
       return element.codigo_canton == codigo_canton;
     });
-
+    if(codigo_canton !== this.cliente.ubicacion[1]){
+      this.cliente.ubicacion[0] = this.distritosFiltradosEmisor[0].codigo_distrito;
+    }
     console.log(this.cantonesFiltradosEmisor);
 
   };
@@ -305,7 +309,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.cliente.ubicacion[0] = ubicacion[0];
       this.cliente.ubicacion[1] = ubicacion[1];
       this.cliente.ubicacion[2] = ubicacion[2];
-
+      this.cargarCantonesEmisor(this.cliente.ubicacion[2]);
       this.cliente.IDDistrito = ubicacion[0];
       this.cliente.IDTipoIdentificacion = personaResult.IDTipoIdentificacion;
       
@@ -322,6 +326,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       
       let datos = JSON.stringify(this.cliente);
       this.clienteOriginal = JSON.parse(datos);
+      console.log(this.clienteOriginal)
 
       });
       

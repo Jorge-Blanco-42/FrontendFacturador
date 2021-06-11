@@ -994,16 +994,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
           reject(error);
         }
       );
-
-
-
-
-
     });
-
-
-
-
   }
 
 
