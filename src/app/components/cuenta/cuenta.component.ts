@@ -11,6 +11,7 @@ import { ServicioUbicacion } from 'src/app/services/ubicacion';
 import { Persona } from 'src/app/models/persona';
 import { ServicioUsuario } from 'src/app/services/usuario';
 import { error } from 'jquery';
+import { ToastrService } from 'ngx-toastr';
 
 export interface Contrasena {
   contrasena: string, 
@@ -71,7 +72,8 @@ export class CuentaComponent implements OnInit, AfterViewInit {
   public distritosFiltradosEmisor: any [] = [];
 
   constructor(private _servicioAutenticacion: ServicioAutenticacion, private _servicioCertificado: ServicioCertificado, 
-    private _servicioUbicacion: ServicioUbicacion, private _servicioPersona: ServicioPersona, private _servicioUsuario:ServicioUsuario) { 
+    private _servicioUbicacion: ServicioUbicacion, private _servicioPersona: ServicioPersona, private _servicioUsuario:ServicioUsuario,
+    private toastr: ToastrService) { 
     this.cliente = new Persona("","","","","","","","","","",[]);
     this.clienteOriginal = new Persona("","","","","","","","","","",[]);
     this.nuevaContrasena = {
@@ -83,7 +85,8 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.cargarUsuario();
 
       }).catch(error => {
-        console.log('Error cargarUbicacion', error);
+        // console.log('Error cargarUbicacion', error);
+        this.toastr.error('Error al cargar los datos', 'Error');
       });
   }
 
@@ -100,27 +103,28 @@ export class CuentaComponent implements OnInit, AfterViewInit {
         this.archivoOriginal = result[0].archivo;
       },
       error => {
-        console.log("Error de carga de certificado", error)
+        // console.log("Error de carga de certificado", error)
+        this.toastr.error('Error al cargar los datos', 'Error');
       });
   }
 
   guardar(cliente : Persona){
-    console.log(cliente)
+    // console.log(cliente)
     let datos = JSON.stringify(cliente);
     let clienteActualizado = JSON.parse(datos);
     delete clienteActualizado.ubicacion;
-    console.log(clienteActualizado)
+    // console.log(clienteActualizado)
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioPersona.updatePersona(cedula, clienteActualizado)
     .subscribe(res => {
-      console.log(res);
+      // console.log(res);
       this.modificar = true;
       this.datosPersonalesActualizado = true;
       setTimeout(() => {
         this.datosPersonalesActualizado = false;
       }, 5000);
     }, error => {
-      console.log(error);
+      // console.log(error);
       this.datosPersonalesError = true;
       setTimeout(() => {
         this.datosPersonalesError = false;
@@ -138,7 +142,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   modificarCertificado(certificado: Certificado) {
     let usuario = this._servicioAutenticacion.obtenerDatosUsuario();
-    console.log(usuario)
+    // console.log(usuario)
     if (this.certificado.archivoURL !== this.archivoOriginal && certificado.archivo) {
       let CRLibre = new UsuarioCRLibre("users", "users_log_me_in", usuario.nombreDeUsuario, usuario.password ? usuario.password : "");
       this._servicioUsuario.iniciarSesionCR(CRLibre).subscribe(login => {
@@ -146,21 +150,21 @@ export class CuentaComponent implements OnInit, AfterViewInit {
           this._servicioCertificado.subirCertificado(certificado.archivo, usuario.nombreDeUsuario, login.resp.sessionKey).subscribe((res: any) => {
             certificado.archivoURL = res.resp.downloadCode;
             this._servicioCertificado.actualizarCertificado(certificado, usuario.cedula).subscribe((res:any) =>{
-              console.log(res);
+              // console.log(res);
               this.certificadoActualizado = true;
               setTimeout(() => {
                 this.certificadoActualizado = false;
               }, 5000);
 
             },(err:any) =>{
-              console.log(err);
+              // console.log(err);
               this.certificadoError = true;
               setTimeout(() => {
                 this.certificadoError = false;
               }, 5000);
             })
           }, (err: any) => {
-            console.log(err);
+            // console.log(err);
             this.certificadoError = true;
             setTimeout(() => {
               this.certificadoError = false;
@@ -168,7 +172,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
           })
         }
       }, err => {
-        console.log(err);
+        // console.log(err);
         this.certificadoError = true;
         setTimeout(() => {
           this.certificadoError = false;
@@ -177,13 +181,13 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
     }else{
       this._servicioCertificado.actualizarCertificado(certificado, usuario.cedula).subscribe((res:any) =>{
-        console.log(res);
+        // console.log(res);
         this.certificadoActualizado = true;
         setTimeout(() => {
           this.certificadoActualizado = false;
         }, 5000);
       },(err:any) =>{
-        console.log(err);
+        // console.log(err);
         this.certificadoError = true;
         setTimeout(() => {
           this.certificadoError = false;
@@ -202,7 +206,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.archivoSeleccionado = true;
       this.currentFileName = this.currentFile.name;
       this.certificado.archivoURL = this.currentFileName;
-      console.log(this.currentFileName)
+      // console.log(this.currentFileName)
     } else {
       this.currentFileName = "Seleccionar archivo";
       this.archivoSeleccionado = false;
@@ -215,7 +219,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
 
   cancelarModificar() {
     this.modificar = true;
-    console.log(this.clienteOriginal)
+    // console.log(this.clienteOriginal)
     let datos = JSON.stringify(this.clienteOriginal);
     this.cliente = JSON.parse(datos);
     this.cargarUbicacionEmisor(this.cliente.ubicacion[1], this.cliente.ubicacion[2]);
@@ -226,7 +230,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioUsuario.updateUsuario(cedula, {password: this.nuevaContrasena.contrasena})
     .subscribe( res => {
-      console.log(res);
+      // console.log(res);
       this.formComtrasena.resetForm();
 
       this.contrasenaActualizada = true;
@@ -310,12 +314,12 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.cargarDistritosEmisor(this.cliente.ubicacion[1]);
     
     
-    console.log('Mis nuevos filtrados', this.cantonesFiltradosEmisor);
+    // console.log('Mis nuevos filtrados', this.cantonesFiltradosEmisor);
 
   };
 
   cargarDistritosEmisor(codigo_canton?: any){
-    console.log(codigo_canton);
+    // console.log(codigo_canton);
     codigo_canton = parseInt(codigo_canton);
     this.distritosFiltradosEmisor = this.distritos.filter(element => {
       return element.codigo_canton == codigo_canton;
@@ -323,7 +327,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
     if(codigo_canton !== this.cliente.ubicacion[1]){
       this.cliente.ubicacion[0] = this.distritosFiltradosEmisor[0].codigo_distrito;
     }
-    console.log(this.cantonesFiltradosEmisor);
+    // console.log(this.cantonesFiltradosEmisor);
 
   };
 
@@ -337,7 +341,7 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       return element.codigo_canton == codigo_canton;
     });
 
-    console.log('Holi',this.distritosFiltradosEmisor);
+    // console.log('Holi',this.distritosFiltradosEmisor);
    
     
   }
@@ -381,17 +385,18 @@ export class CuentaComponent implements OnInit, AfterViewInit {
       this.cliente.otrasSenas = personaResult.otrasSenas;
       this.cliente.fax = personaResult.fax;
       this.cargarUbicacionEmisor(this.cliente.ubicacion[1], this.cliente.ubicacion[2]);
-      console.log('Ubicación: ', this.cliente.ubicacion);
+      // console.log('Ubicación: ', this.cliente.ubicacion);
       
       let datos = JSON.stringify(this.cliente);
       this.clienteOriginal = JSON.parse(datos);
-      console.log(this.clienteOriginal)
+      // console.log(this.clienteOriginal)
 
       });
       
     },
     error => {
-      console.log("Error cargar usuario ", error);
+      // console.log("Error cargar usuario ", error);
+      this.toastr.error('Error al cargar los datos', 'Error');
     });
   
   }

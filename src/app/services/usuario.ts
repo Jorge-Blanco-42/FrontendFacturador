@@ -131,9 +131,9 @@ export class ServicioUsuario {
             
             let key: string = keys[i].toString();
             data.append(key, newData[key].toString());
-            console.log(key, newData[key]);
+            // console.log(key, newData[key]);
         }
-        console.log('AJÁ ', data);
+        // console.log('AJÁ ', data);
         return this._http.put(this.backend+'updateUsuario/'+cedula, data);
     }
 

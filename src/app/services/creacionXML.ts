@@ -17,7 +17,7 @@ export class ServicioCreacionXML {
 
 
     crearXML(xmlData: CreacionXML): Observable<any> {
-        console.log(xmlData.emisor_canton, xmlData.receptor_canton, xmlData.emisor_distrito,xmlData.receptor_distrito)
+        // console.log(xmlData.emisor_canton, xmlData.receptor_canton, xmlData.emisor_distrito,xmlData.receptor_distrito)
         let form = new FormData();
         form.append("w", xmlData.w);
         form.append("r", xmlData.r);
@@ -69,7 +69,7 @@ export class ServicioCreacionXML {
         form.append("otros", xmlData.otros);
         form.append("detalles", xmlData.detalles);
 
-        console.log("DIr: ", xmlData);
+        // console.log("DIr: ", xmlData);
 
         return this._http.post(this.url, form);
     }

@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     this._servicioUsuario.iniciarSesion(this.usuario).subscribe((res:any) =>{
       this._servicioAutenticacion.saveToken(res.token);
       this.login = true
-      console.log("return true")
+      // console.log("return true")
       this.router.navigate(['/'])
       this.toastr.success('Inicio de sesión correcto', 'Bienvenido');
       this.dialogRef.close(true);

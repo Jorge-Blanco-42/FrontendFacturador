@@ -68,8 +68,8 @@ export class CambiarContrasenaComponent implements OnInit {
   }
 
   verificarToken() {
-    console.log('token', this.token);
-    console.log('id', this.id);
+    // console.log('token', this.token);
+    // console.log('id', this.id);
     this._servicioContrasena.verificarToken(this.token, this.id).subscribe(
       res => {
         this.verificando = false;

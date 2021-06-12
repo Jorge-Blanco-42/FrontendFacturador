@@ -27,14 +27,14 @@ export class ServicioConsultas{
     }
 
     consultarFacturas(token:string): Observable<any>{
-        console.log(token);
+        // console.log(token);
         let headers = new HttpHeaders();
         headers = headers.append('Authorization', 'Bearer '+ token);
         headers = headers.append("Cache-Control","no-cache");
         headers = headers.append("Content-Type","application/x-www-form-urlencoded");
         headers = headers.append("Postman-Token","bf8dc171-5bb7-fa54-7416-56c5cda9bf5c");
         
-        console.log(headers);
+        // console.log(headers);
         return this._http.get(this.consultaURL,{headers:headers});
     }
 

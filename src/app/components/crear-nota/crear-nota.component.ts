@@ -24,6 +24,7 @@ import { ServicioEnvioXML } from 'src/app/services/envioXML';
 import { ServicioEscritorXML } from 'src/app/services/escritorXML';
 import { ServicioFirmadoXML } from 'src/app/services/firmadoXML';
 import { ServicioUsuario } from 'src/app/services/usuario';
+import { ToastrService } from 'ngx-toastr';
 
 const replacer = new RegExp('\"', 'g');
 
@@ -78,7 +79,7 @@ export class CrearNotaComponent implements OnInit {
     private _servicioDecodificador: ServicioDecodificador, private _servicioEnvio: ServicioEnvioXML,
     private _servicioFirma: ServicioFirmadoXML, private _servicioCertificado: ServicioCertificado,
     public datepipe: DatePipe, private _servicioClave: ServicioClaveXML, private _servicioAutenticacion: ServicioAutenticacion,
-    private _servicioConsultas: ServicioConsultas, private _servicioCorreo: ServicioCorreo) {
+    private _servicioConsultas: ServicioConsultas, private _servicioCorreo: ServicioCorreo, private toastr: ToastrService) {
     this.total_OtrosCargos = 0;
     this.impuestoTarifa = new Map();
     this.datosXML = new CreacionXML("genXML", "gen_xml_fe", "", "", new Date().toString(),
@@ -132,7 +133,7 @@ export class CrearNotaComponent implements OnInit {
             linea.subtotal = Number(lineaJson.LineaDetalle[0].SubTotal[0]);
             linea.total = Number(lineaJson.LineaDetalle[0].MontoTotalLinea[0]); //no se estan usando todos los campos del xml
             //
-            console.log(linea)
+            // console.log(linea)
             this.lineas.push(linea);
           }
         }
@@ -165,7 +166,8 @@ export class CrearNotaComponent implements OnInit {
         this.calcularTotales();
       })
       .catch((err) => {
-        console.log(err);
+        this.toastr.error('No se cargaron los datos', 'Error');
+        // console.log(err);
       })
   }
 
@@ -194,12 +196,13 @@ export class CrearNotaComponent implements OnInit {
     this._servicioUsuario.getUltimoDocumento(usuario).subscribe(res => {
       this.claveMayor = res.doc.claveDocumento;
       this.consecutivo = parseInt(this.claveMayor.substr(31, 10));
-      console.log(this.consecutivo)
+      // console.log(this.consecutivo)
       this.consecutivo += 1;
       this.strConsecutivo = this.consecutivo.toString().padStart(10, "0");
       this.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8, "0");
     }, err => {
-      console.log(err);
+      // console.log(err);
+      this.toastr.error('No se puede crear la nota', 'Error');
     })
   }
 
@@ -215,7 +218,7 @@ export class CrearNotaComponent implements OnInit {
   enviarNota() {
     this.crearClave()
       .then((res) => {
-        console.log(res.resp)
+        // console.log(res.resp)
         this.claveNueva = res.resp.clave;
         this.crearNota()
           .then((res) => {
@@ -226,20 +229,20 @@ export class CrearNotaComponent implements OnInit {
                 this.enviar()
                   .then((respEnvio) => {
                     if (respEnvio.resp.Status === 202) {
-                      console.log("esperar");
+                      // console.log("esperar");
                       setTimeout(() => {
                         let token = localStorage.getItem("token");
                         this._servicioConsultas.consultarAceptacion(this.claveNueva, token ? token : "").subscribe(
                           resp => {
-                            console.log("", resp);
+                            // console.log("", resp);
 
                             let correo = new Correo(this.correoReceptor, "Factura electrónica " + this.nombreEmisor,
                               "Se adjunta factura electrónica", "Factura " + this.nombreEmisor + ".xml",
                               this.xml, resp.resp["respuesta-xml"], "base64");
-                            console.log(correo);
+                            // console.log(correo);
                             this._servicioCorreo.enviarCorreo(correo).subscribe(
                               res => {
-                                console.log("correo enviado", correo);
+                                // console.log("correo enviado", correo);
                                 let fechaBD = this.datepipe.transform(this.fechaEmision, "dd/MM/yyyy")
                                 let usuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
                                 let aceptacion;
@@ -252,33 +255,49 @@ export class CrearNotaComponent implements OnInit {
                                   fechaBD ? fechaBD : "", this.nombreReceptor, this.data.tipoNota === "NC" ? "3" : "2", usuario,
                                   aceptacion, resp.resp["respuesta-xml"]);
                                 this._servicioUsuario.insertDocumento(documento).subscribe(estadoFinal => {
-                                  console.log(estadoFinal);
+                                  // console.log(estadoFinal);
+                                  this.toastr.success('Enviando a Hacienda', 'Nota creada');
                                   this.dialogRef.close();
-                                  console.log(res)
+                                  // console.log(res)
                                 }, errorBD => {
-                                  console.log("error en base de datos", errorBD);
+                                  // console.log("error en base de datos", errorBD);
+                                  this.toastr.error('No se pudo crear la nota', 'Error');
                                 })
 
                               },
                               error => {
-                                console.log("No se pudo enviar el correo");
+                                // console.log("No se pudo enviar el correo");
+                                this.toastr.error('No se pudo crear la nota', 'Error');
                               }
                             );
                           },
                           error => {
-                            console.log("error en consulta");
+                            // console.log("error en consulta");
+                            this.toastr.error('No se pudo crear la nota', 'Error');
                           }
                         )
                       }, 30000);
                     }
                   })
-                  .catch((err) => { console.error(err) })
+                  .catch((err) => { 
+                    // console.error(err) 
+                    this.toastr.error('No se pudo crear la nota', 'Error');
+                  })
               })
-              .catch((err) => { console.error(err) })
+              .catch((err) => { 
+                // console.error(err)
+                this.toastr.error('No se pudo crear la nota', 'Error');
+              })
           })
-          .catch((err) => { console.error(err) })
+          .catch((err) => { 
+            // console.error(err) 
+            this.toastr.error('No se pudo crear la nota', 'Error');
+          })
       })
-      .catch((err) => { console.error(err) })
+      .catch((err) => {
+        //  console.error(err) 
+         this.toastr.error('No se pudo crear la nota', 'Error');
+        })
 
 
   }
@@ -413,7 +432,7 @@ export class CrearNotaComponent implements OnInit {
       this.actualizarCargo(cargo);
     });
     total_ventas_neta = total_ventas - total_descuentos;
-    console.log(this.total_OtrosCargos);
+    // console.log(this.total_OtrosCargos);
     total_comprobante = total_ventas_neta + total_impuestos + this.total_OtrosCargos;
     //console.log(this.total_OtrosCargos)
     this.datosXML.total_comprobante = total_comprobante.toString();
@@ -488,7 +507,7 @@ export class CrearNotaComponent implements OnInit {
       //console.log("caca")
     }
     this.setDataSourceResumenAttributes()
-    console.log(this.dataSourceResumen);
+    // console.log(this.dataSourceResumen);
   }
 
   borrarLinea(index: number) {
@@ -605,7 +624,7 @@ export class CrearNotaComponent implements OnInit {
       let envio = new EnvioXML("send", "json", token ? token : "", this.claveNueva, this.fechaEmision,
         this.tipoIdentEmisor, this.cedulaEmisor, this.tipoIdentReceptor,
         this.cedulaReceptor, this.xml, "api-stag");
-      console.log(envio);
+      // console.log(envio);
       this._servicioEnvio.enviarFEXML(envio).subscribe(
         res => { resolve(res); },
         err => { reject(err); }

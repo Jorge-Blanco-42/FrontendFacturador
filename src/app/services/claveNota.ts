@@ -27,7 +27,7 @@ export class ServicioClaveDebitoCredito{
         form.append('codigoSeguridad', notaDevCred.codigoSeguridad);
         form.append('tipoDocumento', notaDevCred.tipoDocumento);
 
-        console.log(notaDevCred)
+        // console.log(notaDevCred)
         return this._http.post(this.url,form);
     }
 

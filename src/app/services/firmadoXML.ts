@@ -24,7 +24,7 @@ export class ServicioFirmadoXML{
         form.append("inXml", sign.inXml);
         form.append("pinP12", sign.pinP12);
         form.append("tipodoc", sign.tipodoc);
-        console.log(sign);
+        // console.log(sign);
         return this._http.post(this.url,form);
     }
 

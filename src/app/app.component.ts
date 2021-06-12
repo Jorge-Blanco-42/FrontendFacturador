@@ -26,6 +26,7 @@ import { ServicioActividadEconomica } from './services/actividadEconomica';
 import { ServicioDocumento } from './services/documento';
 import { ServicioTipoIdentificacion } from './services/tipoIdentificacion';
 import { ServicioAutenticacion } from './services/autenticacion.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -55,7 +56,7 @@ export class AppComponent implements OnInit {
     private _exchangeRateService: ServicioTipoCambio, public dialog: MatDialog,
     private _locationService: ServicioUbicacion, private _actividadService: ServicioActividadEconomica,
     private _documentoServicio: ServicioDocumento, private _tipoIdentificacionService: ServicioTipoIdentificacion,
-    private _servicioAutenticacion: ServicioAutenticacion) {
+    private _servicioAutenticacion: ServicioAutenticacion, private toastr: ToastrService) {
 
     this.signXML = new FirmadoXML("signXML", "signFE",
       "b337c43a00ec8b0ed9882375d56b270f", "pendiente",
@@ -94,7 +95,8 @@ export class AppComponent implements OnInit {
         },
         error => {
           //alert(<any>error);
-          console.log(<any>error)
+          // console.log(<any>error)
+          this.toastr.error('Token no disponible', 'Error');
         });
     }
 
@@ -114,16 +116,17 @@ export class AppComponent implements OnInit {
     this.getActividadEconomica();
     
     this.getDocumentos('1');
-    */
+ 
 
     this.getTipoID();
+    */
 
   }
 
   getToken(certificate: Certificado) {
     this._certificateService.getToken(certificate).subscribe(
       result => {
-        console.log("This is the token: ", result);
+        // console.log("This is the token: ", result);
         this.token = result.resp;
         localStorage.setItem("token", this.token.access_token);
         localStorage.setItem("refresh", this.token.refresh_token);
@@ -134,64 +137,40 @@ export class AppComponent implements OnInit {
           } else {
             this._certificateService.getToken(certificate).subscribe(
               result => {
-                console.log("This is the token: ", result);
+                // console.log("This is the token: ", result);
                 this.token = result.resp;
                 localStorage.setItem("token", this.token.access_token);
                 localStorage.setItem("refresh", this.token.refresh_token);
               },
               err => {
-                console.log(<any>err)
+                // console.log(<any>err);
+                this.toastr.error('Token no disponible', 'Error');
               });
           }
 
         }, 290000);
       },
       error => {
-        console.log(<any>error)
+        // console.log(<any>error);
+        this.toastr.error('Token no disponible', 'Error');
       }
     );
   }
 
   refreshToken(refresh: string) {
-    console.log("refreshing with", refresh);
+    // console.log("refreshing with", refresh);
     this._certificateService.refrescarToken(refresh).subscribe(
       result => {
-        console.log("This is the refresh: ", <any>result);
+        // console.log("This is the refresh: ", <any>result);
         this.token = result.resp;
         localStorage.setItem("token", this.token.access_token);
         localStorage.setItem("refresh", this.token.refresh_token);
       },
       error => {
-        console.log(<any>error)
+        // console.log(<any>error);
+        this.toastr.error('Token no disponible', 'Error');
       }
     );
-  }
-
-  crearClave() {
-    this._servicioClaveXML.crearClaveXML(this.claveXML).subscribe(
-      result => {
-        console.log("Clave de XML: ", <any>result);
-      },
-      error => {
-        console.log(<any>error)
-      }
-    );
-  }
-
-  getTipoCambio(dia: string = "", mes: string = "", año: string = "") {
-
-    this.tipoCambio.dia = dia;
-    this.tipoCambio.mes = mes;
-    this.tipoCambio.año = año;
-    this._exchangeRateService.getTipoCambio(this.tipoCambio).subscribe(
-      result => {
-        console.log("Tipo de cambio: ", <any>result);
-      },
-      error => {
-        console.log(<any>error);
-      }
-    )
-
   }
 
   openLogin(): void {
@@ -212,120 +191,147 @@ export class AppComponent implements OnInit {
 
   }
 
-  insertUser(password: string, cedula: string) {
-    this.usuarioApp.password = password;
-    this.usuarioApp.cedula = cedula;
-    this._userService.insertUsuario(this.usuarioApp).subscribe(
-      res => {
-        console.log('Insertion was successful!', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
+  //**********PRUEBAS****************//
 
-  }
+  // insertUser(password: string, cedula: string) {
+  //   this.usuarioApp.password = password;
+  //   this.usuarioApp.cedula = cedula;
+  //   this._userService.insertUsuario(this.usuarioApp).subscribe(
+  //     res => {
+  //       console.log('Insertion was successful!', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
 
-  getUsuario(cedula: string) {
-    this._userService.getUsuario(cedula).subscribe(
-      res => {
-        console.log('Get was successful ', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    )
-  }
+  // }
 
-  updateUsuario(cedula: string, newData: object) {
-    this._userService.updateUsuario(cedula, newData).subscribe(
-      res => {
-        console.log('Update was successful', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
-  }
+  // getUsuario(cedula: string) {
+  //   this._userService.getUsuario(cedula).subscribe(
+  //     res => {
+  //       console.log('Get was successful ', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   )
+  // }
 
-  deleteUsuario(cedula: string) {
-    this._userService.deleteUsuario(cedula).subscribe(
-      res => {
-        console.log('Delete was successful', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
-  }
+  // updateUsuario(cedula: string, newData: object) {
+  //   this._userService.updateUsuario(cedula, newData).subscribe(
+  //     res => {
+  //       console.log('Update was successful', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
+  // }
 
-  getProvincias() {
-    this._locationService.getProvincias().subscribe(
-      res => {
-        console.log('GetProvincias was successful ', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
-  }
+  // deleteUsuario(cedula: string) {
+  //   this._userService.deleteUsuario(cedula).subscribe(
+  //     res => {
+  //       console.log('Delete was successful', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
+  // }
 
-  getCantones() {
-    this._locationService.getCantones().subscribe(
-      res => {
-        console.log('GetCantones was successful ', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
-  }
+  // getProvincias() {
+  //   this._locationService.getProvincias().subscribe(
+  //     res => {
+  //       console.log('GetProvincias was successful ', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
+  // }
 
-  getDistritos() {
-    this._locationService.getDistritos().subscribe(
-      res => {
-        console.log('GetDistritos was successful ', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
-  }
+  // getCantones() {
+  //   this._locationService.getCantones().subscribe(
+  //     res => {
+  //       console.log('GetCantones was successful ', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
+  // }
 
-  getActividadEconomica() {
-    this._actividadService.getActividadEconomica().subscribe(
-      res => {
-        console.log('getActividadEconomica was successful ', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
-  }
+  // getDistritos() {
+  //   this._locationService.getDistritos().subscribe(
+  //     res => {
+  //       console.log('GetDistritos was successful ', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
+  // }
 
-  getDocumentos(id: string) {
-    this._documentoServicio.getDocumentos(id).subscribe(
-      res => {
-        console.log('getDocumentos was successful ', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
-  }
+  // getActividadEconomica() {
+  //   this._actividadService.getActividadEconomica().subscribe(
+  //     res => {
+  //       console.log('getActividadEconomica was successful ', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
+  // }
 
-  getTipoID() {
-    this._tipoIdentificacionService.getTipoID().subscribe(
-      res => {
-        console.log('getTipoID was successful ', res);
-      },
-      error => {
-        console.log('Error!!!!', error);
-      }
-    );
-  }
+  // getDocumentos(id: string) {
+  //   this._documentoServicio.getDocumentos(id).subscribe(
+  //     res => {
+  //       console.log('getDocumentos was successful ', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
+  // }
 
+  // getTipoID() {
+  //   this._tipoIdentificacionService.getTipoID().subscribe(
+  //     res => {
+  //       console.log('getTipoID was successful ', res);
+  //     },
+  //     error => {
+  //       console.log('Error!!!!', error);
+  //     }
+  //   );
+  // }
 
+  // crearClave() {
+  //   this._servicioClaveXML.crearClaveXML(this.claveXML).subscribe(
+  //     result => {
+  //       console.log("Clave de XML: ", <any>result);
+  //     },
+  //     error => {
+  //       console.log(<any>error)
+  //     }
+  //   );
+  // }
+
+  // getTipoCambio(dia: string = "", mes: string = "", año: string = "") {
+
+  //   this.tipoCambio.dia = dia;
+  //   this.tipoCambio.mes = mes;
+  //   this.tipoCambio.año = año;
+  //   this._exchangeRateService.getTipoCambio(this.tipoCambio).subscribe(
+  //     result => {
+  //       console.log("Tipo de cambio: ", <any>result);
+  //     },
+  //     error => {
+  //       console.log(<any>error);
+  //     }
+  //   )
+
+  // }
 
 }
 

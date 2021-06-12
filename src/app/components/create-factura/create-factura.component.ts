@@ -35,7 +35,7 @@ import { ServicioCertificado } from 'src/app/services/certificado';
 import { Certificado } from 'src/app/models/certificado';
 import { Router } from '@angular/router';
 import { Documento } from 'src/app/models/documento';
-
+import { ToastrService } from 'ngx-toastr';
 
 //inicio mary
 export interface Clientes {
@@ -177,7 +177,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     private _servicioCorreo: ServicioCorreo, private _servicioEscritorXML: ServicioEscritorXML, private _servicioConsultas: ServicioConsultas,
     private _servicioUbicacion: ServicioUbicacion, private _servicioAutenticacion: ServicioAutenticacion, private _servicioUsuario: ServicioUsuario,
     private _servicioPersona: ServicioPersona, private _servicioTipoIdentificacion: ServicioTipoIdentificacion,
-    private _servicioCertificado: ServicioCertificado, private _router: Router) {
+    private _servicioCertificado: ServicioCertificado, private _router: Router, private toastr: ToastrService) {
     this.claveXML = new ClaveXML("clave", "clave", "fisico", "113160737", "normal", "506", "0100012385",
       "98762268", "FE");
 
@@ -230,7 +230,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
         this.signXML.p12Url = result[0].archivo;
         this.signXML.pinP12 = result[0].pin;
       }, err => {
-        console.log(err);
+        // console.log(err);
+        this.toastr.error('No se puede firmar el documento', 'Error');
       });
 
     let token = localStorage.getItem("token");
@@ -261,24 +262,26 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       this.cargarTipoID();
 
     }).catch(error => {
-      console.log('Error cargarUbicacion', error);
+      // console.log('Error cargarUbicacion', error);
+      this.toastr.error('No se cargaron los datos', 'Error');
     });
     this._servicioUsuario.getUltimoDocumento(usuario).subscribe(res => {
       this.claveMayor = res.doc.claveDocumento;
       let xd = this.claveMayor.substr(21, 20)
       this.consecutivo = parseInt(this.claveMayor.substr(31, 10));
-      console.log(this.consecutivo)
+      // console.log(this.consecutivo)
       this.consecutivo += 1;
       this.claveXML.consecutivo = this.consecutivo.toString().padStart(10, "0");
       this.claveXML.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8, "0");
     }, err => {
-      console.log(err);
+      // console.log(err);
+      this.toastr.error('No se pudo crear la factura', 'Error');
     })
     setTimeout(() => {
-      console.log(this.datosXML);
-      console.log(this.claveXML);
-      console.log(this.signXML);
-      console.log(this.sendXML);
+      // console.log(this.datosXML);
+      // console.log(this.claveXML);
+      // console.log(this.signXML);
+      // console.log(this.sendXML);
     }, 2000);
 
   }
@@ -332,12 +335,12 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       }
       lineasStr += '}';
     });
-    console.log(arregloLineas);
+    // console.log(arregloLineas);
     lineasStr += '}';
 
     this.datosXML.detalles = lineasStr;
 
-    console.log(this.datosXML.detalles);
+    // console.log(this.datosXML.detalles);
     let otrosCargosStr = '{"otrosCargos":[';
     this.otrosCargos.forEach((cargo, i) => {
       if (i > 0) {
@@ -408,25 +411,25 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                     this.sendXML.fecha = this.datosXML.fecha_emision;
 
                                     this.sendXML.comprobanteXml = result3.resp.xmlFirmado;
-                                    console.log(this.sendXML.comprobanteXml);
+                                    // console.log(this.sendXML.comprobanteXml);
                                     this._sendXMLService.enviarFEXML(this.sendXML).subscribe(
                                       result4 => {
-                                        console.log(<any>result4);
+                                        // console.log(<any>result4);
                                         if (result4.resp.Status === 202) {
-                                          console.log("esperar");
+                                          // console.log("esperar");
                                           setTimeout(() => {
                                             let token = localStorage.getItem("token");
                                             this._servicioConsultas.consultarAceptacion(this.sendXML.clave, token ? token : "").subscribe(
                                               resp => {
-                                                console.log("", resp);
+                                                // console.log("", resp);
 
                                                 let correo = new Correo(this.datosXML.receptor_email, "Factura electrónica " + this.datosXML.emisor_nombre,
                                                   "Se adjunta factura electrónica", "Factura " + this.datosXML.emisor_nombre + ".xml",
                                                   this.sendXML.comprobanteXml, resp.resp["respuesta-xml"], "base64");
-                                                console.log(correo);
+                                                // console.log(correo);
                                                 this._servicioCorreo.enviarCorreo(correo).subscribe(
                                                   res => {
-                                                    console.log("correo enviado", correo);
+                                                    // console.log("correo enviado", correo);
                                                     let fechaBD = this.datepipe.transform(fecha, "dd/MM/yyyy")
                                                     let usuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
                                                     let aceptacion;
@@ -439,19 +442,23 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                                       fechaBD ? fechaBD : "", this.datosXML.receptor_nombre, "1", usuario,
                                                       aceptacion, resp.resp["respuesta-xml"]);
                                                     this._servicioUsuario.insertDocumento(documento).subscribe(estadoFinal => {
-                                                      console.log(estadoFinal);
+                                                      // console.log(estadoFinal);
+                                                      this.toastr.success('Enviando a Hacienda', 'Factura creada');
                                                     }, errorBD => {
-                                                      console.log("error en base de datos", errorBD);
+                                                      // console.log("error en base de datos", errorBD);
+                                                      this.toastr.error('No se pudo crear la factura', 'Error');
                                                     })
 
                                                   },
                                                   error => {
-                                                    console.log("No se pudo enviar el correo");
+                                                    // console.log("No se pudo enviar el correo");
+                                                    this.toastr.error('No se pudo crear la factura', 'Error');
                                                   }
                                                 );
                                               },
                                               error => {
-                                                console.log("error en consulta");
+                                                // console.log("error en consulta");
+                                                this.toastr.error('No se pudo crear la factura', 'Error');
                                               }
                                             )
                                           }, 30000);
@@ -459,50 +466,59 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
                                       },
                                       error4 => {
                                         //console.log(<any>error4);
+                                        this.toastr.error('No se pudo crear la factura', 'Error');
                                       }
                                     )
 
                                   },
                                   error3 => {
                                     //console.log(<any>error3);
+                                    this.toastr.error('No se pudo crear la factura', 'Error');
                                   }
                                 )
                               },
                               error => {
-                                console.log(error);
+                                // console.log(error);
+                                this.toastr.error('No se pudo crear la factura', 'Error');
                               }
                             );
                           },
                           error => {
-                            console.log(error);
+                            // console.log(error);
+                            this.toastr.error('No se pudo crear la factura', 'Error');
                           }
                         );
                       },
                       error => {
-                        console.log(error);
+                        // console.log(error);
+                        this.toastr.error('No se pudo crear la factura', 'Error');
                       }
                     )
 
                   },
                   error => {
-                    console.log(error);
+                    // console.log(error);
+                    this.toastr.error('No se pudo crear la factura', 'Error');
                   }
                 );
               },
               error => {
-                console.log(error);
+                // console.log(error);
+                this.toastr.error('No se pudo crear la factura', 'Error');
               }
             )
 
           },
           error2 => {
             //console.log(<any>error2);
+            this.toastr.error('No se pudo crear la factura', 'Error');
           }
         )
       },
       error => {
         //alert(<any>error);
         //console.log(<any>error)
+        this.toastr.error('No se pudo crear la factura', 'Error');
       }
     );
     //console.log(form);
@@ -565,7 +581,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     this.dataSourceResumen.connect().next(this.lineas);
     if (this.paginatorResumen) {
       this.paginatorResumen._changePageSize(this.paginatorResumen.pageSize);
-      //console.log("caca")
     }
     this.setDataSourceResumenAttributes()
     //console.log(this.dataSourceResumen);
@@ -790,7 +805,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioUsuario.insertCliente(cedula, persona).subscribe(
       res => {
-        console.log('Actualizado', res);
+        // console.log('Actualizado', res);
         let clienteNuevo: Clientes = {
           nombre: persona.nombre,
           receptor_tipo_identif: persona.IDTipoIdentificacion, identificacion: persona.cedula,
@@ -807,7 +822,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
         }, 5000);
       },
       errorActualizar => {
-        console.log('Error al actualizar', errorActualizar);
+        // console.log('Error al actualizar', errorActualizar);
+        this.toastr.error('Error al actualizar datos', 'Error');
         this.registradoAntes = true;
         setTimeout(() => {
           this.registradoAntes = false;
@@ -815,24 +831,6 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
       }
     );
-
-    // this._servicioPersona.insertPersona(persona).subscribe(
-    //   res => {
-    //     console.log('Actualizado', res);
-    //     this.receptorInsertado = true;
-    //     setTimeout(() => {
-    //       this.receptorInsertado = false;
-    //     }, 5000);
-    //   },
-    //   errorActualizar => {
-    //     console.log('Error al actualizar', errorActualizar);
-    //     this.registradoAntes = true;
-    //     setTimeout(() => {
-    //       this.registradoAntes = false;
-    //     }, 5000);
-
-    //   }
-    // );
   }
 
   toggle() {
@@ -936,15 +934,16 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
     this._servicioPersona.updatePersona(this.datosXML.receptor_num_identif, data).subscribe(
       res => {
-        console.log('Actualizado', res);
+        // console.log('Actualizado', res);
         this.receptorActualizado = true;
         setTimeout(() => {
           this.receptorActualizado = false;
         }, 5000);
       },
       errorActualizar => {
-        console.log('Error al actualizar', errorActualizar);
-        this._router.navigate(['**']);
+        // console.log('Error al actualizar', errorActualizar);
+        this.toastr.error('Error al actualizar los datos', 'Error');
+        // this._router.navigate(['**']);
       }
     );
 
@@ -1058,19 +1057,19 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       return element.codigo_provincia == codigo_provincia;
     });
     this.cargarDistritos(this.cantonesFiltradosEmisor[0].codigo_canton);
-    console.log(this.cantonesFiltradosEmisor);
+    // console.log(this.cantonesFiltradosEmisor);
 
   };
 
   //carga los distritos filtrados del emisor
   cargarDistritosEmisor(codigo_canton?: any) {
-    console.log(codigo_canton);
+    // console.log(codigo_canton);
     codigo_canton = parseInt(codigo_canton);
     this.distritosFiltradosEmisor = this.distritos.filter(element => {
       return element.codigo_canton == codigo_canton;
     });
 
-    console.log(this.cantonesFiltradosEmisor);
+    // console.log(this.cantonesFiltradosEmisor);
 
   };
 
@@ -1130,7 +1129,7 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
     var cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioPersona.getPersona(cedula).subscribe(result => {
       var personaResult = result.data[0];
-      console.log(personaResult);
+      // console.log(personaResult);
       this.ubicacionPersona(personaResult.IDDistrito).then(ubicacion => {
         this.datosXML.emisor_distrito = ubicacion[0].toString();
         this.datosXML.emisor_canton = ubicacion[1].toString();
@@ -1150,7 +1149,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
     },
       error => {
-        console.log(error);
+        // console.log(error);
+        this.toastr.error('Error al cargar los datos', 'Error');
       });
 
   }
@@ -1158,11 +1158,12 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
   cargarActividades() {
     let cedula = this._servicioAutenticacion.obtenerDatosUsuario().cedula;
     this._servicioUsuario.getActividades(cedula).subscribe((res: any) => {
-      console.log(res);
+      // console.log(res);
       this.actividades = res.data;
       if (this.actividades) this.codigoActividad = this.actividades[0].codigo;
     }, err => {
-      console.log(err)
+      // console.log(err);
+      this.toastr.error('Error al cargar los datos', 'Error');
     });
   }
 
@@ -1184,14 +1185,15 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
 
     this._servicioPersona.updatePersona(this.datosXML.emisor_num_identif, data).subscribe(
       res => {
-        console.log('Actualizado', res);
+        // console.log('Actualizado', res);
         this.emisorGuardado = true;
         setTimeout(() => {
           this.emisorGuardado = false;
         }, 5000);
       },
       errorActualizar => {
-        console.log('Error al actualizar', errorActualizar);
+        // console.log('Error al actualizar', errorActualizar);
+        this.toastr.error('Error al actualizar los datos', 'Error');
       }
     )
   }
@@ -1232,7 +1234,8 @@ export class CreateFacturaComponent implements OnInit, AfterViewInit {
       }
     },
       error => {
-        this._router.navigate(['**']);
+        this.toastr.error('Error al cargar los datos', 'Error');
+        // this._router.navigate(['**']);
       })
   }
 

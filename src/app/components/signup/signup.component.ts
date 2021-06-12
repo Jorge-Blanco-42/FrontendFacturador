@@ -5,7 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { ServicioUbicacion } from 'src/app/services/ubicacion';
 import { ServicioUsuario } from 'src/app/services/usuario';
-
+import { ToastrService } from 'ngx-toastr';
 
  export interface Cliente {
   nombre: string, nombreRazonSocial: string,
@@ -39,7 +39,7 @@ export class SignupComponent implements OnInit {
   public distritosFiltrados: any[] = [];
 
   constructor( private _servicioUsuario: ServicioUsuario, private _servicioAutenticacion: ServicioAutenticacion,
-    public dialogRef: MatDialogRef<SignupComponent>, private _servicioUbicacion: ServicioUbicacion) { 
+    public dialogRef: MatDialogRef<SignupComponent>, private _servicioUbicacion: ServicioUbicacion, private toastr: ToastrService) { 
     this.cliente = {
       nombre: "",
       nombreRazonSocial: "", identificacion: "",
@@ -61,16 +61,18 @@ export class SignupComponent implements OnInit {
 
   registrar(cliente : Cliente){
     this.validarContrasena();
-    console.log(this.valido, cliente)
+    // console.log(this.valido, cliente)
     if (this.valido){
       this._servicioUsuario.registro(cliente).subscribe((res:any)=>{
-        console.log(res)
+        // console.log(res)
         this._servicioAutenticacion.saveToken(res.token);
         this.login = true
-        console.log("return true")
+        // console.log("return true")
+        this.toastr.success('Usuario registrado correctamente');
         this.closeSignUp(true);
       },err=>{
-        console.log(err)
+        // console.log(err)
+        this.toastr.error('Error al registrar usuario', 'Error');
       })
     }
   }
@@ -142,7 +144,7 @@ export class SignupComponent implements OnInit {
 
   //carga los distritos filtrados del emisor
   cargarDistritos(codigo_canton?: any) {
-    console.log(codigo_canton);
+    // console.log(codigo_canton);
     codigo_canton = parseInt(codigo_canton);
     this.distritosFiltrados = this.distritos.filter(element => {
       return element.codigo_canton == codigo_canton;

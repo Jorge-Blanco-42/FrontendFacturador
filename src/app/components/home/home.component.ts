@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
   login: boolean = false;
 
   activeSlideChange() {
-    console.log(this.activeSlideIndex);
+    // console.log(this.activeSlideIndex);
   }
 
 

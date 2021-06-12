@@ -23,6 +23,7 @@ import { ServicioFirmadoXML } from 'src/app/services/firmadoXML';
 import { ServicioAutenticacion } from 'src/app/services/autenticacion.service';
 import { Documento } from 'src/app/models/documento';
 import { ServicioConsultas } from 'src/app/services/consultas';
+import { ToastrService } from 'ngx-toastr';
 
 export interface PeriodicElement {
   name: string;
@@ -57,11 +58,11 @@ export class ConsultarComponent implements OnInit {
   }
 
   constructor(public dialog: MatDialog, private _servicioUsuario: ServicioUsuario,
-    private _servicioAutenticacion: ServicioAutenticacion) {
+    private _servicioAutenticacion: ServicioAutenticacion, private toastr: ToastrService) {
     this.cargarDocumentos()
       .then((res) => {
         let resp = JSON.parse(res);
-        console.log(resp)
+        // console.log(resp)
         let documentos = resp.docs;
         let estados = resp.estados;
         documentos.forEach((doc: any) => {
@@ -85,8 +86,12 @@ export class ConsultarComponent implements OnInit {
         this.datosFacturas = new MatTableDataSource(this.facturas);
         this.setPaginator();
         this.setSorter();
+        this.toastr.success('Documentos cargados correctamente');
       })
-      .catch((err) => { console.error(err) })
+      .catch((err) => { 
+        // console.error(err);
+        this.toastr.error('No se cargaron los documentos', 'Error');
+      })
   }
 
 
@@ -129,7 +134,7 @@ export class ConsultarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      // console.log('The dialog was closed');
     });
   }
 
@@ -146,7 +151,7 @@ export class ConsultarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      // console.log('The dialog was closed');
     });
   }
 
@@ -161,7 +166,7 @@ export class ConsultarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      // console.log('The dialog was closed');
     });
   }
 
@@ -239,7 +244,7 @@ export class DialogResumen implements OnInit {
     private _servicioDecodificador: ServicioDecodificador, private _servicioEnvio: ServicioEnvioXML,
     private _servicioFirma: ServicioFirmadoXML, private _servicioCertificado: ServicioCertificado,
     public datepipe: DatePipe, private _servicioClave: ServicioClaveXML, private _servicioAutenticacion: ServicioAutenticacion,
-    private _servicioConsultas: ServicioConsultas) {
+    private _servicioConsultas: ServicioConsultas, private toastr: ToastrService) {
     this.anular = data.anular;
     this.xml = data.xml;
     this.xmlEstadoAceptacion = data.xmlEstadoAceptacion;
@@ -320,7 +325,8 @@ export class DialogResumen implements OnInit {
         this.setPaginatorCargos();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
+        this.toastr.error('No se cargaron los datos', 'Error');
       })
   }
 
@@ -352,7 +358,7 @@ export class DialogResumen implements OnInit {
   AnularDocumento() {
     this.crearClave()
       .then((res) => {
-        console.log(res.resp)
+        // console.log(res.resp)
         this.claveNueva = res.resp.clave;
         this.crearNota()
           .then((res) => {
@@ -363,20 +369,20 @@ export class DialogResumen implements OnInit {
                 this.enviar()
                   .then((respEnvio) => {
                     if (respEnvio.resp.Status === 202) {
-                      console.log("esperar");
+                      // console.log("esperar");
                       setTimeout(() => {
                         let token = localStorage.getItem("token");
                         this._servicioConsultas.consultarAceptacion(this.claveNueva, token ? token : "").subscribe(
                           resp => {
-                            console.log("", resp);
+                            // console.log("", resp);
 
                             let correo = new Correo(this.correoReceptor, "Factura electrónica " + this.nombreEmisor,
                               "Se adjunta factura electrónica", "Factura " + this.nombreEmisor + ".xml",
                               this.xml, resp.resp["respuesta-xml"], "base64");
-                            console.log(correo);
+                            // console.log(correo);
                             this._servicioCorreo.enviarCorreo(correo).subscribe(
                               res => {
-                                console.log("correo enviado", correo);
+                                // console.log("correo enviado", correo);
                                 let fechaBD = this.datepipe.transform(this.fecha, "dd/MM/yyyy")
                                 let usuario = this._servicioAutenticacion.obtenerDatosUsuario().IDUsuario;
                                 let aceptacion;
@@ -389,34 +395,50 @@ export class DialogResumen implements OnInit {
                                   fechaBD ? fechaBD : "", this.nombreReceptor, "2", usuario,
                                   aceptacion, resp.resp["respuesta-xml"]);
                                 this._servicioUsuario.insertDocumento(documento).subscribe(estadoFinal => {
-                                  console.log(estadoFinal);
+                                  // console.log(estadoFinal);
+                                  this.toastr.success('Documento anulado correctamente');
                                   this.dialogRef.close();
-                                  console.log(res)
+                                  // console.log(res)
                                 }, errorBD => {
-                                  console.log("error en base de datos", errorBD);
+                                  // console.log("error en base de datos", errorBD);
+                                  this.toastr.error('Error al anular el documento', 'Error');
                                 })
 
                               },
                               error => {
-                                console.log("No se pudo enviar el correo");
+                                // console.log("No se pudo enviar el correo");
+                                this.toastr.error('Error al anular el documento', 'Error');
                               }
                             );
                           },
                           error => {
-                            console.log("error en consulta");
+                            // console.log("error en consulta");
+                            this.toastr.error('Error al anular el documento', 'Error');
                           }
                         )
                       }, 30000);
                     }
 
                   })
-                  .catch((err) => { console.error(err) })
+                  .catch((err) => { 
+                    // console.error(err);
+                    this.toastr.error('Error al anular el documento', 'Error');
+                  })
               })
-              .catch((err) => { console.error(err) })
+              .catch((err) => { 
+                // console.error(err);
+                this.toastr.error('Error al anular el documento', 'Error');
+              })
           })
-          .catch((err) => { console.error(err) })
+          .catch((err) => { 
+            // console.error(err);
+            this.toastr.error('Error al anular el documento', 'Error');
+          })
       })
-      .catch((err) => { console.error(err) })
+      .catch((err) => { 
+        // console.error(err);
+        this.toastr.error('Error al anular el documento', 'Error');
+      })
 
 
   }
@@ -426,17 +448,17 @@ export class DialogResumen implements OnInit {
       "Factura.xml", this.xml, this.xmlEstadoAceptacion, "base64");//PONER EL XML DEL MENSAJE DE ACEPTACION
     if (this.checkEmisor) {
       correo.to = this.correoEmisor;
-      console.log(correo);
+      // console.log(correo);
       this.enviarC(correo);
     }
     if (this.checkReceptor) {
       correo.to = this.correoReceptor;
-      console.log(correo);
+      // console.log(correo);
       this.enviarC(correo);
     }
     if (this.checkOtro) {
       correo.to = this.otraDireccion;
-      console.log(correo);
+      // console.log(correo);
       this.enviarC(correo);
     }
     this.dialogRef.close();
@@ -445,10 +467,12 @@ export class DialogResumen implements OnInit {
   enviarC(correo: Correo) {
     this._servicioCorreo.enviarCorreo(correo).subscribe(
       res => {
-        console.log("correo enviado");
+        // console.log("correo enviado");
+        this.toastr.success('Correo enviado correctamente');
       },
       error => {
-        console.log("No se pudo enviar el correo");
+        // console.log("No se pudo enviar el correo");
+        this.toastr.error('Error al enviar el correo', 'Error');
       }
     );
   }
@@ -489,12 +513,15 @@ export class DialogResumen implements OnInit {
       this._servicioDecodificador.decodificarXML(this.xml).subscribe(
         result1 => {
           this.fecha = this.datepipe.transform(new Date(), 'yyyy-MM-ddThh:mm:ssZZZZZ');
-          console.log(this.fecha);
+          // console.log(this.fecha);
           this._servicioEscritorXML.crearNotaAnular(result1.xmlDecoded, "ND", data, this.claveNueva, this.fecha ? this.fecha : "").subscribe(
             result2 => {
 
               this._servicioDecodificador.codificarXML(result2.xmlFile).subscribe(
-                res => { console.log(res); resolve(res); },
+                res => { 
+                  // console.log(res); 
+                  resolve(res); 
+                },
                 err => { reject(err); }
               )
             },
@@ -514,7 +541,7 @@ export class DialogResumen implements OnInit {
         result => {
           let certificado: Certificado = result[0];
           certificado.archivoURL = result[0].archivo;
-          console.log(result[0])
+          // console.log(result[0])
           let firma = new FirmadoXML("signXML", "signFE", certificado.archivoURL, this.xml, certificado.pin, "ND")
           this._servicioFirma.firmarFEXML(firma).subscribe(
             res => { resolve(res.resp.xmlFirmado); },
@@ -532,7 +559,7 @@ export class DialogResumen implements OnInit {
       let envio = new EnvioXML("send", "json", token ? token : "", this.claveNueva, this.fecha ? this.fecha : "",
         this.tipoIdentEmisor, this.cedulaEmisor, this.tipoIdentReceptor,
         this.cedulaReceptor, this.xml, "api-stag");
-      console.log(envio);
+      // console.log(envio);
       this._servicioEnvio.enviarFEXML(envio).subscribe(
         res => { resolve(res); },
         err => { reject(err); }
@@ -546,12 +573,13 @@ export class DialogResumen implements OnInit {
     this._servicioUsuario.getUltimoDocumento(usuario).subscribe(res => {
       this.claveMayor = res.doc.claveDocumento;
       this.consecutivo = parseInt(this.claveMayor.substr(31, 10));
-      console.log(this.consecutivo)
+      // console.log(this.consecutivo)
       this.consecutivo += 1;
       this.strConsecutivo = this.consecutivo.toString().padStart(10, "0");
       this.codigoSeguridad = Math.floor(Math.random() * 99999999).toString().padStart(8, "0");
     }, err => {
-      console.log(err);
+      // console.log(err);
+      this.toastr.error('Error al cargar los datos', 'Error');
     })
   }
 

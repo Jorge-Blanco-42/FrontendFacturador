@@ -36,7 +36,7 @@ export class SolicitudCambioContrasenaComponent implements OnInit {
     this._servicioContrasena.getToken(cedula).subscribe(token => {
       this._servicioPersona.getPersona(cedula).subscribe(persona => {
         var datosPersona = persona.data[0];
-        console.log(datosPersona);
+        // console.log(datosPersona);
         var enlace = this.appUrl+"nueva-contrasena/"+token.id+"/"+token.token;
         var mensaje = "Estimado "+datosPersona.nombre+".\nPara cambiar su contraseña, haga click en el siguiente enlace: " + enlace;
         mensaje += "\n\n\nEnlace válido por 15 minutos.\nPOR FAVOR NO RESPONDA A ESTE CORREO.";
